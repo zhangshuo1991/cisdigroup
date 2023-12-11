@@ -35,13 +35,21 @@
           <template slot-scope="scope">{{ scope.$index+1 }}</template>
         </el-table-column>
         <el-table-column label="企业名称" prop="entname"></el-table-column>
-        <el-table-column label="统一社会信用代码" prop="creditCode"></el-table-column>
-        <el-table-column label="经营状态" prop="creditCode"></el-table-column>
-        <el-table-column label="法人" prop="legalPerson"></el-table-column>
-        <el-table-column label="注册资本" prop="regCapital"></el-table-column>
-        <el-table-column label="注册时间" prop="regTime"></el-table-column>
-        <el-table-column label="担保金额" prop="danbao_amount"></el-table-column>
-        <el-table-column label="被担保金额" prop="beidanbao_amount"></el-table-column>
+        <el-table-column label="统一社会信用代码" prop="uniscid"></el-table-column>
+        <el-table-column label="经营状态" prop="entstatusCn"></el-table-column>
+        <el-table-column label="法人" prop="lerepname"></el-table-column>
+        <el-table-column label="注册资本" prop="regcap"></el-table-column>
+        <el-table-column label="注册时间" prop="esdate"></el-table-column>
+        <el-table-column label="担保金额" prop="danbao_amount">
+          <template slot-scope="scope">
+            <span>0</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="被担保金额" prop="beidanbao_amount">
+          <template slot-scope="scope">
+            <span>0</span>
+          </template>
+        </el-table-column>
         <el-table-column label="详情">
           <template slot-scope="row">
             <el-link size="mini" type="primary" @click="viewDetail">详情</el-link>
@@ -54,6 +62,7 @@
 </template>
 <script>
 import Pagination from "@/components/Pagination";
+import request from "@/utils/request";
 export default({
   name: "WarrantyGraphList",
   components: { Pagination },
@@ -67,26 +76,7 @@ export default({
       grpname: "",
       dataGrid:{
         total: 0,
-        list: [
-          {
-            entname: '安徽乐富强控股集团有限公司',
-            creditCode: '91340100MA2YXQ0X1E',
-            legalPerson: '王建华',
-            regCapital: '1000万人民币',
-            regTime: '2018-01-01',
-            danbao_amount: '1000万人民币',
-            beidanbao_amount: '2000万人民币',
-          },
-          {
-            entname: '渝商投资集团股份有限公司',
-            creditCode: '91340100MA2YXQ0X1E',
-            legalPerson: '王建华',
-            regCapital: '1000万人民币',
-            regTime: '2018-01-01',
-            danbao_amount: '1000万人民币',
-            beidanbao_amount: '2000万人民币',
-          }
-        ],
+        list: [],
         listQuery: {
           page: 1,
           limit: 10,
@@ -95,12 +85,22 @@ export default({
       }
     }
   },
+  mounted() {
+    this.getList();
+  },
   methods: {
     getList() {
       this.dataGrid.listLoading = true;
-      setTimeout(() => {
+      request({
+        url: "/entInfo/getGuaranteeList",
+        method: "post",
+        params: { pageNum: this.dataGrid.listQuery.page,pageSize: this.dataGrid.listQuery.limit },
+        data: { keyword: this.dataGrid.listQuery.keywords }
+      }).then(res => {
         this.dataGrid.listLoading = false;
-      }, 2000);
+        this.dataGrid.list = res.data.item;
+        this.dataGrid.total = res.data.total;
+      });
     },
 
     handleFilter() {

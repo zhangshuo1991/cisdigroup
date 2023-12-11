@@ -3,13 +3,13 @@
     <div style="background-color: white;text-align: left;padding:15px;height: 400px">
       <el-form ref="form" :model="form" label-width="140px" size="mini">
         <el-form-item label="关键字：">
-          <el-autocomplete
+          <el-input
             v-model="dataGrid.listQuery.keywords"
             placeholder="请输入关键字检索"
             clearable
             style="width: 610px;"
             class="filter-item"
-          ></el-autocomplete>
+          ></el-input>
         </el-form-item>
         <el-form-item label="所属行业：">
           <el-cascader
@@ -103,7 +103,7 @@
               <div class="grid-content bg-purple" style="line-height: 300px;height: 200px;;float: left">
                 <el-image
                   style="width: 100px; height: 100px;border: 1px solid gainsboro"
-                  src="https://teamcom-dev-1251781880.cos.ap-beijing.myqcloud.com/alibaba.png"
+                  :src="item.logoBase64"
                   fit="fill">
                 </el-image>
               </div>
@@ -134,14 +134,15 @@
                   <el-tag style="margin-left: 10px">大数据分析</el-tag>
                 </div>
                 <div style="margin-top: 10px">
-                  <el-descriptions :column="1" size="small">
+                  <el-descriptions v-if="item.entPatentBrief" :column="1" size="small">
                     <el-descriptions-item>
                       <template slot="label">
                         <i class="el-icon-paperclip"></i>
                         <span class="c-span-text">专利摘要</span>
                       </template>
-                      <span class="c-suggestion-name">本申请提供一种商品信息处理系统、方法、设备及存储介质。<span class="c-highlight-word">在本申请中</span>，依托于服务端和价格域系统组成的商品信息处理系统，
-                      首先，由服务端响应物流服务提供方触发的物流调价请求执行针对包邮商品的物流调价操作</span>
+                      <span class="c-suggestion-name" v-html="item.entPatentBrief">
+
+                      </span>
                     </el-descriptions-item>
                   </el-descriptions>
                   <el-descriptions :column="1" size="small">
@@ -150,7 +151,7 @@
                         <i class="el-icon-paperclip"></i>
                         <span class="c-span-text">软件名称</span>
                       </template>
-                      <span class="c-suggestion-name">阿里巴巴手机客户端&nbsp;|&nbsp;人工智能客户端&nbsp;|&nbsp;人工智能客户端&nbsp;</span>
+                      <span class="c-suggestion-name">阿里巴巴手机客户端&nbsp;| &nbsp;人工智能客户端&nbsp;|&nbsp;人工智能客户端&nbsp;</span>
                     </el-descriptions-item>
                   </el-descriptions>
                   <el-descriptions :column="1" size="small">
@@ -162,22 +163,37 @@
                       <span class="c-suggestion-name">使用最先进的自然语言处理技术,让App内置的聊天机器人像真人一样流利地与您交流。您可以与它轻松聊天,它还可以提供生活、学习等方面的帮助。</span>
                     </el-descriptions-item>
                   </el-descriptions>
-                  <el-descriptions :column="1" size="small">
+                  <el-descriptions v-if="item.tenterpriseDescList.length>0" :column="1" size="small">
                     <el-descriptions-item>
                       <template slot="label">
                         <i class="el-icon-paperclip"></i>
                         <span class="c-span-text">企业简介</span>
                       </template>
-                      <span class="c-suggestion-name">阿里巴巴（中国）网络技术有限公司，成立于1999年，位于浙江省杭州市，是一家以从事互联网和相关服务为主的企业。</span>
+                      <span v-if="item.entDesc" class="c-suggestion-name" v-html="item.entDesc"></span>
+                      <span class="c-suggestion-name" v-else>
+                        {{ item.tenterpriseDescList.length>0 ? item.tenterpriseDescList[0].entDesc:'' }}
+                      </span>
                     </el-descriptions-item>
                   </el-descriptions>
-                  <el-descriptions :column="1" size="small">
+                  <el-descriptions v-if="item.ttrademarksList.length>0" :column="1" size="small">
                     <el-descriptions-item>
                       <template slot="label">
                         <i class="el-icon-paperclip"></i>
                         <span class="c-span-text">商标</span>
                       </template>
-                      <span class="c-suggestion-name">生成式人工智能</span>
+                      <span class="c-suggestion-name">
+                        {{item.tradeName}}
+                      </span>
+                    </el-descriptions-item>
+                  </el-descriptions>
+                  <el-descriptions v-if="item.entJobs" :column="1" size="small">
+                    <el-descriptions-item>
+                      <template slot="label">
+                        <i class="el-icon-paperclip"></i>
+                        <span class="c-span-text">招聘岗位</span>
+                      </template>
+                      <span class="c-suggestion-name" v-html="item.entJobs">
+                      </span>
                     </el-descriptions-item>
                   </el-descriptions>
                   <el-descriptions :column="1" size="small">
@@ -194,7 +210,7 @@
             </el-col>
             <el-col :span="4">
               <div style="text-align: center;padding-top: 100px;cursor: pointer;" @click="viewScoreDetail">
-                <div style="font-weight: bolder;font-size: 30px;color: #1ab394">434分</div>
+                <div v-if="item.tevaluatingIndex" style="font-weight: bolder;font-size: 30px;color: #1ab394">{{item.tevaluatingIndex.overall}}分</div>
                 <div>企业评分</div>
               </div>
             </el-col>
@@ -209,7 +225,7 @@
         :total="dataGrid.total"
         :page-size="dataGrid.listQuery.limit"
         :current-page="dataGrid.listQuery.page"
-        @current-change="getList"
+        @current-change="handleCurrentChange"
       >
       </el-pagination>
     </div>
@@ -336,7 +352,6 @@ export default ({
   },
   mounted() {
     this.getAreaData()
-    this.getList()
   },
   methods: {
     showPropertiesView(){
@@ -353,6 +368,10 @@ export default ({
     selectArea(data) {
 
     },
+    handleCurrentChange(val) {
+      this.dataGrid.listQuery.page = val
+      this.getList()
+    },
     getAreaData() {
       this.$axios.get('/js/aera_data.json').then(res => {
         this.areaOptions = res.data
@@ -365,11 +384,55 @@ export default ({
       request({
         url: '/entInfo/searchInfoByKeyword',
         method: 'post',
-        params: {pageNum: this.dataGrid.listQuery.page, pageSize: this.dataGrid.listQuery.limit},
+        params: { pageNum: this.dataGrid.listQuery.page, pageSize: this.dataGrid.listQuery.limit },
         data: this.dataGrid.listQuery
       }).then(res => {
-        this.dataGrid.list = res.item
-        this.dataGrid.total = res.total
+        this.dataGrid.list = res.data
+        res.data.forEach(thisItem => {
+          if (thisItem.tnewJobsList){
+            let entJobs
+            thisItem.tnewJobsList.forEach(tempItem => {
+              if (tempItem.title.indexOf(this.dataGrid.listQuery.keywords)>0) {
+                // 高亮显示
+                const tempTitle = tempItem.title.replace(this.dataGrid.listQuery.keywords,'<span style="color: red">'+this.dataGrid.listQuery.keywords+'</span>')
+                entJobs = entJobs + tempTitle + '|'
+              }
+            })
+            thisItem.entJobs = entJobs
+          }
+
+          if (thisItem.tpatentsRelationsList){
+            let entPatentBrief
+            thisItem.tpatentsRelationsList.forEach(tempItem => {
+              if (tempItem.brief.indexOf(this.dataGrid.listQuery.keywords)>0) {
+                // 高亮显示
+                const tempTitle = tempItem.brief.replace(this.dataGrid.listQuery.keywords,'<span style="color: red">'+this.dataGrid.listQuery.keywords+'</span>')
+                entPatentBrief = tempTitle
+                thisItem.entPatentBrief = entPatentBrief
+              }
+            })
+          }
+          if (thisItem.tenterpriseDescList){
+            let entDesc
+            thisItem.tenterpriseDescList.forEach(tempItem => {
+              if (tempItem.entDesc.indexOf(this.dataGrid.listQuery.keywords)>0) {
+                // 高亮显示
+                const tempTitle = tempItem.entDesc.replace(this.dataGrid.listQuery.keywords,'<span style="color: red">'+this.dataGrid.listQuery.keywords+'</span>')
+                entDesc = tempTitle
+                thisItem.entDesc = entDesc
+              }
+            })
+          }
+          if (thisItem.ttrademarksList){
+            let tradeName
+            thisItem.ttrademarksList.forEach(tempItem => {
+              tradeName = tradeName+ ' | ' + tempItem.name
+            })
+            thisItem.tradeName = tradeName
+          }
+
+        })
+        this.dataGrid.total = this.dataGrid.list.length
       })
     },
     selectIndus(data) {

@@ -7,16 +7,14 @@
       <table class="c-base-table" style="width: 100%;margin-bottom: 10px">
         <tbody>
         <tr>
-          <td class="c-td-title" style="width: 12%">企业ID：</td>
-          <td class="c-td-text" style="width: 20%">{{ baseinfo.entid }}</td>
           <td class="c-td-title" style="width: 12%">企业名称：</td>
           <td class="c-td-text" style="width: 20%">{{ baseinfo.entname }}</td>
           <td class="c-td-title" style="width: 12%">统一社会信用代码：</td>
           <td class="c-td-text" style="width: 20%">{{ baseinfo.uniscid }}</td>
+          <td class="c-td-title">企业经营状态：</td>
+          <td class="c-td-text">{{ baseinfo.entstatusCn }}</td>
         </tr>
         <tr>
-          <td class="c-td-title">企业经营状态：</td>
-          <td class="c-td-text">{{ baseinfo.entstatus_cn }}</td>
           <td class="c-td-title">是否为上市公司：</td>
           <td class="c-td-text">{{ baseinfo.islist_cn }}</td>
           <td class="c-td-title">股票代码：</td>
@@ -42,19 +40,19 @@
               label="关联⽅名称"
             />
             <el-table-column
-              prop="partytyp_cn"
+              prop="partytyp"
               label="关联⽅类型"
             />
             <el-table-column
-              prop="relpartyp_cn"
+              prop="relpartyp"
               label="关联关系类型"
             />
+<!--            <el-table-column-->
+<!--              prop="partyid"-->
+<!--              label="统一社会信用代码"-->
+<!--            />-->
             <el-table-column
-              prop="uniscid"
-              label="统一社会信用代码"
-            />
-            <el-table-column
-              prop="partystatus_cn"
+              prop="partystatus"
               label="关联⽅经营状态"
             />
           </el-table>
@@ -107,8 +105,6 @@
         <RelationGraph
           ref="graphRef"
           :options="graphOptions"
-          :on-node-click="onNodeClick"
-          :on-line-click="onLineClick"
         />
       </div>
     </div>
@@ -117,6 +113,7 @@
 </template>
 <script>
 import RelationGraph from "relation-graph";
+import request from "@/utils/request";
 export default({
   name: "RelaDetail",
   components: { RelationGraph },
@@ -124,97 +121,61 @@ export default({
     return {
       activeName: 'relaList',
       graphOptions: {
-        defaultNodeBorderWidth: 0,
-        defaultNodeColor: 'rgba(238, 178, 94, 1)',
         allowSwitchLineShape: true,
         allowSwitchJunctionPoint: true,
-        defaultLineShape: 1,
-        'layouts': [
-          {
-            'label': '中心',
-            'layoutName': 'center',
-            'layoutClassName': 'seeks-layout-center'
-          }
-        ],
-        defaultJunctionPoint: 'border'
+        defaultJunctionPoint: 'border',
+        allowShowMiniToolBar: true
       },
-      baseinfo: {
-        "entid": "4A2345AB756F4CB1BBA1F74B784ACB814",
-        "entname": "贵州读食食品有限公司",
-        "entname_hlf": null,
-        "uniscid": "91520102MAAJX8H613",
-        "entstatus": "1",
-        "entstatus_cn": "在营（开业）",
-        "islist": "0",
-        "islist_cn": "否",
-        "skcode": null
-      },
+      baseinfo: {},
       listEnrelpar: [],
-      enrelpar: [
-        {
-          "partyid": "inv72b7d1df6852f798fb93dcc35d2a4a8e",
-          "partyname": "赵斌",
-          "partytyp": "01",
-          "partytyp_cn": "自然人",
-          "relpartyp": "05",
-          "relpartyp_cn": "主要投资者个人",
-          "partystatus": null,
-          "partystatus_cn": null,
-          "uniscid": null,
-          "subconprop": "10.0"
-        },
-        {
-          "partyid": "inv68b44bc0bddd9257a7136f89ae492ca2",
-          "partyname": "李莹",
-          "partytyp": "01",
-          "partytyp_cn": "自然人",
-          "relpartyp": "05",
-          "relpartyp_cn": "主要投资者个人",
-          "partystatus": null,
-          "partystatus_cn": null,
-          "uniscid": null,
-          "subconprop": "75.0"
-        },
-        {
-          "partyid": "inv2721faa64604b44f2c256053102a9277",
-          "partyname": "王辉",
-          "partytyp": "01",
-          "partytyp_cn": "自然人",
-          "relpartyp": "05",
-          "relpartyp_cn": "主要投资者个人",
-          "partystatus": null,
-          "partystatus_cn": null,
-          "uniscid": null,
-          "subconprop": "15.0"
-        }
-      ],
+      enrelpar: [],
       currentPage: 1,
     }
   },
   mounted() {
-    this.showSeeksGraph();
+
+    this.uniscid = this.$route.query.uniscid
+    this.getRelaList()
+    this.$nextTick(() => {
+      this.baseinfo = JSON.parse(sessionStorage.getItem("baseRelaInfo"))
+      this.showSeeksGraph();
+    });
   },
   methods: {
-    showSeeksGraph() {
+    getRelaList() {
+      request({
+        url: "/entInfo/getRelaEntList/" + this.uniscid,
+        method: "get"
+      }).then(res => {
+        this.enrelpar = res.data
+        const nodes = []
+        const lines = []
+        nodes.push({
+          id: this.baseinfo.uniscid,
+          text: this.baseinfo.entname,
+          data: this.baseinfo,
+        })
+        this.enrelpar.forEach(item => {
+          nodes.push({
+            id: item.partyid,
+            text: item.partyname,
+            data: item,
+          })
+          lines.push({
+            from: this.baseinfo.uniscid,
+            to: item.partyid,
+            text: item.relpartyp,
+            data: item
+          })
+        })
+        this.showSeeksGraph(this.baseinfo.uniscid, nodes, lines)
+      })
+    },
+    showSeeksGraph(rootId, nodes, lines) {
       const __graph_json_data = {
-        rootId: '2',
-        nodes: [
-          { id: '1', text: '节点-1', myicon: 'el-icon-star-on' },
-          { id: '2', text: '节点-2', myicon: 'el-icon-setting' },
-          { id: '4', text: '节点-4', myicon: 'el-icon-star-on' },
-          { id: '6', text: '节点-6', myicon: 'el-icon-setting' },
-          { id: '7', text: '节点-7', myicon: 'el-icon-setting' },
-          { id: '8', text: '节点-8', myicon: 'el-icon-star-on' },
-          { id: '9', text: '节点-9', myicon: 'el-icon-headset' }
-        ],
-        lines: [
-          { from: '1', to: '2', text: '投资' },
-          { from: '4', to: '2', text: '高管' },
-          { from: '6', to: '2', text: '高管' },
-          { from: '7', to: '2', text: '高管' },
-          { from: '8', to: '2', text: '高管' },
-          { from: '9', to: '2', text: '高管' }
-        ]
+        rootId: rootId,
+        nodes: nodes,
+        lines: lines
       };
       this.$refs.graphRef.setJsonData(__graph_json_data, (graphInstance) => {
         // 这些写上当图谱初始化完成后需要执行的代码
@@ -227,6 +188,7 @@ export default({
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
+      this.currentPage = val
       console.log(`当前页: ${val}`);
     }
   }

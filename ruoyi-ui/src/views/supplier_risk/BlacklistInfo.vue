@@ -1,109 +1,215 @@
 <template>
-  <div id="app" style="margin: auto;background-color: #f9f9f9;padding-top: 15px;padding-bottom: 30px;padding-right: 15px;padding-left: 15px;min-height: 900px">
-    <div style="background-color: white;line-height: 70px;height: 70px;text-align: center">
-      <el-autocomplete
-        placeholder="请输入公司名称/统一社会信用代码"
-        clearable
-        style="width: 610px;"
-        class="filter-item"
-      >
-        <el-button slot="append" icon="el-icon-search"/>
-      </el-autocomplete>
+  <div id="app" style="margin: auto;background-color: #f2f2f2;padding-top: 15px;padding-bottom: 30px;padding-right: 15px;padding-left: 15px;min-height: 900px">
+    <div class="c-data-h1">
+      风险信息总体情况
     </div>
-    <div style="clear: both;background-color: white;margin-top: 15px;min-height: 300px;padding:15px">
-      <div style="font-size: 18px;font-weight: bolder">
-        北京捷通华声科技股份有限公司
-      </div>
-      <div class="c-data-h1">黑名单汇总信息</div>
-
-      <el-table
-        :data="dataGrid.list"
-        border
-        fit
-        highlight-current-row
-        :header-row-style="{height:'40px',fontSize: '13px'}"
-        :header-cell-style="{padding:'0px'}"
-        :row-style="{height:'40px',fontSize: '13px'}"
-        :cell-style="{padding:'0px'}"
-        style="width: 100%;"
-      >
-        <el-table-column label="序号" width="60" align="center">
-          <template slot-scope="scope">{{ scope.$index+1 }}</template>
-        </el-table-column>
-        <el-table-column prop="enterpriseId" label="企业ID"></el-table-column>
-        <el-table-column prop="enterpriseName" label="企业名称"></el-table-column>
-        <el-table-column prop="registeredCapital" label="注册资本"></el-table-column>
-        <el-table-column prop="establishmentDate" label="成立日期"></el-table-column>
-        <el-table-column prop="legalRepresentative" label="法定代表人"></el-table-column>
-        <el-table-column prop="blacklistType" label="黑名单类型"></el-table-column>
-        <el-table-column prop="blacklistReason" label="纳入黑名单原因"></el-table-column>
-        <el-table-column prop="recognizingDepartment" label="认定部门"></el-table-column>
-        <el-table-column prop="dataSource" label="数据来源"></el-table-column>
-        <el-table-column prop="isRemoved" label="是否移除"></el-table-column>
-        <el-table-column prop="removalReason" label="移除原因"></el-table-column>
-        <el-table-column prop="dataDate" label="数据日期"></el-table-column>
-        <el-table-column label="详情">
-          <template slot-scope="scope">
-            <el-link size="mini" type="primary" @click="dialogVisibleDetail = true">详情</el-link>
-          </template>
-        </el-table-column>
-      </el-table>
-      <pagination style="text-align: right;" :total="dataGrid.total" :page.sync="dataGrid.listQuery.page" :limit.sync="dataGrid.listQuery.limit" @pagination="getList" />
+    <div style="margin-top: 10px;width: 100%">
+      <el-row>
+        <el-col :span="8">
+          <div style="width: 100%;background-color: white;border-left: 5px solid #5099F8;height: 90px">
+            <div style="float: left;height: 90px;padding-top: 20px;width: 30%;text-align: center">
+              <svg-icon icon-class="laxinhuoke" style="width: 50px;height: 50px;color: #009EFF"></svg-icon>
+            </div>
+            <div style="float: left;height: 90px;padding-top: 15px;text-align: center">
+              <div style="font-size: 30px;font-weight: bolder;color: #464c5b">100/10</div>
+              <div style="font-size: 14px;font-weight: bolder;color: #464c5b">合作供应商（家）/黑名单总数</div>
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div style="width: 100%;background-color: white;border-left: 5px solid #F4BF43;height: 90px;margin-left: 10px">
+            <div style="float: left;height: 90px;padding-top: 20px;width: 30%;text-align: center">
+              <svg-icon icon-class="jinrongqizhafenxi" style="width: 50px;height: 50px;color: #F4BF43"></svg-icon>
+            </div>
+            <div style="float: left;height: 90px;padding-top: 15px;text-align: center">
+              <div style="font-size: 30px;font-weight: bolder;color: #464c5b">120 / 5</div>
+              <div style="font-size: 14px;font-weight: bolder;color: #464c5b">风险事件数 / 事件类型数</div>
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div style="width: 100%;background-color: white;border-left: 5px solid #54A452;height: 90px;margin-left: 20px">
+            <div style="float: left;height: 90px;padding-top: 20px;width: 30%;text-align: center">
+              <svg-icon icon-class="yizhixingdongren" style="width: 50px;height: 50px;color: #54A452"></svg-icon>
+            </div>
+            <div style="float: left;height: 90px;padding-top: 15px;text-align: center">
+              <div style="font-size: 30px;font-weight: bolder;color: #464c5b">120 / 5</div>
+              <div style="font-size: 14px;font-weight: bolder;color: #464c5b">合作供应商（家）/ 灰名单 </div>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
     </div>
-    <el-dialog
-      :visible.sync="dialogVisibleDetail"
-      title="黑名单详细信息"
-    >
-      <div class="c-data-h1">
-        经营异常
-      </div>
-      <div>
-        <table class="c-base-table" style="width: 100%">
-          <tr>
-            <td class="c-td-title">供应商ID：</td>
-            <td class="c-td-text">123456</td>
-            <td class="c-td-title">供应商名称：</td>
-            <td class="c-td-text">ABC公司</td>
-          </tr>
-          <tr>
-            <td class="c-td-title">合同编号：</td>
-            <td class="c-td-text">HTBH123</td>
-            <td class="c-td-title">合同名称：</td>
-            <td class="c-td-text">合同名称1</td>
-          </tr>
-          <tr>
-            <td class="c-td-title">应交货日期：</td>
-            <td class="c-td-text">10万</td>
-            <td class="c-td-title">货品名称：</td>
-            <td class="c-td-text">10万</td>
-          </tr>
-          <tr>
-            <td class="c-td-title">货品数量：</td>
-            <td class="c-td-text">2023-10-25</td>
-            <td class="c-td-title">货品规格：</td>
-            <td class="c-td-text">2023-10-08</td>
-          </tr>
-          <tr>
-            <td class="c-td-title">实际交货日期：</td>
-            <td class="c-td-text">10万</td>
-            <td class="c-td-title">交货批次：</td>
-            <td class="c-td-text">2023-10-04</td>
-          </tr>
-          <tr>
-            <td class="c-td-title">货品合格率：</td>
-            <td class="c-td-text">10万</td>
-            <td class="c-td-title">是否通过验收：</td>
-            <td class="c-td-text">2023-10-04</td>
-          </tr>
-          <tr>
-            <td class="c-td-title">验收时间：</td>
-            <td class="c-td-text">10万</td>
-            <td class="c-td-title">数据日期：</td>
-            <td class="c-td-text">2023-10-04</td>
-          </tr>
-        </table>
-      </div>
-    </el-dialog>
+    <div style="margin-top: 10px;width: 100%">
+      <el-row>
+        <el-col :span="12">
+          <el-card>
+            <div slot="header" class="clearfix">
+              <span style="font-weight: bolder;font-size: 15px">供应商预警黑名单（12）</span>
+              <el-button style="float: right; padding: 3px 0" type="text">查看更多</el-button>
+            </div>
+            <div style="width: 100%;height: 250px">
+              <table class="c-base-table" style="width: 100%">
+                <tr>
+                  <th class="c-th-header">企业名称</th>
+                  <th class="c-th-header">纳入黑名单原因</th>
+                  <th class="c-th-header">认定部门</th>
+                  <th class="c-th-header">是否移除</th>
+                  <th class="c-th-header">移除原因</th>
+                  <th class="c-th-header">数据日期</th>
+                </tr>
+                <tr v-for="(item, index) in dataGrid.list" :key="index">
+                  <td class="c-td-text">{{item.enterpriseName}}</td>
+                  <td class="c-td-text">{{item.registeredCapital}}</td>
+                  <td class="c-td-text">{{item.establishmentDate}}</td>
+                  <td class="c-td-text">{{item.legalRepresentative}}</td>
+                  <td class="c-td-text">{{item.blacklistType}}</td>
+                  <td class="c-td-text">{{item.blacklistType}}</td>
+                </tr>
+              </table>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="12">
+          <el-card style="margin-left: 10px">
+            <div slot="header" class="clearfix">
+              <span style="font-weight: bolder;font-size: 15px">隐形关系名单预警（12）</span>
+              <el-button style="float: right; padding: 3px 0" type="text">查看更多</el-button>
+            </div>
+            <div style="width: 100%;height: 250px">
+              <table class="c-base-table" style="width: 100%">
+                <tr>
+                  <th class="c-th-header">企业名称</th>
+                  <th class="c-th-header">关联黑名单名称</th>
+                  <th class="c-th-header">关联类型</th>
+                </tr>
+                <tr v-for="(item, index) in dataGrid.list" :key="index">
+                  <td class="c-td-text">{{item.enterpriseName}}</td>
+                  <td class="c-td-text">{{item.registeredCapital}}</td>
+                  <td class="c-td-text">{{item.establishmentDate}}</td>
+                </tr>
+              </table>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
+    <div style="margin-top: 10px;width: 100%">
+      <el-row>
+        <el-col :span="17">
+          <div style="width: 100%;height: 340px;">
+            <div style="float: left;width: 49%">
+              <el-card>
+                <div slot="header" class="clearfix">
+                  <span style="font-weight: bolder;font-size: 15px">风险事件1：行政处罚</span>
+                  <el-button style="float: right; padding: 3px 0" type="text">查看更多</el-button>
+                </div>
+                <div style="width: 100%;height: 250px">
+                  <table class="c-base-table" style="width: 100%">
+                    <tr>
+                      <th class="c-th-header">决定文书号</th>
+                      <th class="c-th-header">违法行为类型</th>
+                      <th class="c-th-header">行政处罚内容</th>
+                      <th class="c-th-header">决定机关</th>
+                    </tr>
+                    <tr v-for="(item, index) in dataGrid.list" :key="index">
+                      <td class="c-td-text">{{item.enterpriseName}}</td>
+                      <td class="c-td-text">{{item.registeredCapital}}</td>
+                      <td class="c-td-text">{{item.establishmentDate}}</td>
+                      <td class="c-td-text">{{item.legalRepresentative}}</td>
+                    </tr>
+                  </table>
+                </div>
+              </el-card>
+            </div>
+            <div style="float: left;width: 49%;margin-left: 10px">
+              <el-card>
+                <div slot="header" class="clearfix">
+                  <span style="font-weight: bolder;font-size: 15px">风险事件2：司法负面</span>
+                  <el-button style="float: right; padding: 3px 0" type="text">查看更多</el-button>
+                </div>
+                <div style="width: 100%;height: 250px">
+                  <table class="c-base-table" style="width: 100%">
+                    <tr>
+                      <th class="c-th-header">案件名称</th>
+                      <th class="c-th-header">案件类型</th>
+                      <th class="c-th-header">案由</th>
+                      <th class="c-th-header">案号</th>
+                    </tr>
+                    <tr v-for="(item, index) in dataGrid.list" :key="index">
+                      <td class="c-td-text">{{item.enterpriseName}}</td>
+                      <td class="c-td-text">{{item.registeredCapital}}</td>
+                      <td class="c-td-text">{{item.establishmentDate}}</td>
+                      <td class="c-td-text">{{item.legalRepresentative}}</td>
+                    </tr>
+                  </table>
+                </div>
+              </el-card>
+            </div>
+          </div>
+          <div style="width: 100%;height: 340px">
+            <div style="float: left;width: 49%">
+              <el-card>
+                <div slot="header" class="clearfix">
+                  <span style="font-weight: bolder;font-size: 15px">风险事件3：重大变更</span>
+                  <el-button style="float: right; padding: 3px 0" type="text">查看更多</el-button>
+                </div>
+                <div style="width: 100%;height: 250px">
+                  <table class="c-base-table" style="width: 100%">
+                    <tr>
+                      <th class="c-th-header">决定文书号</th>
+                      <th class="c-th-header">违法行为类型</th>
+                      <th class="c-th-header">行政处罚内容</th>
+                      <th class="c-th-header">决定机关</th>
+                    </tr>
+                    <tr v-for="(item, index) in dataGrid.list" :key="index">
+                      <td class="c-td-text">{{item.enterpriseName}}</td>
+                      <td class="c-td-text">{{item.registeredCapital}}</td>
+                      <td class="c-td-text">{{item.establishmentDate}}</td>
+                      <td class="c-td-text">{{item.legalRepresentative}}</td>
+                    </tr>
+                  </table>
+                </div>
+              </el-card>
+            </div>
+            <div style="float: left;width: 49%;margin-left: 10px">
+              <el-card>
+                <div slot="header" class="clearfix">
+                  <span style="font-weight: bolder;font-size: 15px">风险事件4：欠税信息</span>
+                  <el-button style="float: right; padding: 3px 0" type="text">查看更多</el-button>
+                </div>
+                <div style="width: 100%;height: 250px">
+                  <table class="c-base-table" style="width: 100%">
+                    <tr>
+                      <th class="c-th-header">案件名称</th>
+                      <th class="c-th-header">案件类型</th>
+                      <th class="c-th-header">案由</th>
+                      <th class="c-th-header">案号</th>
+                    </tr>
+                    <tr v-for="(item, index) in dataGrid.list" :key="index">
+                      <td class="c-td-text">{{item.enterpriseName}}</td>
+                      <td class="c-td-text">{{item.registeredCapital}}</td>
+                      <td class="c-td-text">{{item.establishmentDate}}</td>
+                      <td class="c-td-text">{{item.legalRepresentative}}</td>
+                    </tr>
+                  </table>
+                </div>
+              </el-card>
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="7">
+          <div style="width: 100%;height: 670px;background-color: white">
+            <el-card style="height: 100%">
+              <div slot="header" class="clearfix">
+                <span style="font-weight: bolder;font-size: 15px">风险事件5：其他</span>
+                <el-button style="float: right; padding: 3px 0" type="text">查看更多</el-button>
+              </div>
+            </el-card>
+          </div>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 <script>
@@ -171,90 +277,6 @@ export default({
               isRemoved: '否',
               removalReason: '',
               dataDate: '2021-10-04'
-            },
-            {
-              enterpriseId: '1005',
-              enterpriseName: '成都科技有限公司',
-              registeredCapital: '5000万',
-              establishmentDate: '2014-01-01',
-              legalRepresentative: '钱七',
-              blacklistType: 'E级',
-              blacklistReason: '安全问题',
-              recognizingDepartment: '成都市工商局',
-              dataSource: '公开信息',
-              isRemoved: '否',
-              removalReason: '',
-              dataDate: '2021-10-05'
-            },
-            {
-              enterpriseId: '1006',
-              enterpriseName: '武汉科技有限公司',
-              registeredCapital: '6000万',
-              establishmentDate: '2015-01-01',
-              legalRepresentative: '孙八',
-              blacklistType: 'F级',
-              blacklistReason: '违规操作',
-              recognizingDepartment: '武汉市工商局',
-              dataSource: '公开信息',
-              isRemoved: '否',
-              removalReason: '',
-              dataDate: '2021-10-06'
-            },
-            {
-              enterpriseId: '1007',
-              enterpriseName: '南京科技有限公司',
-              registeredCapital: '7000万',
-              establishmentDate: '2016-01-01',
-              legalRepresentative: '周九',
-              blacklistType: 'G级',
-              blacklistReason: '违反规定',
-              recognizingDepartment: '南京市工商局',
-              dataSource: '公开信息',
-              isRemoved: '否',
-              removalReason: '',
-              dataDate: '2021-10-07'
-            },
-            {
-              enterpriseId: '1008',
-              enterpriseName: '杭州科技有限公司',
-              registeredCapital: '8000万',
-              establishmentDate: '2017-01-01',
-              legalRepresentative: '吴十',
-              blacklistType: 'H级',
-              blacklistReason: '违法行为',
-              recognizingDepartment: '杭州市工商局',
-              dataSource: '公开信息',
-              isRemoved: '否',
-              removalReason: '',
-              dataDate: '2021-10-08'
-            },
-            {
-              enterpriseId: '1009',
-              enterpriseName: '重庆科技有限公司',
-              registeredCapital: '9000万',
-              establishmentDate: '2018-01-01',
-              legalRepresentative: '郑十一',
-              blacklistType: 'I级',
-              blacklistReason: '违规操作',
-              recognizingDepartment: '重庆市工商局',
-              dataSource: '公开信息',
-              isRemoved: '否',
-              removalReason: '',
-              dataDate: '2021-10-09'
-            },
-            {
-              enterpriseId: '1010',
-              enterpriseName: '西安科技有限公司',
-              registeredCapital: '10000万',
-              establishmentDate: '2019-01-01',
-              legalRepresentative: '赵十二',
-              blacklistType: 'J级',
-              blacklistReason: '违反规定',
-              recognizingDepartment: '西安市工商局',
-              dataSource: '公开信息',
-              isRemoved: '否',
-              removalReason: '',
-              dataDate: '2021-10-10'
             }
           ],
         listLoading: false,

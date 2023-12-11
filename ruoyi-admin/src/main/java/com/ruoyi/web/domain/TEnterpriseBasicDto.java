@@ -176,6 +176,17 @@ public class TEnterpriseBasicDto implements Serializable {
     private String grpid;
 
     /**
+     * grpid
+     */
+    @ApiModelProperty("logo_base64")
+    private String logoBase64;
+
+
+    // 是否为上市公司
+    @ApiModelProperty("listed")
+    private int listed;
+
+    /**
      * grpname
      */
     @ApiModelProperty("grpname")
@@ -193,17 +204,64 @@ public class TEnterpriseBasicDto implements Serializable {
     @TableField(exist = false)
     private List<TNewJobs> tNewJobsList;
 
-    // 是否为上市公司
     @TableField(exist = false)
-    private boolean isListed;
+    private List<TActualController> tActualControllerList;
+
+    @TableField(exist = false)
+    private List<TForGuaranteeInfo> tForGuaranteeInfoList;
+
+    @TableField(exist = false)
+    private List<TEnterpriseStockholder> tEnterpriseStockholderList;
+
+    @TableField(exist = false)
+    private List<TEnterpriseInvestment> tEnterpriseInvestmentList;
+
+    @TableField(exist = false)
+    private List<TSupplierRelevance> tSupplierRelevanceList;
+
+    @TableField(exist = false)
+    private List<TListedCompanyProfitsInfo> tListedCompanyProfitsInfoList;
+
+    @TableField(exist = false)
+    private List<TListedCompanyBalance> tListedCompanyBalanceList;
+
+    @TableField(exist = false)
+    private List<TListedCompanyCashFlow> tListedCompanyCashFlowList;
+
+    @TableField(exist = false)
+    private List<TEnterpriseDesc> tEnterpriseDescList;
+
+    @TableField(exist = false)
+    private List<TEnterpriseApp> tEnterpriseAppList;
+
+    @TableField(exist = false)
+    private TGroupTag tGroupTag;
+
+    @TableField(exist = false)
+    private List<TGroupRelation> tGroupRelationList;
+
+    @TableField(exist = false)
+    private List<TBlacklist> tBlacklistList;
+
+    @TableField(exist = false)
+    private List<TGreylist> tGreylistList;
+
+    @TableField(exist = false)
+    private TEvaluatingIndex tEvaluatingIndex;
+
 
     // 关联企业数量
     @TableField(exist = false)
-    private int relaNums;
+    private long relaNums;
+
+    @TableField(exist = false)
+    private long groupInfoNums;
 
     // 上市企业披露的关联企业数量
     @TableField(exist = false)
     private int listedRelaNums;
+
+
 
 
 //    private TEnterpriseStockholder tEnterpriseStockholder;

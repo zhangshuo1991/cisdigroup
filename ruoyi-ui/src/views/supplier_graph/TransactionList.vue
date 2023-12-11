@@ -30,12 +30,20 @@
           <template slot-scope="scope">{{ scope.$index+1 }}</template>
         </el-table-column>
         <el-table-column label="企业名称" prop="entname"></el-table-column>
-        <el-table-column label="统一社会信用代码" prop="creditCode"></el-table-column>
-        <el-table-column label="法人" prop="legalPerson"></el-table-column>
-        <el-table-column label="注册资本" prop="regCapital"></el-table-column>
-        <el-table-column label="注册时间" prop="regTime"></el-table-column>
-        <el-table-column label="交易笔数" prop="tradeNums"></el-table-column>
-        <el-table-column label="交易金额（人民币）" prop="tradeAmount"></el-table-column>
+        <el-table-column label="统一社会信用代码" prop="uniscid"></el-table-column>
+        <el-table-column label="法人" prop="lerepname"></el-table-column>
+        <el-table-column label="注册资本" prop="regcap"></el-table-column>
+        <el-table-column label="注册时间" prop="esdate"></el-table-column>
+        <el-table-column label="交易笔数" prop="tradeNums">
+          <template slot-scope="scope">
+            <span>0</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="交易金额（人民币）" prop="tradeAmount">
+          <template slot-scope="scope">
+            <span>0</span>
+          </template>
+        </el-table-column>
         <el-table-column label="详情">
           <template slot-scope="row">
             <el-link size="mini" type="primary" @click="viewDetail">详情</el-link>
@@ -48,31 +56,13 @@
   </div>
 </template>
 <script>
+import request from "@/utils/request";
 export default({
   name: "TransactionList",
   data() {
     return {
       dataGrid: {
-        list: [
-          {
-            entname: '北京百度网讯科技有限公司',
-            creditCode: '91110108584421679D',
-            legalPerson: '李彦宏',
-            regCapital: '1000000万人民币',
-            regTime: '2019-01-01',
-            tradeNums: '100',
-            tradeAmount: '1000000万人民币'
-          },
-          {
-            entname: '北京百度网讯科技有限公司',
-            creditCode: '91110108584421679D',
-            legalPerson: '李彦宏',
-            regCapital: '1000000万人民币',
-            regTime: '2019-01-01',
-            tradeNums: '100',
-            tradeAmount: '1000000万人民币'
-          }
-        ],
+        list: [],
         listLoading: false,
         listQuery: {
           page: 1,
@@ -83,7 +73,23 @@ export default({
       }
     }
   },
+  mounted() {
+    this.getList();
+  },
   methods: {
+    getList() {
+      this.dataGrid.listLoading = true;
+      request({
+        url: "/entInfo/getGuaranteeList",
+        method: "post",
+        params: { pageNum: this.dataGrid.listQuery.page,pageSize: this.dataGrid.listQuery.limit },
+        data: { keyword: this.dataGrid.listQuery.keywords }
+      }).then(res => {
+        this.dataGrid.listLoading = false;
+        this.dataGrid.list = res.data.item;
+        this.dataGrid.total = res.data.total;
+      });
+    },
     viewDetail() {
       this.$router.push({
         path: "/supplier_graph/transactionGraphDetail"

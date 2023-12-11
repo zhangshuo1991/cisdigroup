@@ -2,6 +2,7 @@ package com.ruoyi.web.domain;
 
 
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -106,6 +107,9 @@ public class TGroupTag implements Serializable {
      */
     @ApiModelProperty("licnums")
     private Integer licnums;
+
+    @TableField(exist = false)
+    List<TGroupRelation> tGroupRelationList;
 
     public TGroupTag() {}
 }

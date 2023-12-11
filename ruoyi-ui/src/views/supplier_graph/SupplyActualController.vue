@@ -8,17 +8,23 @@
         <tbody>
         <tr>
           <td class="c-td-title">目标企业名称：</td>
-          <td class="c-td-text">{{ ctrlers.length>0?ctrlers[0].entname: '' }}</td>
+          <td class="c-td-text">{{ actualControllerGraph.entname }}</td>
           <td class="c-td-title">统一社会信用代码/工商注册号 ：</td>
-          <td class="c-td-text">{{ ctrlers.length>0?ctrlers[0].uniscidOrRegno: '' }}</td>
+          <td class="c-td-text">
+            <span>{{ actualControllerGraph.uniscid }}</span>
+          </td>
         </tr>
         <tr>
           <td class="c-td-title">目标企业经营状态：</td>
           <td class="c-td-text">
-            <span v-if="ctrlers.length>0" :style="( statusStyle(ctrlers[0].entstatus))">{{ ctrlers.length>0?ctrlers[0].entstatus_cn: '' }}</span>
+            <span>
+              {{ actualControllerGraph.entstatusCn }}
+            </span>
           </td>
           <td class="c-td-title">控制目标企业类型：</td>
-          <td class="c-td-text" style="width: 30%">{{ ctrlers.length>0?ctrlers[0].isunictrl_cn: '' }}</td>
+          <td class="c-td-text" style="width: 30%">
+            {{ actualControllerGraph.tactualControllerList[0].isidrctrl }}
+          </td>
         </tr>
         <tr>
           <td class="c-td-title">是否为上市公司 ：</td>
@@ -34,7 +40,7 @@
         </tbody>
       </table>
       <div id="s-info-ctrlList" style="width: 100%;height: 50px;padding-top: 10px">
-        <div v-for="item in ctrlers" :key="item.ctrlid" class="c-ctrler-info">
+        <div v-for="item in actualControllerGraph.tactualControllerList" :key="item.ctrlid" class="c-ctrler-info">
           <div style="float: left">
             <svg-icon icon-class="shijikongzhiren" style="font-size: 28px;color: #0071C2" />
           </div>
@@ -44,8 +50,8 @@
               <span style="color: red;font-weight: bolder">({{ item.shratio+'%' }})</span>
             </div>
             <div style="font-size: 10px;font-weight: bolder;color: #808080;margin-top: 3px;">
-              <span>类型:{{ item.ctrltype_cn }}</span>
-              <span>控制方式:{{ item.isidrctrl_cn }}</span>
+              <span>类型:{{ item.ctrltype }}</span>
+              <span>控制方式:{{ item.isidrctrl }}</span>
             </div>
           </div>
         </div>
@@ -55,8 +61,27 @@
       <div class="c-title-div">
         控制路径图谱
       </div>
-      <div style="height:calc(100vh - 160px);">
-        <RelationGraph ref="graphRef" :options="graphOptions" :on-node-click="onNodeClick" :on-line-click="onLineClick" />
+      <div style="height:calc(100vh - 160px);" class="c-my-graph1">
+        <RelationGraph ref="graphRef" :options="graphOptions" :on-node-click="onNodeClick" :on-line-click="onLineClick">
+          <template slot="node" slot-scope="{node}">
+            <div class="my-node-content">
+              <div v-if="node.data.spcType === 'ctrler'" style="background-color: #FFF838;color: #333333;height:25px;line-height: 25px;border-top-left-radius: 3px;border-top-right-radius: 3px;border-bottom: #cccccc solid 1px;">
+                <svg-icon icon-class="fengwang-" /> 实际控制人
+              </div>
+              <div v-else-if="node.data.spcType === 'ctrled'" style="background-color: #128bed;color: #ffffff;height:25px;line-height: 25px;border-top-left-radius: 3px;border-top-right-radius: 3px;">
+                <svg-icon icon-class="building" /> 被查询企业
+              </div>
+              <div v-else style="height:10px;" />
+              <div style="padding:5px;height:50px;padding-top:10px;">
+                <span :style="{color:node.fontColor}" class="c-node-label">{{ node.text }}</span>
+              </div>
+            </div>
+            <div v-if="node.data.regcap" class="c-node-desc" style="line-height: 15px;">
+              注册资本:<span>{{ node.data.regcap }}{{ node.data.regcapcur_cn }}</span>
+              状态:<span>{{ node.data.entstatusCn }}</span>
+            </div>
+          </template>
+        </RelationGraph>
       </div>
     </div>
   </div>
@@ -79,62 +104,62 @@ export default({
         allowShowMiniToolBar: true
         // 这里可以参考"Graph 图谱"中的参数进行设置 https://seeksdream.github.io/#/docs/graph
       },
-      ctrlers: [
-        {
-          "regno":"",
-          "esdate":"2022-03-29",
-          "ctrlid":"inv34e8922207c3324469c4bdf7f16f6419",
-          "ctrlname":"程瑞雪",
-          "entid":"PVILPOGVKE2MBKPLLTX0EPLFSQOUKGJT7",
-          "ctrlpath":[
-            "程瑞雪-&gt;95.0000:阿锐塔（北京）数字科技有限公司"
-          ],
-          "isunictrl":"0",
-          "shratio":95,
-          "uniscid":"91110112MA7MLU6H3F",
-          "entstatus_cn":"在营（开业）",
-          "entname":"阿锐塔（北京）数字科技有限公司",
-          "isidrctrl":"0",
-          "entstatus":"1",
-          "lerepname":"程瑞雪",
-          "ctrltype":"1",
-          "isidrctrl_cn":"直接控制",
-          "isunictrl_cn":"单一控制",
-          "ctrltype_cn":"自然人",
-          "ctrlCount":0,
-          "uniscidOrRegno":"91110112MA7MLU6H3F",
-          "ctrlerCreditOrId":"inv34e8922207c3324469c4bdf7f16f6419",
-          "publishCtrler":null,
-          "skcode":null,
-          "islist":"0",
-          "islist_cn":"否"
-        }
-      ]
+      ctrlers: [],
+      actualControllerGraph: {}
     }
   },
   mounted() {
-    this.showGraph()
+    this.actualControllerGraph = JSON.parse(sessionStorage.getItem("actualControllerGraph"))
+    this.$nextTick(() => {
+      this.showGraph()
+    })
   },
   methods:{
     showGraph() {
+      const nodes = []
+      const lines = []
+      nodes.push({
+        id: this.actualControllerGraph.uniscid,
+        text: this.actualControllerGraph.entname,
+        color: 'white',
+        fontColor: 'black',
+        width: 300,
+        data: {
+          regcap: this.actualControllerGraph.regcap,
+          regcapcur_cn: this.actualControllerGraph.regcapcur_cn,
+          entstatusCn: this.actualControllerGraph.entstatusCn,
+          spcType: 'ctrled'
+        },
+        nodeShape: 1,
+      })
+      this.ctrlers = this.actualControllerGraph.tactualControllerList
+      this.ctrlers.forEach((item) => {
+        nodes.push({
+          id: item.ctrlid,
+          text: item.ctrlname,
+          color: 'white',
+          fontColor: 'black',
+          width: 300,
+          data: {
+            spcType: 'ctrler'
+          },
+          nodeShape: 1,
+        })
+        lines.push({
+          from: item.ctrlid,
+          to: this.actualControllerGraph.uniscid,
+          text: item.shratio+'%',
+          data: item,
+          lineShape: 1,
+          lineStyle: this.statusStyle(item.isidrctrl)
+        })
+      })
       const jsonData = {
-        rootId: 'a',
-        nodes: [
-          { id: 'a', text: '供应商1', nodeShape: 1,borderColor: 'yellow',width: 100,height: 40 },
-          { id: 'b', text: '供应商2', nodeShape: 1,width: 100,height: 40 },
-          { id: 'c', text: '供应商3', nodeShape: 1,width: 100,height: 40 },
-          { id: 'd', text: '供应商4', nodeShape: 1,width: 100,height: 40 },
-          { id: 'e', text: '供应商5', nodeShape: 1,width: 100,height: 40 },
-          { id: 'f', text: '北京阿里巴巴企业有限公司', nodeShape: 1,width: 100,height: 40 }
-        ],
-        lines: [
-          { from: 'a', to: 'b', text: '关系1' },
-          { from: 'a', to: 'c', text: '关系2' },
-          { from: 'a', to: 'd', text: '关系3' },
-          { from: 'a', to: 'e', text: '关系4' },
-          { from: 'a', to: 'f', text: '关系5' }
-        ]
+        rootId: this.actualControllerGraph.uniscid,
+        nodes: nodes,
+        lines: lines
       }
+      console.log('jsonData:', jsonData)
       // 以上数据中的node和link可以参考"Node节点"和"Link关系"中的参数进行配置
       this.$refs.graphRef.setJsonData(jsonData, (graphInstance) => {
         // Called when the relation-graph is completed
@@ -229,5 +254,38 @@ export default({
   font-family: "Microsoft YaHei";
   border-radius: 5px;
   border: 1px solid #BFBFBF;
+}
+
+.c-my-graph1 /deep/ .rel-node-shape-1{
+  padding-top: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  height:95px;
+  width:230px;
+  text-align: center;
+  border-radius: 3px;
+  border:#cccccc solid 1px !important;
+  /*display: flex;*/
+  /*align-items: center;*/
+  /*justify-content: center;*/
+}
+.c-my-graph1 /deep/ .c-node-label{
+  font-size: 14px;
+}
+.c-my-graph1 /deep/ .my-node-content{
+  padding:0px;
+  height:70px;
+  width: 300px;
+}
+.c-my-graph1 /deep/ .c-node-desc{
+  text-align: center;
+  font-size: 12px;
+  color: #888888;
+  /*border-top: #dddddd solid 1px;*/
+  margin-top:0px;
+  padding-top:5px;
+  /*background-color: #bbbbbb;*/
+  height:25px;
+  width: 300px;
 }
 </style>

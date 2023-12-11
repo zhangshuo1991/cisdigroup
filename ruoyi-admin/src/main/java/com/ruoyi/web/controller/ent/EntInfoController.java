@@ -5,6 +5,8 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.web.domain.TEnterpriseBasicDto;
 import com.ruoyi.web.domain.TEnterpriseStockholder;
+import com.ruoyi.web.domain.TGroupTag;
+import com.ruoyi.web.domain.TSupplierRelevance;
 import com.ruoyi.web.service.EntInfoService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +41,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiResponse(code = 200, message = "success", response = TEnterpriseBasicDto.class)
     @ApiOperation("根据关键字搜索企业信息")
-    public JSONObject searchInfoByKeyword(@RequestBody JSONObject searchParams,
+    public AjaxResult searchInfoByKeyword(@RequestBody JSONObject searchParams,
                                           @RequestParam(required = false,defaultValue = "1") int pageNum,
                                           @RequestParam(required = false,defaultValue = "10") int pageSize) {
         return entInfoService.searchInfoByKeyword(searchParams,pageNum,pageSize);
@@ -101,6 +103,116 @@ public class EntInfoController extends BaseController {
     @ApiOperation("根据uniscid查询企业供应商关系")
     public AjaxResult getSupplierRelation(@PathVariable String uniscid) {
         return entInfoService.getSupplierRelation(uniscid);
+    }
+
+    /**
+     * 查询企业实际控制人
+     */
+    @PostMapping("/getActualController")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "searchParams", value = "搜索参数", dataType = "JSONObject"),
+                    @ApiImplicitParam(name = "pageNum", value = "页码", required = false, dataType = "int"),
+                    @ApiImplicitParam(name = "pageSize", value = "每页数量", required = false, dataType = "int")
+            }
+    )
+    @ApiResponse(code = 200, message = "success", response = TEnterpriseBasicDto.class)
+    @ApiOperation("查询企业实际控制人")
+    public AjaxResult getActualController(@RequestBody JSONObject searchParams,
+                                          @RequestParam(required = false,defaultValue = "1") int pageNum,
+                                          @RequestParam(required = false,defaultValue = "10") int pageSize) {
+        return entInfoService.getActualController(searchParams,pageNum,pageSize);
+    }
+
+    /**
+     * 查询企业关联企业
+     */
+    @PostMapping("/getRelatedEnterprise")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "searchParams", value = "搜索参数", dataType = "JSONObject"),
+                    @ApiImplicitParam(name = "pageNum", value = "页码", required = false, dataType = "int"),
+                    @ApiImplicitParam(name = "pageSize", value = "每页数量", required = false, dataType = "int")
+            }
+    )
+    @ApiResponse(code = 200, message = "success", response = TEnterpriseBasicDto.class)
+    @ApiOperation("查询企业关联企业")
+    public AjaxResult getRelatedEnterprise(@RequestBody JSONObject searchParams,
+                                          @RequestParam(required = false,defaultValue = "1") int pageNum,
+                                          @RequestParam(required = false,defaultValue = "10") int pageSize) {
+        return entInfoService.getRelatedEnterprise(searchParams,pageNum,pageSize);
+    }
+
+    @GetMapping("/getRelaEntList/{uniscid}")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "uniscid", value = "uniscid", dataType = "String"),
+            }
+    )
+    @ApiResponse(code = 200, message = "success", response = TSupplierRelevance.class)
+    @ApiOperation("查询企业关联企业")
+    public AjaxResult getRelaEntList(@PathVariable String uniscid) {
+        return entInfoService.getRelaEntList(uniscid);
+    }
+
+    @PostMapping("/getGroupList")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "searchParams", value = "搜索参数", dataType = "JSONObject"),
+                    @ApiImplicitParam(name = "pageNum", value = "页码", required = false, dataType = "int"),
+                    @ApiImplicitParam(name = "pageSize", value = "每页数量", required = false, dataType = "int")
+            }
+    )
+    @ApiResponse(code = 200, message = "success", response = TEnterpriseBasicDto.class)
+    @ApiOperation("查询企业集团信息")
+    public AjaxResult getGroupList(@RequestBody JSONObject searchParams,
+                                           @RequestParam(required = false,defaultValue = "1") int pageNum,
+                                           @RequestParam(required = false,defaultValue = "10") int pageSize) {
+        return entInfoService.getGroupList(searchParams,pageNum,pageSize);
+    }
+
+    @PostMapping("/getGuaranteeList")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "searchParams", value = "搜索参数", dataType = "JSONObject"),
+                    @ApiImplicitParam(name = "pageNum", value = "页码", required = false, dataType = "int"),
+                    @ApiImplicitParam(name = "pageSize", value = "每页数量", required = false, dataType = "int")
+            }
+    )
+    @ApiResponse(code = 200, message = "success", response = TEnterpriseBasicDto.class)
+    @ApiOperation("查询企业担保信息")
+    public AjaxResult getGuaranteeList(@RequestBody JSONObject searchParams,
+                                   @RequestParam(required = false,defaultValue = "1") int pageNum,
+                                   @RequestParam(required = false,defaultValue = "10") int pageSize) {
+        return entInfoService.getGuaranteeList(searchParams,pageNum,pageSize);
+    }
+
+    @PostMapping("/getRiskList")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "searchParams", value = "搜索参数", dataType = "JSONObject"),
+                    @ApiImplicitParam(name = "pageNum", value = "页码", required = false, dataType = "int"),
+                    @ApiImplicitParam(name = "pageSize", value = "每页数量", required = false, dataType = "int")
+            }
+    )
+    @ApiResponse(code = 200, message = "success", response = TEnterpriseBasicDto.class)
+    @ApiOperation("查询企业风险信息")
+    public AjaxResult getRiskList(@RequestBody JSONObject searchParams,
+                                       @RequestParam(required = false,defaultValue = "1") int pageNum,
+                                       @RequestParam(required = false,defaultValue = "10") int pageSize) {
+        return entInfoService.getRiskList(searchParams,pageNum,pageSize);
+    }
+
+    @GetMapping("/getEntDetail/{uniscid}")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "uniscid", value = "uniscid", dataType = "String"),
+            }
+    )
+    @ApiResponse(code = 200, message = "success", response = TEnterpriseBasicDto.class)
+    @ApiOperation("查询企业详情")
+    public AjaxResult getEntDetail(@PathVariable String uniscid) {
+        return entInfoService.getEntDetail(uniscid);
     }
 
 

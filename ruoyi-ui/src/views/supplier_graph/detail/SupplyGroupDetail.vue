@@ -3,33 +3,22 @@
     <div v-loading="labelLoading" style="background-color: white;padding:15px">
       <table style="font-size: 15px;font-family: 'Microsoft YaHei';width: 100%">
         <tbody>
-        <tr>
-          <td style="padding-left: 10px;width: 130px;padding-right: 10px" rowspan="2">
-            <i class="el-icon-office-building" style="font-size: 80px;color: gainsboro;border: 1px solid gainsboro" />
-          </td>
-          <td style="font-size: 24px;font-weight: 800;font-family: 'Microsoft YaHei';height: 60px;width: 83%;">
-            <div style="float: left">集团名称：{{ grpInfo.grpname }}</div><br>
-            <div style="margin-top: 14px">
-              <div class="c-count-div">集团成员：{{ grpInfo.mbrCount }}</div>
-              <div class="c-count-div">龙头企业：{{ grpInfo.leadingCount }}</div>
-              <div class="c-count-div">核心企业：{{ grpInfo.coreCount }}</div>
-              <div class="c-count-div">一般企业：{{ grpInfo.generalCount }}</div>
-              <div class="c-count-div">上市公司：{{ grpInfo.labs.listedmbrs === undefined?'0':grpInfo.labs.listedmbrs }}</div>
-            </div>
-          </td>
-          <td>
-            <div
-              style="border: 1px solid #01B0F0;
-                          margin-left: 20px;
-                          color: #01B0F0;font-size: 20px;
-                          width: 140px;text-align: center;
-                          height: 40px;line-height: 40px;border-radius: 10px;padding-bottom: 40px"
-              @click="downLoadReport"
-            >
-              <svg-icon icon-class="cloud-download" style="color: #01B0F0" />
-              <el-link type="primary" :underline="false" style="margin-bottom: 5px">集团报告</el-link>
-            </div>
-          </td>
+          <tr>
+            <td style="padding-left: 10px;width: 130px;padding-right: 10px" rowspan="2">
+              <i class="el-icon-office-building" style="font-size: 80px;color: gainsboro;border: 1px solid gainsboro" />
+            </td>
+            <td style="font-size: 24px;font-weight: 800;font-family: 'Microsoft YaHei';height: 60px;width: 83%;">
+              <div style="float: left">集团名称：{{ grpInfo.grpname }}</div><br>
+              <div style="margin-top: 14px">
+                <div class="c-count-div">集团成员：{{ grpInfo.grpembrs }}</div>
+                <div class="c-count-div">龙头企业：{{ grpInfo.hysl }}</div>
+                <div class="c-count-div">核心企业：{{ grpInfo.licnums }}</div>
+                <div class="c-count-div">一般企业：{{ grpInfo.listedmbrs }}</div>
+                <div class="c-count-div">上市公司：{{ grpInfo.statembrs }}</div>
+              </div>
+            </td>
+            <td>
+            </td>
         </tr>
         </tbody>
       </table>
@@ -47,60 +36,42 @@
       <div v-loading="labelLoading" style="margin-top: 10px;;margin-right: 20px">
         <table class="c-base-table" style="width: 100%">
           <tbody>
-          <tr>
-            <td class="c-td-title" style="width: 25%;">集团内注册资本总额:</td>
-            <td class="c-td-text c-td-text-padding" style="width: 25%;">{{ grpInfo.labs.grpregcaps === undefined?'-':grpInfo.labs.grpregcaps.toLocaleString()+'万元' }}</td>
-            <td class="c-td-title" style="width: 25%;">集团内房地产⾏业企业数量:</td>
-            <td class="c-td-text c-td-text-padding" style="width: 25%;">{{ grpInfo.labs.realtymbrs === undefined?'-':grpInfo.labs.realtymbrs }}</td>
-          </tr>
-          <tr>
-            <td class="c-td-title">集团内国有企业数量:</td>
-            <td class="c-td-text  c-td-text-padding">{{ grpInfo.labs.statembrs === undefined?'-':grpInfo.labs.statembrs }}</td>
-            <td class="c-td-title">集团内国有企业占⽐:</td>
-            <td class="c-td-text  c-td-text-padding">{{ grpInfo.labs.statesprop === undefined?'-':grpInfo.labs.statesprop }}</td>
-          </tr>
-          <tr>
-            <td class="c-td-title">集团内⾏业数量:</td>
-            <td class="c-td-text  c-td-text-padding">{{ grpInfo.labs.grpindustrs === undefined?'-':grpInfo.labs.grpindustrs }}</td>
-            <td class="c-td-title">⾏业集中度:</td>
-            <td class="c-td-text  c-td-text-padding">{{ grpInfo.labs.grpindusporp === undefined?'-':grpInfo.labs.grpindusporp+'%' }}</td>
-          </tr>
-          <tr>
-            <td class="c-td-title">集团内成员注册省份数量:</td>
-            <td class="c-td-text  c-td-text-padding">{{ grpInfo.labs.grpprovs === undefined?'-':grpInfo.labs.grpprovs }}</td>
-            <td class="c-td-title">区域集中度:</td>
-            <td class="c-td-text  c-td-text-padding">{{ grpInfo.labs.grpprovprop === undefined?'-':grpInfo.labs.grpprovprop+'%' }}</td>
-          </tr>
-          <tr>
-            <td class="c-td-title">是否有银⾏牌照:</td>
-            <td class="c-td-text  c-td-text-padding">{{ grpInfo.labs.islicbank_cn === undefined?'-':grpInfo.labs.islicbank_cn }}</td>
-            <td class="c-td-title">是否有证券牌照:</td>
-            <td class="c-td-text  c-td-text-padding">{{ grpInfo.labs.islicsec_cn === undefined?'-':grpInfo.labs.islicsec_cn }}</td>
-          </tr>
-          <tr>
-            <td class="c-td-title">是否有保险牌照:</td>
-            <td class="c-td-text  c-td-text-padding">{{ grpInfo.labs.islicisur_cn === undefined?'-':grpInfo.labs.islicisur_cn }}</td>
-            <td class="c-td-title">是否有基⾦牌照:</td>
-            <td class="c-td-text  c-td-text-padding">{{ grpInfo.labs.islicfund_cn === undefined?'-':grpInfo.labs.islicfund_cn }}</td>
-          </tr>
-          <tr>
-            <td class="c-td-title">是否有信托牌照:</td>
-            <td class="c-td-text  c-td-text-padding">{{ grpInfo.labs.islictrust_cn === undefined?'-':grpInfo.labs.islictrust_cn }}</td>
-            <td class="c-td-title">是否有期货牌照:</td>
-            <td class="c-td-text  c-td-text-padding">{{ grpInfo.labs.islicfutur_cn === undefined?'-':grpInfo.labs.islicfutur_cn }}</td>
-          </tr>
-          <tr>
-            <td class="c-td-title">是否有租赁牌照:</td>
-            <td class="c-td-text  c-td-text-padding">{{ grpInfo.labs.islicleas_cn === undefined?'-':grpInfo.labs.islicleas_cn }}</td>
-            <td class="c-td-title">集团拥有⾦融牌照种类数量:</td>
-            <td class="c-td-text  c-td-text-padding">{{ grpInfo.labs.licnums === undefined?'-':grpInfo.labs.licnums }}</td>
-          </tr>
-          <tr>
-            <td class="c-td-title">集团内⾼新技术企业数量:</td>
-            <td class="c-td-text  c-td-text-padding">{{ grpInfo.labs.innombrs === undefined?'-':grpInfo.labs.innombrs }}</td>
-            <td class="c-td-title" />
-            <td class="c-td-text  c-td-text-padding" />
-          </tr>
+            <tr>
+              <td class="c-td-title" style="width: 25%;">集团成员企业数量：</td>
+              <td class="c-td-text c-td-text-padding" style="width: 25%;">{{ grpInfo.grpembrs }}</td>
+              <td class="c-td-title" style="width: 25%;">集团内注册资本总额：</td>
+              <td class="c-td-text c-td-text-padding" style="width: 25%;">{{ grpInfo.grpregcaps }} 万元</td>
+            </tr>
+            <tr>
+              <td class="c-td-title" style="width: 25%;">集团内房地产行业企业数量：</td>
+              <td class="c-td-text c-td-text-padding" style="width: 25%;">{{ grpInfo.fdcmbrs }}</td>
+              <td class="c-td-title" style="width: 25%;">集团内上市公司数量：</td>
+              <td class="c-td-text c-td-text-padding" style="width: 25%;">{{ grpInfo.listedmbrs }}</td>
+            </tr>
+            <tr>
+              <td class="c-td-title" style="width: 25%;">集团内高新技术企业数量：</td>
+              <td class="c-td-text c-td-text-padding" style="width: 25%;">{{ grpInfo.gxjsmbrs }}</td>
+              <td class="c-td-title" style="width: 25%;">集团内国有企业数量：</td>
+              <td class="c-td-text c-td-text-padding" style="width: 25%;">{{ grpInfo.licnums }}</td>
+            </tr>
+            <tr>
+              <td class="c-td-title" style="width: 25%;">集团内国有企业占比：</td>
+              <td class="c-td-text c-td-text-padding" style="width: 25%;">{{  ( grpInfo.qyjzd * 100 ).toLocaleString()+'%' }}</td>
+              <td class="c-td-title" style="width: 25%;">集团内行业数量：</td>
+              <td class="c-td-text c-td-text-padding" style="width: 25%;">{{ grpInfo.hysl }}</td>
+            </tr>
+            <tr>
+              <td class="c-td-title" style="width: 25%;">行业集中度：</td>
+              <td class="c-td-text c-td-text-padding" style="width: 25%;">{{ ( grpInfo.hyjzd * 100).toLocaleString()+'%' }}</td>
+              <td class="c-td-title" style="width: 25%;">集团内成员注册省份数量：</td>
+              <td class="c-td-text c-td-text-padding" style="width: 25%;">{{ grpInfo.zcsfsl }}</td>
+            </tr>
+            <tr>
+              <td class="c-td-title" style="width: 25%;">区域集中度：</td>
+              <td class="c-td-text c-td-text-padding" style="width: 25%;">{{ ( grpInfo.qyjzd * 100 ).toLocaleString() + '%' }}</td>
+              <td class="c-td-title" style="width: 25%;">集团拥有金融牌照种类数量：</td>
+              <td class="c-td-text c-td-text-padding" style="width: 25%;">{{ grpInfo.zcsfsl }}</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -133,35 +104,35 @@
               <tr>
                 <th class="c-th-header" style="width: 4%;">序号</th>
                 <th class="c-th-header" style="width: 23%;">集团成员名称</th>
-                <th class="c-th-header" style="width: 7%;">经营状态</th>
-                <th class="c-th-header" style="width: 7%;">成员角色</th>
-                <th class="c-th-header" style="width: 8%;">是否上市</th>
-                <th class="c-th-header" style="width: 18%;">关联龙头</th>
+<!--                <th class="c-th-header" style="width: 7%;">经营状态</th>-->
+<!--                <th class="c-th-header" style="width: 7%;">成员角色</th>-->
+<!--                <th class="c-th-header" style="width: 8%;">是否上市</th>-->
+<!--                <th class="c-th-header" style="width: 18%;">关联龙头</th>-->
                 <th class="c-th-header" style="width: 7%;">穿透比例</th>
                 <th class="c-th-header" style="width: 18%;">穿透详情</th>
                 <th class="c-th-header" style="width: 10%;">操作</th>
               </tr>
               </thead>
               <tbody>
-              <tr v-for="(item,index) in groupMembers " :key="index">
+              <tr v-for="(item,index) in groupMembers.slice((currentPage-1)*10,currentPage*10) " :key="index">
                 <td class="c-td-text" style="text-align: center">{{ index+1 }}</td>
-                <td class="c-td-text" style="padding-left: 10px">{{ item.mbrname }}</td>
+                <td class="c-td-text" style="padding-left: 10px">{{ item.toname }}</td>
+<!--                <td class="c-td-text" style="text-align: center">-->
+<!--                  <el-popover-->
+<!--                    placement="top-start"-->
+<!--                    trigger="hover"-->
+<!--                    :content="item.entstatus_cn"-->
+<!--                  >-->
+<!--                    <el-button slot="reference" type="text">-->
+<!--                      {{ item.entstatus_cn }}-->
+<!--                    </el-button>-->
+<!--                  </el-popover>-->
+<!--                </td>-->
+<!--                <td class="c-td-text" style="text-align: center">{{ item.mbrroles_cn }}</td>-->
+<!--                <td class="c-td-text" style="text-align: center">{{ item.islist_cn }}<span v-show="(item.islist_cn==='是')">({{ item.skcode }})</span></td>-->
+<!--                <td class="c-td-text" style="padding-left: 10px">{{ (item.leaderName !== undefined && item.leaderName !== '')?item.leaderName:'-' }}</td>-->
                 <td class="c-td-text" style="text-align: center">
-                  <el-popover
-                    placement="top-start"
-                    trigger="hover"
-                    :content="item.entstatus_cn"
-                  >
-                    <el-button slot="reference" type="text">
-                      {{ item.entstatus_cn }}
-                    </el-button>
-                  </el-popover>
-                </td>
-                <td class="c-td-text" style="text-align: center">{{ item.mbrroles_cn }}</td>
-                <td class="c-td-text" style="text-align: center">{{ item.islist_cn }}<span v-show="(item.islist_cn==='是')">({{ item.skcode }})</span></td>
-                <td class="c-td-text" style="padding-left: 10px">{{ (item.leaderName !== undefined && item.leaderName !== '')?item.leaderName:'-' }}</td>
-                <td class="c-td-text" style="text-align: center">
-                  {{ item.leaderInvsRatio }}
+                  {{ item.property }}
                 </td>
                 <td class="c-td-text" style="font-size: 10px;padding-left: 10px">
                   {{ handleRelPath(item.relpath) }} <br>
@@ -184,7 +155,7 @@
               <el-pagination
                 :current-page="currentPage"
                 :page-size="10"
-                :total="groupMembersTotal"
+                :total="groupMembers.length"
                 layout="total, prev,pager, next"
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
@@ -233,8 +204,6 @@
         <RelationGraph
           ref="graphRef"
           :options="graphOptions"
-          :on-node-click="onNodeClick"
-          :on-line-click="onLineClick"
         />
       </div>
     </div>
@@ -251,17 +220,9 @@ export default({
     return {
       graphOptions: {
         defaultNodeBorderWidth: 0,
-        defaultNodeColor: 'rgba(238, 178, 94, 1)',
         allowSwitchLineShape: true,
         allowSwitchJunctionPoint: true,
         defaultLineShape: 1,
-        'layouts': [
-          {
-            'label': '中心',
-            'layoutName': 'center',
-            'layoutClassName': 'seeks-layout-center'
-          }
-        ],
         defaultJunctionPoint: 'border'
       },
       labelLoading: false,
@@ -271,196 +232,49 @@ export default({
       currentPage: 1,
       currentLeadPage: 1,
       groupMembersTotal: 0,
-      groupMembers: [
-        {
-          "grpid": "GR06F274C746D1E7C57E0539601A8C0ACD65",
-          "entstatus_cn": "存续（在营、开业、在册）",
-          "mbrname": "轲有（上海）汽车服务有限公司",
-          "mbrroles": "01",
-          "mbrid": "6F274C746D1E7C57E0539601A8C0ACD65",
-          "grpname": "轲有（上海）汽车服务有限公司",
-          "entstatus": "1",
-          "mbrroles_cn": "龙头企业",
-          "skcode": null,
-          "islist": "0",
-          "islist_cn": "否"
-        },
-        {
-          "grpid": "GR06F274C746D1E7C57E0539601A8C0ACD65",
-          "entstatus_cn": "存续",
-          "mbrname": "三门成创空间科技服务有限公司",
-          "mbrroles": "01",
-          "mbrid": "6F274CFE667B7C57E0539601A8C0ACD65",
-          "grpname": "轲有（上海）汽车服务有限公司",
-          "entstatus": "1",
-          "mbrroles_cn": "龙头企业",
-          "skcode": null,
-          "islist": "0",
-          "islist_cn": "否"
-        },
-        {
-          "grpid": "GR06F274C746D1E7C57E0539601A8C0ACD65",
-          "entstatus_cn": "存续（在营、开业、在册）",
-          "mbrname": "上海台海贸易有限公司",
-          "mbrroles": "01",
-          "mbrid": "6F274C4984D97C57E0539601A8C0ACD65",
-          "grpname": "轲有（上海）汽车服务有限公司",
-          "entstatus": "1",
-          "mbrroles_cn": "龙头企业",
-          "skcode": null,
-          "islist": "0",
-          "islist_cn": "否"
-        },
-        {
-          "grpid": "GR06F274C746D1E7C57E0539601A8C0ACD65",
-          "entstatus_cn": "存续",
-          "mbrname": "台州万维文化传媒有限公司",
-          "mbrroles": "02",
-          "mbrid": "0463086E935548189F033B253D6CD9DD4",
-          "grpname": "轲有（上海）汽车服务有限公司",
-          "entstatus": "1",
-          "mbrroles_cn": "核心企业",
-          "skcode": null,
-          "islist": "0",
-          "islist_cn": "否",
-          "leaderName": "三门成创空间科技服务有限公司",
-          "leaderInvsRatio": "70",
-          "relpath": [
-            {
-              "path": "三门成创空间科技服务有限公司->70.0000%:台州万维文化传媒有限公司",
-              "pathRatio": "70"
-            }
-          ],
-          "minLevel": 1
-        }
-      ],
-      leadingMembers: [
-        {
-          "grpid": "GR06F274C746D1E7C57E0539601A8C0ACD65",
-          "entstatus_cn": "存续（在营、开业、在册）",
-          "mbrname": "轲有（上海）汽车服务有限公司",
-          "mbrroles": "01",
-          "mbrid": "6F274C746D1E7C57E0539601A8C0ACD65",
-          "grpname": "轲有（上海）汽车服务有限公司",
-          "entstatus": "1",
-          "mbrroles_cn": "龙头企业",
-          "skcode": null,
-          "islist": "0",
-          "islist_cn": "否"
-        },
-        {
-          "grpid": "GR06F274C746D1E7C57E0539601A8C0ACD65",
-          "entstatus_cn": "存续",
-          "mbrname": "三门成创空间科技服务有限公司",
-          "mbrroles": "01",
-          "mbrid": "6F274CFE667B7C57E0539601A8C0ACD65",
-          "grpname": "轲有（上海）汽车服务有限公司",
-          "entstatus": "1",
-          "mbrroles_cn": "龙头企业",
-          "skcode": null,
-          "islist": "0",
-          "islist_cn": "否"
-        },
-        {
-          "grpid": "GR06F274C746D1E7C57E0539601A8C0ACD65",
-          "entstatus_cn": "存续（在营、开业、在册）",
-          "mbrname": "上海台海贸易有限公司",
-          "mbrroles": "01",
-          "mbrid": "6F274C4984D97C57E0539601A8C0ACD65",
-          "grpname": "轲有（上海）汽车服务有限公司",
-          "entstatus": "1",
-          "mbrroles_cn": "龙头企业",
-          "skcode": null,
-          "islist": "0",
-          "islist_cn": "否"
-        },
-        {
-          "grpid": "GR06F274C746D1E7C57E0539601A8C0ACD65",
-          "entstatus_cn": "存续",
-          "mbrname": "台州万维文化传媒有限公司",
-          "mbrroles": "02",
-          "mbrid": "0463086E935548189F033B253D6CD9DD4",
-          "grpname": "轲有（上海）汽车服务有限公司",
-          "entstatus": "1",
-          "mbrroles_cn": "核心企业",
-          "skcode": null,
-          "islist": "0",
-          "islist_cn": "否",
-          "leaderName": "三门成创空间科技服务有限公司",
-          "leaderInvsRatio": "70",
-          "relpath": [
-            {
-              "path": "三门成创空间科技服务有限公司->70.0000%:台州万维文化传媒有限公司",
-              "pathRatio": "70"
-            }
-          ],
-          "minLevel": 1
-        }
-      ],
+      groupMembers: [],
+      leadingMembers: [],
+      grpInfo: {},
       relaInfoHidden: false,
       relaListDataLength: 0,
-      grpInfo: {
-        "grpid": "GR06F274C746D1E7C57E0539601A8C0ACD65",
-        "grpname": "轲有（上海）汽车服务有限公司",
-        "mbrCount": 4,
-        "leadingCount": 3,
-        "coreCount": 1,
-        "generalCount": 0,
-        "labs": {
-          "grpindustrs": 3,
-          "grpprovprop": 100.0,
-          "statesprop": 0.0,
-          "listedmbrs": 0,
-          "licnums": 0,
-          "islicisur": "0",
-          "islicfund": "0",
-          "islicfutur": "0",
-          "islicleas": "0",
-          "realtymbrs": 0,
-          "islictrust": "0",
-          "statembrs": 0,
-          "innombrs": 0,
-          "grpindusporp": 100.0,
-          "grpregcaps": 11150.0,
-          "grpembrs": 4,
-          "grpprovs": 2,
-          "islicsec": "0",
-          "islicbank": "0",
-          "islicbank_cn": "否",
-          "islicsec_cn": "否",
-          "islicisur_cn": "否",
-          "islicfund_cn": "否",
-          "islictrust_cn": "否",
-          "islicfutur_cn": "否",
-          "islicleas_cn": "否"
-        }
-      }
     }
   },
   mounted() {
+    this.$nextTick(()=> {
+      this.grpInfo = JSON.parse(sessionStorage.getItem('grpInfo'))
+      this.groupMembers = this.grpInfo.tgroupRelationList
+
+      const nodes = []
+      const lines = []
+      const rootId = this.grpInfo.grpid
+      nodes.push({
+        id: rootId,
+        text: this.grpInfo.grpname
+      })
+
+      this.groupMembers.forEach((item, index) => {
+        nodes.push({
+          id: item.toid,
+          text: item.toname,
+        })
+        lines.push({
+          from: rootId,
+          to: item.toid,
+          text: item.property,
+          data: item
+        })
+      })
+
+      this.showSeeksGraph(rootId, nodes, lines)
+    })
     this.showSeeksGraph();
   },
   methods: {
-    showSeeksGraph() {
+    showSeeksGraph(rootId, nodes, lines) {
       const __graph_json_data = {
-        rootId: '2',
-        nodes: [
-          { id: '1', text: '节点-1', myicon: 'el-icon-star-on' },
-          { id: '2', text: '节点-2', myicon: 'el-icon-setting' },
-          { id: '4', text: '节点-4', myicon: 'el-icon-star-on' },
-          { id: '6', text: '节点-6', myicon: 'el-icon-setting' },
-          { id: '7', text: '节点-7', myicon: 'el-icon-setting' },
-          { id: '8', text: '节点-8', myicon: 'el-icon-star-on' },
-          { id: '9', text: '节点-9', myicon: 'el-icon-headset' }
-        ],
-        lines: [
-          { from: '1', to: '2', text: '投资' },
-          { from: '4', to: '2', text: '高管' },
-          { from: '6', to: '2', text: '高管' },
-          { from: '7', to: '2', text: '高管' },
-          { from: '8', to: '2', text: '高管' },
-          { from: '9', to: '2', text: '高管' }
-        ]
+        rootId: rootId,
+        nodes: nodes,
+        lines: lines
       };
       this.$refs.graphRef.setJsonData(__graph_json_data, (graphInstance) => {
         // 这些写上当图谱初始化完成后需要执行的代码
@@ -487,14 +301,8 @@ export default({
     },
     handleRelPath(relPath) {
       if (relPath === null || relPath === undefined) return ''
-      let relPathStr = ''
-      for (let i = 0; i < relPath.length; i++) {
-        if (i === relPath.length - 1) {
-          relPathStr += relPath[i].mbrname
-        } else {
-          relPathStr += relPath[i].mbrname + '->'
-        }
-      }
+       // "[\"6F274D22E0857C57E0539601A8C0ACD65|福建省福能新型建材有限责任公司->51.0000:6F274D3379B67C57E0539601A8C0ACD65|福建省钢源粉体材料有限公司\"]"
+      const relPathStr = relPath.replace(/\"/g, '').replace(/\[/g, '').replace(/\]/g, '').replace(/\\/g, '').replace(/\|/g, '->')
       return relPathStr
     },
     showMorePath(item) {
