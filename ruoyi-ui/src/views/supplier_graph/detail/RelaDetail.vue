@@ -106,12 +106,24 @@
           ref="graphRef"
           :options="graphOptions"
         >
+        <template #graph-plug>
+            <div style="position: absolute;width:350px; right:0;top:0;z-index: 600;
+            padding:10px;border-radius: 5px;color: #ffffff;font-size: 12px;"> 
+              <el-input
+                  v-model="searchText"
+                  placeholder="图谱节点定位，请输入节点名称"  suffix-icon="el-icon-search"
+                ></el-input>
+            </div>
+          </template>
         <template slot="node" slot-scope="{node}">
             <div class="my-node-content">
               <div v-if="node.data.spcType === 'ctrler'"  style="width: 100%;
                background: #1980df;color: #1a0404;height:80px;font-size: 16px;
              border-radius: 150px;border:6px solid #3399ff;" class="imgqy">
-              <img src="@/assets/images/ger.png" alt="">
+            
+              <img v-if="node.data.partytyp=='企业'" src="@/assets/images/qiye.png" alt="">
+              <img v-else src="@/assets/images/ger.png" alt="">
+             
               </div>
               <div v-else-if="node.data.spcType === 'ctrled'" 
               style="width: 100%; background: #4eb548;color: #1a0404;height:80px;font-size: 16px;
@@ -129,6 +141,7 @@
             </div> -->
           </template>
       </RelationGraph>
+      
       </div>
     </div>
 
@@ -170,28 +183,29 @@ export default({
         url: "/entInfo/getRelaEntList/" + this.uniscid,
         method: "get"
       }).then(res => {
+
+        console.log('res======>>>', this.baseinfo.partytyp)
         this.enrelpar = res.data
         const nodes = []
         const lines = []
         nodes.push({
           id: this.baseinfo.uniscid,
           text: this.baseinfo.entname,
-          //data: this.baseinfo,
+         // data: this.baseinfo,
           data: {
           spcType: 'ctrled',
-          text: this.baseinfo.entname,
-          
+          text: this.baseinfo.entname, 
         },
         })
         this.enrelpar.forEach(item => {
+          console.log('reitems======>>>', item)
           nodes.push({
             id: item.partyid,
             // text: item.partyname,
-            // data: item,
+            //data: item,
             data: {
               spcType: 'ctrler',
-             
-            
+              partytyp: item.partytyp,
             },
 
           })

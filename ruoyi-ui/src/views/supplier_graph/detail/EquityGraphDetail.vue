@@ -18,7 +18,9 @@
           </template>
         <template slot="node" slot-scope="{node}">
             <div class="my-node-content">
-              <div v-if="node.data.spcType === 'ctrler'" style=""></div>
+              <div v-if="node.data.spcType === 'ctrler'" style="">
+                
+              </div>
               <div v-else-if="node.data.spcType === 'ctrled'" 
               style="width: 100%; background-color: #128bed;color: #ffffff;height:40px;line-height: 40px;font-size: 16px;
               border-top-left-radius: 3px;border-top-right-radius: 3px;">
@@ -29,8 +31,10 @@
                 <span :style="{color:node.fontColor}" class="c-node-label">{{ node.text }}</span>
               </div>
             </div>
+          
             <div v-if="node.data.regcap" class="c-node-desc" style="line-height: 15px;">
-              认缴金额:<span>{{ node.data.regcap }}{{ node.data.regcapcur_cn }}</span>  状态:<span>{{ node.data.entstatusCn }}</span>
+              认缴金额：<span>{{ node.data.regcap }}{{ node.data.regcapcur_cn }}</span>&ensp;
+              状态：<span style="color: #70b603;">{{ node.data.entstatusCn }}</span>
             </div>
           </template>
       </RelationGraph>
@@ -51,20 +55,20 @@ export default ({
       uniscid: null,
       searchText:'',
       graphOptions: {
-        allowSwitchLineShape: true,
-        allowSwitchJunctionPoint: true,
         nodeShape: 1,
-        defaultJunctionPoint: 'border',
-        allowShowMiniToolBar: true,
-        defaultExpandHolderColor:'#3399ff',
-        defaultExpandHolderPosition: "bottom",
-       
+         //defaultJunctionPoint: 'border',
+         //allowShowMiniToolBar: true,
+         defaultExpandHolderColor:'#3399ff',
+         defaultExpandHolderPosition: "bottom",
+         allowSwitchLineShape: true,
+         allowSwitchJunctionPoint: true,
+        // defaultPloyLineRadius: 10,
         'layouts': [
           {
             'label': '中心',
             'layoutName': 'tree',
             from: 'top',
- 
+          
           }
         ]
       },
@@ -114,16 +118,27 @@ export default ({
         },
         })
         res.data.investmentList.forEach(item => {
+          console.log('iii',item)
           nodes.push({
             id: item.investCreditNo,
             text: item.investName,
             data: item,
             nodeShape: 1,
             width: 300,
+            color: 'white',
+            fontColor: 'black',
+            data: {
+              spcType: 'ctrler',
+              regcap: item.investRegistCapi,
+              // regcapcur_cn: item.regcapcur_cn,
+              entstatusCn: item.investStatus,
+            },
+            
            
           })
         })
         res.data.stockholderList.forEach(item => {
+          console.log('iii====',item)
           nodes.push({
             id: item.invid,
             text: item.invname,
@@ -146,9 +161,11 @@ export default ({
             from: res.data.baseEnterpriseInfo.uniscid,
             to: item.investCreditNo,
             text: (parseFloat(item.stockPercent)*100).toLocaleString() + '%',
-            color: 'green',
+            color: '#ccc',
             fontColor:'#3399ff',
             width: 300,
+            // lineShape: 1,
+            lineStyle: this.statusStyle(item.isidrctrl)
           })
         })
 
@@ -217,7 +234,7 @@ flex-direction: column;
 }
 .c-my-graph1 ::v-deep .c-node-desc{
   text-align: center;
-  font-size: 14px;
+  font-size: 8px;
   color: #888888;
   /*border-top: #dddddd solid 1px;*/
   margin-top:0px;
