@@ -35,7 +35,28 @@
           :options="graphOptions"
           :on-node-click="onNodeClick"
           :on-line-click="onLineClick"
-        />
+        >
+        <template slot="node" slot-scope="{node}">
+            <div class="my-node-content">
+              <div v-if="node.data.spcType === 'ctrler'" style="width:300px;background-color: #4eb548;font-size: 16px;color: #fff;height:40px;line-height: 40px;">
+                被担保公司
+              </div>
+              <div v-else-if="node.data.spcType === 'ctrled'" 
+              style="width:300px; background-color: #d9001b;color: #ffffff;height:40px;line-height: 40px;font-size: 16px;
+              border-top-left-radius: 3px;border-top-right-radius: 3px;">
+                被查询企业
+              </div>
+              <div v-else style="height:10px;" />
+              <div style="padding:2px; height:50px;">
+                <span :style="{color:node.fontColor}" class="c-node-label">{{ node.text }}</span>
+              </div>
+            </div>
+            <!-- <div v-if="node.data.regcap" class="c-node-desc" style="line-height: 15px;">
+              认缴金额:<span>{{ node.data.regcap }}{{ node.data.regcapcur_cn }}</span>  
+               状态:<span>{{ node.data.entstatusCn }}</span>
+            </div> -->
+          </template>
+      </RelationGraph>
       </div>
     </div>
   </div>
@@ -50,10 +71,13 @@ export default({
     return {
       graphOptions: {
         defaultNodeBorderWidth: 0,
-        defaultNodeColor: 'rgba(238, 178, 94, 1)',
+        defaultNodeColor: '#fff',
         allowSwitchLineShape: true,
         allowSwitchJunctionPoint: true,
         defaultLineShape: 1,
+        nodeShape: 1,
+        defaultJunctionPoint: 'border',
+        allowShowMiniToolBar: true,
         'layouts': [
           {
             'label': '中心',
@@ -70,25 +94,26 @@ export default({
     this.showSeeksGraph();
   },
   methods: {
+    data: {
+          spcType: 'ctrled'
+        },
     showSeeksGraph() {
       const __graph_json_data = {
         rootId: '2',
         nodes: [
-          { id: '1', text: '节点-1', myicon: 'el-icon-star-on' },
-          { id: '2', text: '节点-2', myicon: 'el-icon-setting' },
-          { id: '4', text: '节点-4', myicon: 'el-icon-star-on' },
-          { id: '6', text: '节点-6', myicon: 'el-icon-setting' },
-          { id: '7', text: '节点-7', myicon: 'el-icon-setting' },
-          { id: '8', text: '节点-8', myicon: 'el-icon-star-on' },
-          { id: '9', text: '节点-9', myicon: 'el-icon-headset' }
+          { id: '1', text: '被担保公司1', myicon: 'el-icon-star-on' ,data:{spcType: 'ctrler'} },
+          { id: '2', text: '渝商投资集团股分有限公司', myicon: 'el-icon-setting', data:{spcType: 'ctrled'}},
+          { id: '4', text: '被担保公司1', myicon: 'el-icon-star-on',data:{spcType: 'ctrler'}  },
+          { id: '6', text: '被担保公司1', myicon: 'el-icon-setting',data:{spcType: 'ctrler'}  },
+          { id: '7', text: '被担保公司1', myicon: 'el-icon-setting',data:{spcType: 'ctrler'}  },
+         
         ],
         lines: [
-          { from: '1', to: '2', text: '投资' },
-          { from: '4', to: '2', text: '高管' },
-          { from: '6', to: '2', text: '高管' },
-          { from: '7', to: '2', text: '高管' },
-          { from: '8', to: '2', text: '高管' },
-          { from: '9', to: '2', text: '高管' }
+          { from: '1', to: '2', text: '被担保', fontColor: '#3399ff',},
+          { from: '4', to: '2', text: '被担保' ,fontColor: '#3399ff', },
+          { from: '6', to: '2', text: '被担保',fontColor: '#3399ff', },
+          { from: '7', to: '2', text: '被担保' ,fontColor: '#3399ff', },
+          { from: '8', to: '2', text: '被担保' ,fontColor: '#3399ff', }
         ]
       };
       this.$refs.graphRef.setJsonData(__graph_json_data, (graphInstance) => {
@@ -109,5 +134,32 @@ export default({
   color: #002060;
   margin-top: 10px;
   margin-bottom: 20px;
+}
+::v-deep .rel-node-shape-1{
+  padding-top: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  height:95px;
+  width:300px;
+  text-align: center;
+  border-radius: 3px;
+  border:#cccccc solid 1px !important;
+  /*display: flex;*/
+  /*align-items: center;*/
+  /*justify-content: center;*/
+}
+::v-deep .my-node-content{
+  border:#cccccc solid 1px !important;
+  color: #333 !important;
+}
+::v-deep .relation-graph .rel-node-shape-0{
+  width: 300px;
+  height: 95px;
+  border-radius: 0px;
+}
+::v-deep .c-node-label{
+  font-size: 14px;
+  line-height: 50px;
+
 }
 </style>

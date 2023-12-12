@@ -65,11 +65,11 @@
         <RelationGraph ref="graphRef" :options="graphOptions" :on-node-click="onNodeClick" :on-line-click="onLineClick">
           <template slot="node" slot-scope="{node}">
             <div class="my-node-content">
-              <div v-if="node.data.spcType === 'ctrler'" style="background-color: #FFF838;color: #333333;height:25px;line-height: 25px;border-top-left-radius: 3px;border-top-right-radius: 3px;border-bottom: #cccccc solid 1px;">
-                <svg-icon icon-class="fengwang-" /> 实际控制人
+              <div v-if="node.data.spcType === 'ctrler'" style="background-color: #FFF838;color: #333333;height:40px;line-height: 40px;border-top-left-radius: 3px;border-top-right-radius: 3px;border-bottom: #cccccc solid 1px;">
+               实际控制人
               </div>
-              <div v-else-if="node.data.spcType === 'ctrled'" style="background-color: #128bed;color: #ffffff;height:25px;line-height: 25px;border-top-left-radius: 3px;border-top-right-radius: 3px;">
-                <svg-icon icon-class="building" /> 被查询企业
+              <div v-else-if="node.data.spcType === 'ctrled'" style="background-color: #128bed;color: #ffffff;height:40px;line-height: 40px;border-top-left-radius: 3px;border-top-right-radius: 3px;">
+               被查询企业
               </div>
               <div v-else style="height:10px;" />
               <div style="padding:5px;height:50px;padding-top:10px;">
@@ -82,6 +82,11 @@
             </div>
           </template>
         </RelationGraph>
+         <div class="imgstyle" style="width:100%;font-size: 14px;height: 80px;line-height: 80px; display: flex;justify-content: center; position: absolute;bottom:0;z-index: 600;">
+              图例：<div style="color: #FFF838; display: flex;align-items: center;padding-right: 20px;"><img style="width: 22px;" src="@/assets/images/sjkzr.png" alt="">实际控制人 </div>
+              <div  style="color: #999;display: flex;align-items: center;padding-right: 20px;"><img style="width: 22px;" src="@/assets/images/b.png" alt="">中间企业</div>
+              <div style="color: #3399ff;display: flex;align-items: center;padding-right: 20px;"><img style="width: 22px;" src="@/assets/images/c.png" alt="">被查询企业</div>
+          </div>
       </div>
     </div>
   </div>
@@ -150,6 +155,7 @@ export default({
           to: this.actualControllerGraph.uniscid,
           text: item.shratio+'%',
           data: item,
+          fontColor:'#3399ff',
           lineShape: 1,
           lineStyle: this.statusStyle(item.isidrctrl)
         })

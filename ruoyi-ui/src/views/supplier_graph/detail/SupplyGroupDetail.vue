@@ -200,11 +200,44 @@
       <div class="c-title-div">
         集团知识图谱
       </div>
-      <div style="height:calc(100vh - 60px);">
+      <div style="height:calc(100vh - 60px);" class="c-my-graph1">
         <RelationGraph
           ref="graphRef"
           :options="graphOptions"
-        />
+        >
+        <template #graph-plug>
+            <div style="position: absolute;width:350px; right:0;top:0;z-index: 600;
+            padding:10px;border-radius: 5px;color: #ffffff;font-size: 12px;"> 
+              <el-input
+                  v-model="searchText"
+                  placeholder="图谱节点定位，请输入节点名称"  suffix-icon="el-icon-search"
+                ></el-input>
+            </div>
+          </template>
+        <template slot="node" slot-scope="{node}">
+            <div class="my-node-content">
+              <div v-if="node.data.spcType === 'ctrler'"  style="width: 100%;
+               background: #1980df;color: #1a0404;height:80px;font-size: 16px;
+             border-radius: 150px;border:6px solid #3399ff;" class="imgqy">
+              <img src="@/assets/images/qiye.png" alt="">
+              </div>
+              <div v-else-if="node.data.spcType === 'ctrled'" 
+               style="width: 100%; background: #4eb548;color: #1a0404;height:80px;font-size: 16px;
+               border-radius: 150px;border:6px solid #76dd64;" class="imgqy">
+              <img src="@/assets/images/qiye.png" alt="">
+              </div>
+              <div v-else style="height:10px;" />
+              <div style="padding:2px; height:50px;">
+                <span :style="{color:node.fontColor}" class="c-node-label">{{ node.text }}</span>
+              </div>
+            </div>
+            <!-- <div v-if="node.data.regcap" class="c-node-desc" style="line-height: 15px;">
+              认缴金额:<span>{{ node.data.regcap }}{{ node.data.regcapcur_cn }}</span>  
+               状态:<span>{{ node.data.entstatusCn }}</span>
+            </div> -->
+          </template>
+          
+      </RelationGraph>
       </div>
     </div>
   </div>
@@ -223,8 +256,10 @@ export default({
         allowSwitchLineShape: true,
         allowSwitchJunctionPoint: true,
         defaultLineShape: 1,
-        defaultJunctionPoint: 'border'
+        defaultJunctionPoint: 'border',
+        
       },
+      searchText:'',
       labelLoading: false,
       membersLoading: false,
       activeName: 'second',
@@ -249,19 +284,27 @@ export default({
       const rootId = this.grpInfo.grpid
       nodes.push({
         id: rootId,
-        text: this.grpInfo.grpname
+        text: this.grpInfo.grpname,
+        data: {
+          spcType: 'ctrled'
+        },
       })
 
       this.groupMembers.forEach((item, index) => {
         nodes.push({
           id: item.toid,
           text: item.toname,
+          data: {
+              spcType: 'ctrler',
+            
+            },
         })
         lines.push({
           from: rootId,
           to: item.toid,
-          text: item.property,
-          data: item
+          text:' 持股 '+item.property,
+          data: item,
+          fontColor:'#4eb548',
         })
       })
 
@@ -270,6 +313,12 @@ export default({
     this.showSeeksGraph();
   },
   methods: {
+    changeSelected(itemId) {
+        console.log('changeSelected:', itemId);
+        const graphInstance = this.$refs.graphRef.getInstance();
+        // const node = graphInstance.getNodeById(itemId);
+         graphInstance.focusNodeById(itemId)
+      },
     showSeeksGraph(rootId, nodes, lines) {
       const __graph_json_data = {
         rootId: rootId,
@@ -383,5 +432,43 @@ export default({
   color: #002060;
   margin-top: 20px;
   margin-bottom: 20px;
+}
+.c-my-graph1 ::v-deep .rel-node-shape-1{
+  padding-top: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  height:95px;
+  width:300px;
+  text-align: center;
+  border-radius: 3px;
+  border:#cccccc solid 1px !important;
+  /*display: flex;*/
+  /*align-items: center;*/
+  /*justify-content: center;*/
+}
+.c-my-graph1 ::v-deep .c-node-label{
+  font-size: 12px;
+  // line-height: 50px;
+  color: #3399ff;
+  position: absolute;
+  z-index: 999;
+  width: 400px;
+  left:0;
+margin-left: -150px;
+margin-top: 5px;
+
+
+}
+.c-my-graph1 ::v-deep .rel-node{
+overflow: hidden;
+background: #fff;
+}
+.imgqy{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  img{
+    width: 40px;
+  }
 }
 </style>

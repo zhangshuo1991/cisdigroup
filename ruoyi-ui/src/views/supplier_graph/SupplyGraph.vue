@@ -93,6 +93,7 @@ export default ({
         params: { pageNum: this.dataGrid.listQuery.page,pageSize: this.dataGrid.listQuery.limit },
         data: { keyword: this.dataGrid.listQuery.keyword }
       }).then(res => {
+        console.log('yyyyyyyy',res)
         this.dataGrid.list = res.data.item;
         this.dataGrid.total = res.data.total;
         this.dataGrid.loading = false;

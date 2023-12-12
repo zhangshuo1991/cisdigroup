@@ -25,13 +25,36 @@
       <div class="c-title-div">
         资金往来图谱
       </div>
-      <div style="height:calc(100vh - 60px);">
+      <div style="height:calc(100vh - 60px);" class="c-my-graph1">
         <RelationGraph
           ref="graphRef"
           :options="graphOptions"
           :on-node-click="onNodeClick"
           :on-line-click="onLineClick"
-        />
+        >
+        <template slot="node" slot-scope="{node}">
+            <div class="my-node-content">
+              <div v-if="node.data.spcType === 'ctrler'" style="width:300px;background-color: #409eff;font-size: 16px;color: #fff;height:40px;line-height: 40px;">
+                交易对手
+              </div>
+              <div v-else-if="node.data.spcType === 'ctrled'" 
+              style="width: 300px; background-color: #d9001b;color: #ffffff;height:40px;line-height: 40px;font-size: 16px;
+              border-top-left-radius: 3px;border-top-right-radius: 3px;">
+                被查询企业
+              </div>
+              <div v-else style="height:10px;" />
+              <div style="padding:2px; height:50px;">
+                <span :style="{color:node.fontColor}" class="c-node-label">{{ node.text }}</span>
+              </div>
+            </div>
+            <div v-if="node.data.spcType === 'ctrled' " class="c-node-desc" style="line-height: 15px;">
+               企业ID: <span>{{ node.data.textId }}</span>
+            </div>
+            <div v-if="node.data.spcType === 'ctrler' " class="c-node-desc" style="line-height: 15px;">
+               交易对手ID: <span>{{ node.data.textId }}</span>
+            </div>
+          </template>
+      </RelationGraph>
       </div>
     </div>
   </div>
@@ -46,9 +69,10 @@ export default ({
     return {
       entWarrantyList: [],
       graphOptions: {
+        defaultNodeColor: '#fff',
         allowSwitchLineShape: true,
         allowSwitchJunctionPoint: true,
-        nodeShape: 1,
+        // nodeShape: 1,
         defaultJunctionPoint: 'border',
         allowShowMiniToolBar: true
         // 这里可以参考"Graph 图谱"中的参数进行设置 https://seeksdream.github.io/#/docs/graph
@@ -63,19 +87,19 @@ export default ({
       const jsonData = {
         rootId: 'a',
         nodes: [
-          { id: 'a', text: '供应商1', nodeShape: 1,borderColor: 'yellow',width: 100,height: 40 },
-          { id: 'b', text: '供应商2', nodeShape: 1,width: 100,height: 40 },
-          { id: 'c', text: '供应商3', nodeShape: 1,width: 100,height: 40 },
-          { id: 'd', text: '供应商4', nodeShape: 1,width: 100,height: 40 },
-          { id: 'e', text: '供应商5', nodeShape: 1,width: 100,height: 40 },
-          { id: 'f', text: '北京阿里巴巴企业有限公司', nodeShape: 1,width: 100,height: 40 }
+          { id: 'a', text: '供应商1', nodeShape: 1,data:{spcType: 'ctrled' ,textId:'33423412341234s'}},
+          { id: 'b', text: '供应商2', nodeShape: 1,data:{spcType: 'ctrler',textId:'33423412341234s'} },
+          { id: 'c', text: '供应商3', nodeShape: 1,data:{spcType: 'ctrler',textId:'33423412341234s'} },
+          { id: 'd', text: '供应商4', nodeShape: 1,data:{spcType: 'ctrler',textId:'33423412341234s'}},
+          { id: 'e', text: '供应商5', nodeShape: 1,data:{spcType: 'ctrler',textId:'33423412341234s'}},
+          { id: 'f', text: '北京阿里巴巴企业有限公司', nodeShape: 1,data:{spcType: 'ctrler',textId:'33423412341234s'} }
         ],
         lines: [
-          { from: 'a', to: 'b', text: '关系1' },
-          { from: 'a', to: 'c', text: '关系2' },
-          { from: 'a', to: 'd', text: '关系3' },
-          { from: 'a', to: 'e', text: '关系4' },
-          { from: 'a', to: 'f', text: '关系5' }
+          { from: 'a', to: 'b', text: '关系1', fontColor: '#3399ff' },
+          { from: 'a', to: 'c', text: '关系2', fontColor: '#3399ff' },
+          { from: 'a', to: 'd', text: '关系3', fontColor: '#3399ff' },
+          { from: 'a', to: 'e', text: '关系4', fontColor: '#3399ff' },
+          { from: 'a', to: 'f', text: '关系5', fontColor: '#3399ff' }
         ]
       }
       // 以上数据中的node和link可以参考"Node节点"和"Link关系"中的参数进行配置
@@ -103,5 +127,43 @@ export default ({
   color: #002060;
   margin-top: 10px;
   margin-bottom: 20px;
+}
+.c-my-graph1 ::v-deep .c-node-label{
+  font-size: 14px;
+  line-height: 50px;
+
+}
+.c-my-graph1 ::v-deep .my-node-content{
+ 
+  color: #333 !important;
+  
+}
+::v-deep .rel-node-shape-1{
+  padding-top: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  height:125px;
+  width:300px;
+  text-align: center;
+  border-radius: 3px;
+  border:#cccccc solid 1px !important;
+  /*display: flex;*/
+  /*align-items: center;*/
+  /*justify-content: center;*/
+}
+::v-deep .c-node-desc{
+  text-align: center;
+  font-size: 14px;
+  color: #888888;
+  /*border-top: #dddddd solid 1px;*/
+  margin-top:0px;
+  padding-top:5px;
+  /*background-color: #bbbbbb;*/
+  // height:40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+
 }
 </style>

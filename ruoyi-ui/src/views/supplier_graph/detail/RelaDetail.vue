@@ -101,11 +101,34 @@
       <div class="c-title-div">
         企业关联方图谱
       </div>
-      <div style="height:calc(100vh - 60px);">
+      <div style="height:calc(100vh - 60px);"  class="c-my-graph1">
         <RelationGraph
           ref="graphRef"
           :options="graphOptions"
-        />
+        >
+        <template slot="node" slot-scope="{node}">
+            <div class="my-node-content">
+              <div v-if="node.data.spcType === 'ctrler'"  style="width: 100%;
+               background: #1980df;color: #1a0404;height:80px;font-size: 16px;
+             border-radius: 150px;border:6px solid #3399ff;" class="imgqy">
+              <img src="@/assets/images/ger.png" alt="">
+              </div>
+              <div v-else-if="node.data.spcType === 'ctrled'" 
+              style="width: 100%; background: #4eb548;color: #1a0404;height:80px;font-size: 16px;
+             border-radius: 150px;border:6px solid #76dd64;" class="imgqy">
+              <img src="@/assets/images/qiye.png" alt="">
+              </div>
+              <div v-else style="height:10px;" />
+              <div style="padding:2px; height:50px;">
+                <span :style="{color:node.fontColor}" class="c-node-label">{{ node.text }}</span>
+              </div>
+            </div>
+            <!-- <div v-if="node.data.regcap" class="c-node-desc" style="line-height: 15px;">
+              认缴金额:<span>{{ node.data.regcap }}{{ node.data.regcapcur_cn }}</span>  
+               状态:<span>{{ node.data.entstatusCn }}</span>
+            </div> -->
+          </template>
+      </RelationGraph>
       </div>
     </div>
 
@@ -123,7 +146,7 @@ export default({
       graphOptions: {
         allowSwitchLineShape: true,
         allowSwitchJunctionPoint: true,
-        defaultJunctionPoint: 'border',
+       // defaultJunctionPoint: 'border',
         allowShowMiniToolBar: true
       },
       baseinfo: {},
@@ -153,19 +176,31 @@ export default({
         nodes.push({
           id: this.baseinfo.uniscid,
           text: this.baseinfo.entname,
-          data: this.baseinfo,
+          //data: this.baseinfo,
+          data: {
+          spcType: 'ctrled',
+          text: this.baseinfo.entname,
+          
+        },
         })
         this.enrelpar.forEach(item => {
           nodes.push({
             id: item.partyid,
-            text: item.partyname,
-            data: item,
+            // text: item.partyname,
+            // data: item,
+            data: {
+              spcType: 'ctrler',
+             
+            
+            },
+
           })
           lines.push({
             from: this.baseinfo.uniscid,
             to: item.partyid,
             text: item.relpartyp,
-            data: item
+            data: item,
+            fontColor:'#3399ff',
           })
         })
         this.showSeeksGraph(this.baseinfo.uniscid, nodes, lines)
@@ -231,5 +266,39 @@ export default({
   color:rgba(96,96,96,1);
   background:white;
   border:1px solid #D0CECE;
+}
+.c-my-graph1 ::v-deep .rel-node-shape-1{
+  padding-top: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  height:95px;
+  width:300px;
+  text-align: center;
+  border-radius: 3px;
+  border:#cccccc solid 1px !important;
+  /*display: flex;*/
+  /*align-items: center;*/
+  /*justify-content: center;*/
+}
+.c-my-graph1 ::v-deep .rel-node{
+overflow: hidden;
+background: #fff;
+}
+.c-my-graph1 ::v-deep .c-node-label{
+  position: absolute;
+  z-index: 999;
+width:400px;
+left: 0;
+  color: #4eb548;
+  margin-left: -150px;
+  margin-top: 8px;
+}
+.imgqy{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  img{
+    width: 40px;
+  }
 }
 </style>

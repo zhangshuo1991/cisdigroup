@@ -1,5 +1,5 @@
 <template>
-  <div id="app" style="margin: auto;padding-top: 15px;background-color: #F2F2F2;min-height: 1200px;padding-bottom: 15px">
+  <div id="app" style="margin: auto;padding-top: 15px;background-color: #F2F2F2;min-height: 900px;padding-bottom: 15px">
     <div v-loading="baseInfoLoading" style="margin-left: 15px;background-color: white;padding-left: 10px;margin-right: 15px;padding-top: 3px;padding-right: 10px;padding-bottom: 10px">
       <div class="c-title-div">
         企业工商注册信息
@@ -90,6 +90,8 @@
         </el-tabs>
         <div class="c-graph-one" style="height: 420px;">
           <div style="height: 420px;width: 60%;border: 4px solid #F2F2F2;float: left">
+
+
           </div>
           <div style="height: 420px;width: 38%;border: 4px solid #F2F2F2;float: left;margin-left: 20px;line-height: 20px;padding-left: 5px;">
             说明：
@@ -100,7 +102,7 @@
         </div>
       </div>
     </div>
-    <div style="margin-left: 15px;background-color: white;padding-left: 10px;margin-right: 15px;padding-top: 3px;margin-top: 15px;min-height: 580px">
+    <!-- <div style="margin-left: 15px;background-color: white;padding-left: 10px;margin-right: 15px;padding-top: 3px;margin-top: 15px;min-height: 580px">
       <div class="c-title-div">
         关系详情信息
       </div>
@@ -127,7 +129,7 @@
           </transition>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 

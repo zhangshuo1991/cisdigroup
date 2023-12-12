@@ -149,7 +149,8 @@ export default({
         data: { keyword: this.searchListQuery.keywords },
         params: { pageNum: this.searchListQuery.page,pageSize: this.searchListQuery.limit }
       }).then(res => {
-        this.tableData = res.data.rows
+        console.log('tttt',res)
+        this.tableData = res.data.item
         this.totalSize = res.data.total
       })
     },

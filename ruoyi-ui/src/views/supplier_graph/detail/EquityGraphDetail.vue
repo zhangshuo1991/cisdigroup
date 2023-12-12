@@ -1,11 +1,38 @@
 <template>
   <div id="app">
-    <div style="height:calc(100vh - 60px);border: 1px solid gray;margin: 20px">
+    <div style="height:calc(100vh - 60px);border: 1px solid gray;margin: 20px" class="c-my-graph1">
       <RelationGraph
         ref="graphRef"
         :on-node-click="onNodeClick"
         :on-line-click="onLineClick"
+        :options="graphOptions" 
         :style="{ width: '100%', height: '100%' }">
+        <template #graph-plug>
+            <div style="position: absolute;width:350px; right:0;top:0;z-index: 600;
+            padding:10px;border-radius: 5px;color: #ffffff;font-size: 12px;"> 
+              <el-input
+                  v-model="searchText"
+                  placeholder="图谱节点定位，请输入节点名称"  suffix-icon="el-icon-search"
+                ></el-input>
+            </div>
+          </template>
+        <template slot="node" slot-scope="{node}">
+            <div class="my-node-content">
+              <div v-if="node.data.spcType === 'ctrler'" style=""></div>
+              <div v-else-if="node.data.spcType === 'ctrled'" 
+              style="width: 100%; background-color: #128bed;color: #ffffff;height:40px;line-height: 40px;font-size: 16px;
+              border-top-left-radius: 3px;border-top-right-radius: 3px;">
+                被查询企业
+              </div>
+              <div v-else style="height:10px;" />
+              <div style="padding:2px; height:50px;">
+                <span :style="{color:node.fontColor}" class="c-node-label">{{ node.text }}</span>
+              </div>
+            </div>
+            <div v-if="node.data.regcap" class="c-node-desc" style="line-height: 15px;">
+              认缴金额:<span>{{ node.data.regcap }}{{ node.data.regcapcur_cn }}</span>  状态:<span>{{ node.data.entstatusCn }}</span>
+            </div>
+          </template>
       </RelationGraph>
     </div>
 
@@ -22,27 +49,22 @@ export default ({
   data() {
     return {
       uniscid: null,
+      searchText:'',
       graphOptions: {
-        'backgrounImageNoRepeat': true,
-        'moveToCenterWhenRefresh': true,
-        'zoomToFitWhenRefresh': true,
-        useAnimationWhenRefresh: false,
-        placeOtherGroup: true,
-        defaultNodeWidth: 150,
-        defaultNodeHeight: 30,
-        defaultLineWidth: 2,
-        defaultLineShape: 4,
-        showLineLabel: false,
-        lineUseTextPath: true,
-        defaultLineTextOffset_x: 0,
-        defaultLineTextOffset_y: 0,
-        fontColor: '#333',
+        allowSwitchLineShape: true,
+        allowSwitchJunctionPoint: true,
+        nodeShape: 1,
+        defaultJunctionPoint: 'border',
+        allowShowMiniToolBar: true,
+        defaultExpandHolderColor:'#3399ff',
+        defaultExpandHolderPosition: "bottom",
+       
         'layouts': [
           {
             'label': '中心',
             'layoutName': 'tree',
-            from: 'left',
-            'layoutClassName': 'seeks-layout-center'
+            from: 'top',
+ 
           }
         ]
       },
@@ -53,17 +75,43 @@ export default ({
     this.getGraphDetail()
   },
   methods: {
+    statusStyle(status) {
+      if (status !== '1') {
+        const style = {
+          fontSize: '14px',
+          fontFamily: 'Microsoft YaHei',
+          fontWeight: '400',
+          color: 'rgba(248,130,51,1)'
+        }
+        return style
+      }
+      const style = {
+        fontSize: '14px',
+        fontFamily: 'Microsoft YaHei',
+        fontWeight: '400',
+        color: '#19B94F'
+      }
+      return style
+    },
     getGraphDetail() {
       request({
         url: '/entInfo/getShareHolderAndInvestment/'+this.uniscid,
         method: 'get',
       }).then(res => {
+
+        console.log('8888888',res)
         const nodes = []
         nodes.push({
           id: res.data.baseEnterpriseInfo.uniscid,
           text: res.data.baseEnterpriseInfo.entname,
           data: res.data.baseEnterpriseInfo,
           nodeShape: 1,
+          color: 'white',
+          fontColor: 'black',
+          width: 300,
+          data: {
+          spcType: 'ctrled'
+        },
         })
         res.data.investmentList.forEach(item => {
           nodes.push({
@@ -71,6 +119,8 @@ export default ({
             text: item.investName,
             data: item,
             nodeShape: 1,
+            width: 300,
+           
           })
         })
         res.data.stockholderList.forEach(item => {
@@ -79,6 +129,15 @@ export default ({
             text: item.invname,
             data: item,
             nodeShape: 1,
+            color: 'white',
+            fontColor: 'black',
+            width: 300,
+            data: {
+              spcType: 'ctrler',
+              regcap: item.subconam,
+              regcapcur_cn: item.regcapcur_cn,
+              entstatusCn: item.entstatusCn,
+            },
           })
         })
         const lines = []
@@ -87,7 +146,9 @@ export default ({
             from: res.data.baseEnterpriseInfo.uniscid,
             to: item.investCreditNo,
             text: (parseFloat(item.stockPercent)*100).toLocaleString() + '%',
-            color: 'green'
+            color: 'green',
+            fontColor:'#3399ff',
+            width: 300,
           })
         })
 
@@ -96,7 +157,11 @@ export default ({
             from: item.invid,
             to: res.data.baseEnterpriseInfo.uniscid,
             text: parseFloat(item.subconprop).toLocaleString() + '%',
-            color: '#ff0000'
+            color: '#ccc',
+            width: 300,
+            fontColor:'#3399ff',
+            lineShape: 1,
+            lineStyle: this.statusStyle(item.isidrctrl)
           })
         })
 
@@ -125,5 +190,47 @@ export default ({
 })
 </script>
 <style scoped lang="scss">
+.c-my-graph1 ::v-deep .rel-node-shape-1{
+  padding-top: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  height:95px;
+  width:300px;
+  text-align: center;
+  border-radius: 3px;
+  border:#cccccc solid 1px !important;
+  /*display: flex;*/
+  /*align-items: center;*/
+  /*justify-content: center;*/
+}
+.c-my-graph1 ::v-deep .c-node-label{
+  font-size: 14px;
+  line-height: 50px;
+}
+.c-my-graph1 ::v-deep .my-node-content{
+  padding:0px;
+display: flex;
+align-items: center;
+justify-content: center;
+flex-direction: column;
+  
+}
+.c-my-graph1 ::v-deep .c-node-desc{
+  text-align: center;
+  font-size: 14px;
+  color: #888888;
+  /*border-top: #dddddd solid 1px;*/
+  margin-top:0px;
+  padding-top:5px;
+  /*background-color: #bbbbbb;*/
+  // height:40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
 
+}
+.c-my-graph1 ::v-deep .c-collapsed{
+// background: #3399ff !important;
+}
 </style>
