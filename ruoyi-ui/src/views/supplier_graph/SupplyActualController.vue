@@ -63,6 +63,15 @@
       </div>
       <div style="height:calc(100vh - 160px);" class="c-my-graph1">
         <RelationGraph ref="graphRef" :options="graphOptions" :on-node-click="onNodeClick" :on-line-click="onLineClick">
+          <template #graph-plug>
+            <div style="position: absolute;width:350px; right:0;top:0;z-index: 600;
+            padding:10px;border-radius: 5px;color: #ffffff;font-size: 12px;"> 
+              <el-input
+                  v-model="searchText"
+                  placeholder="图谱节点定位，请输入节点名称"  suffix-icon="el-icon-search"
+                ></el-input>
+            </div>
+          </template>
           <template slot="node" slot-scope="{node}">
             <div class="my-node-content">
               <div v-if="node.data.spcType === 'ctrler'" style="background-color: #FFF838;color: #333333;height:40px;line-height: 40px;border-top-left-radius: 3px;border-top-right-radius: 3px;border-bottom: #cccccc solid 1px;">
