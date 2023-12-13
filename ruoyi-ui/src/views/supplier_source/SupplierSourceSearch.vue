@@ -13,7 +13,7 @@
         </el-form-item>
         <el-form-item label="所属行业：">
           <el-cascader
-            v-model="indus_checked"
+            v-model="dataGrid.listQuery.indus_checked"
             :props="{ multiple: true,expandTrigger: 'click' }"
             :border="false"
             size="mini"
@@ -25,7 +25,7 @@
         </el-form-item>
         <el-form-item label="省份地区：">
           <el-cascader
-            v-model="aera_checked"
+            v-model="dataGrid.listQuery.aera_checked"
             :props="{ multiple: true,expandTrigger: 'click' }"
             :border="false"
             size="mini"
@@ -36,7 +36,7 @@
           />
         </el-form-item>
         <el-form-item label="企业规模：">
-          <el-checkbox-group v-model="person_nums">
+          <el-checkbox-group v-model="dataGrid.listQuery.person_nums">
             <el-checkbox label="01">大型</el-checkbox>
             <el-checkbox label="02">中型</el-checkbox>
             <el-checkbox label="03">小型</el-checkbox>
@@ -44,7 +44,7 @@
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="成立年限：">
-          <el-checkbox-group v-model="esdate_checks">
+          <el-checkbox-group v-model="dataGrid.listQuery.esdate_checks">
             <el-checkbox label="01">1年以内</el-checkbox>
             <el-checkbox label="02">1-3年</el-checkbox>
             <el-checkbox label="03">3-5年</el-checkbox>
@@ -53,7 +53,7 @@
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="企业类型：">
-          <el-checkbox-group v-model="enttype_checks">
+          <el-checkbox-group v-model="dataGrid.listQuery.enttype_checks">
             <el-checkbox label="01">国有企业</el-checkbox>
             <el-checkbox label="02">外商投资企业</el-checkbox>
             <el-checkbox label="03">合伙企业</el-checkbox>
@@ -65,7 +65,7 @@
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="主体综合评价：">
-          <el-checkbox-group v-model="entscore_checks">
+          <el-checkbox-group v-model="dataGrid.listQuery.entscore_checks">
             <el-checkbox label="01">650分以下</el-checkbox>
             <el-checkbox label="02">650~750分</el-checkbox>
             <el-checkbox label="03">750~900分</el-checkbox>
@@ -92,7 +92,7 @@
             </el-col>
           </el-row>
         </div>
-        <div v-for="item in this.dataGrid.list" :key="item.uniscid" style="padding-bottom: 10px">
+        <div v-for="item in this.dataGrid.list.slice((dataGrid.listQuery.page-1)*10,dataGrid.listQuery.page*10)" :key="item.uniscid" style="padding-bottom: 10px">
           <el-row >
             <el-col :span="1">
               <div style="line-height: 230px">
@@ -109,10 +109,12 @@
               </div>
             </el-col>
             <el-col :span="16">
-              <div class="grid-content bg-purple-light" style="height: 200px">
+              <div class="grid-content bg-purple-light" style="min-height: 100px">
                 <div style="font-size: 16px;font-weight: bolder;">
                   {{item.entname}}
-                  <el-tag>高新技术企业</el-tag><el-tag style="margin-left: 10px">国家重点企业</el-tag>
+                  <el-tag v-for="(tagItem,index) in item.tenterpriseLabelList.slice(0,4)" :key="index" style="margin-left: 5px">
+                    {{tagItem.entLabel}}
+                  </el-tag>
                 </div>
                 <div>
                   <el-descriptions :column="4" size="mini">
@@ -123,18 +125,12 @@
                   </el-descriptions>
                 </div>
                 <div class="c-suggestion-name" style="width: 700px">
-                  <el-tag>高新技术企业</el-tag>
-                  <el-tag style="margin-left: 10px">国家重点企业</el-tag>
-                  <el-tag style="margin-left: 10px">高端人才产业</el-tag>
-                  <el-tag style="margin-left: 10px">中国500强</el-tag>
-                  <el-tag style="margin-left: 10px">数据挖掘</el-tag>
-                  <el-tag style="margin-left: 10px">大数据</el-tag>
-                  <el-tag style="margin-left: 10px">云计算</el-tag>
-                  <el-tag style="margin-left: 10px">人工智能</el-tag>
-                  <el-tag style="margin-left: 10px">大数据分析</el-tag>
+                  <el-tag v-for="(tagItem,index) in item.tenterpriseLabelList" :key="index" style="margin-left: 5px">
+                    {{tagItem.entLabel}}
+                  </el-tag>
                 </div>
                 <div style="margin-top: 10px">
-                  <el-descriptions v-if="item.entPatentBrief" :column="1" size="small">
+                  <el-descriptions v-if="item.tpatentsRelationsList && item.tpatentsRelationsList.length>0" :column="1" size="small">
                     <el-descriptions-item>
                       <template slot="label">
                         <i class="el-icon-paperclip"></i>
@@ -145,7 +141,7 @@
                       </span>
                     </el-descriptions-item>
                   </el-descriptions>
-                  <el-descriptions :column="1" size="small">
+                  <el-descriptions v-if="item.tsoftwareCopyrightList && item.tsoftwareCopyrightList.length>0" :column="1" size="small">
                     <el-descriptions-item>
                       <template slot="label">
                         <i class="el-icon-paperclip"></i>
@@ -154,13 +150,15 @@
                       <span class="c-suggestion-name">阿里巴巴手机客户端&nbsp;| &nbsp;人工智能客户端&nbsp;|&nbsp;人工智能客户端&nbsp;</span>
                     </el-descriptions-item>
                   </el-descriptions>
-                  <el-descriptions :column="1" size="small">
+                  <el-descriptions v-if="item.tenterpriseAppList && item.tenterpriseAppList.length>0" :column="1" size="small">
                     <el-descriptions-item>
                       <template slot="label">
                         <i class="el-icon-paperclip"></i>
                         <span class="c-span-text">APP应用简介</span>
                       </template>
-                      <span class="c-suggestion-name">使用最先进的自然语言处理技术,让App内置的聊天机器人像真人一样流利地与您交流。您可以与它轻松聊天,它还可以提供生活、学习等方面的帮助。</span>
+                      <span class="c-suggestion-name" v-html="item.appInfo">
+
+                      </span>
                     </el-descriptions-item>
                   </el-descriptions>
                   <el-descriptions v-if="item.tenterpriseDescList.length>0" :column="1" size="small">
@@ -181,12 +179,10 @@
                         <i class="el-icon-paperclip"></i>
                         <span class="c-span-text">商标</span>
                       </template>
-                      <span class="c-suggestion-name">
-                        {{item.tradeName}}
-                      </span>
+                      <span class="c-suggestion-name" v-html="item.tradeName"></span>
                     </el-descriptions-item>
                   </el-descriptions>
-                  <el-descriptions v-if="item.entJobs" :column="1" size="small">
+                  <el-descriptions v-if="item.tnewJobsList && item.tnewJobsList.length>0" :column="1" size="small">
                     <el-descriptions-item>
                       <template slot="label">
                         <i class="el-icon-paperclip"></i>
@@ -196,7 +192,7 @@
                       </span>
                     </el-descriptions-item>
                   </el-descriptions>
-                  <el-descriptions :column="1" size="small">
+                  <el-descriptions v-if="item.tentWebsiteList && item.tentWebsiteList.length>0" :column="1" size="small">
                     <el-descriptions-item>
                       <template slot="label">
                         <i class="el-icon-paperclip"></i>
@@ -209,7 +205,7 @@
               </div>
             </el-col>
             <el-col :span="4">
-              <div style="text-align: center;padding-top: 100px;cursor: pointer;" @click="viewScoreDetail">
+              <div style="text-align: center;padding-top: 100px;cursor: pointer;" @click="viewScoreDetail(item.tevaluatingIndex)">
                 <div v-if="item.tevaluatingIndex" style="font-weight: bolder;font-size: 30px;color: #1ab394">{{item.tevaluatingIndex.overall}}分</div>
                 <div>企业评分</div>
               </div>
@@ -231,9 +227,9 @@
     </div>
 
 
-<!--    <el-dialog title="企业评分详情" :visible.sync="dialogVisible" width="500">-->
-<!--      <ScoreDetail />-->
-<!--    </el-dialog>-->
+    <el-dialog title="企业评分详情" :visible.sync="dialogVisibleScore" width="70%">
+      <ScoreDetail :tevaluatingIndex="tevaluatingIndex"/>
+    </el-dialog>
 
     <el-dialog title="保存结果集" :visible.sync="dialogVisible">
       <el-form label-width="130px" :model="formLabelAlign">
@@ -251,7 +247,6 @@
           <el-button @click="dialogVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
-
     </el-dialog>
   </div>
 </template>
@@ -267,12 +262,14 @@ export default ({
       tableKey: 0,
       checkBoxSearchType: [],
       dialogVisible: false,
+      dialogVisibleScore: false,
       checkedAll: false,
       checkOne: false,
       form: {
         keywords: '',
         indus_checked: []
       },
+      tevaluatingIndex: {},
       // 搜索范围
       searchScopeConditions: [
         {
@@ -325,14 +322,8 @@ export default ({
         resultName: null,
         resultVisible: false
       },
-      indus_checked: [],
-      aera_checked: [],
       areaOptions: [],
       indusOptions: [],
-      person_nums: [],
-      esdate_checks: [],
-      enttype_checks: [],
-      entscore_checks: [],
       dataGrid: {
         list: [],
         total: 0,
@@ -343,6 +334,12 @@ export default ({
           area_code: '',
           entid: '',
           keywords: '',
+          indus_checked: [],
+          aera_checked: [],
+          person_nums: [],
+          esdate_checks: [],
+          enttype_checks: [],
+          entscore_checks: [],
           page: 1,
           limit: 10
         }
@@ -381,6 +378,12 @@ export default ({
       })
     },
     getList() {
+      // 页面loading
+      const loading = this.$loading({
+        lock: true,
+        text: '正在加载中...',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
       request({
         url: '/entInfo/searchInfoByKeyword',
         method: 'post',
@@ -390,32 +393,32 @@ export default ({
         this.dataGrid.list = res.data
         res.data.forEach(thisItem => {
           if (thisItem.tnewJobsList){
-            let entJobs
+            let entJobs = []
             thisItem.tnewJobsList.forEach(tempItem => {
-              if (tempItem.title.indexOf(this.dataGrid.listQuery.keywords)>0) {
+              if (tempItem.title.indexOf(this.dataGrid.listQuery.keywords)>=0) {
                 // 高亮显示
                 const tempTitle = tempItem.title.replace(this.dataGrid.listQuery.keywords,'<span style="color: red">'+this.dataGrid.listQuery.keywords+'</span>')
-                entJobs = entJobs + tempTitle + '|'
+                entJobs.push(tempTitle)
+              }else {
+                entJobs.push(tempItem.title)
               }
             })
-            thisItem.entJobs = entJobs
+            thisItem.entJobs = entJobs.join(' | ')
           }
 
           if (thisItem.tpatentsRelationsList){
-            let entPatentBrief
             thisItem.tpatentsRelationsList.forEach(tempItem => {
-              if (tempItem.brief.indexOf(this.dataGrid.listQuery.keywords)>0) {
+              if (tempItem.brief.indexOf(this.dataGrid.listQuery.keywords)>=0) {
                 // 高亮显示
                 const tempTitle = tempItem.brief.replace(this.dataGrid.listQuery.keywords,'<span style="color: red">'+this.dataGrid.listQuery.keywords+'</span>')
-                entPatentBrief = tempTitle
-                thisItem.entPatentBrief = entPatentBrief
+                thisItem.entPatentBrief = tempTitle
               }
             })
           }
           if (thisItem.tenterpriseDescList){
             let entDesc
             thisItem.tenterpriseDescList.forEach(tempItem => {
-              if (tempItem.entDesc.indexOf(this.dataGrid.listQuery.keywords)>0) {
+              if (tempItem.entDesc.indexOf(this.dataGrid.listQuery.keywords)>=0) {
                 // 高亮显示
                 const tempTitle = tempItem.entDesc.replace(this.dataGrid.listQuery.keywords,'<span style="color: red">'+this.dataGrid.listQuery.keywords+'</span>')
                 entDesc = tempTitle
@@ -423,16 +426,32 @@ export default ({
               }
             })
           }
-          if (thisItem.ttrademarksList){
-            let tradeName
-            thisItem.ttrademarksList.forEach(tempItem => {
-              tradeName = tradeName+ ' | ' + tempItem.name
+          if (thisItem.tenterpriseAppList){
+            thisItem.tenterpriseAppList.forEach(tempItem => {
+              if (tempItem.appinfo.indexOf(this.dataGrid.listQuery.keywords)>=0) {
+                // 高亮显示
+                const tempTitle = tempItem.appinfo.replace(this.dataGrid.listQuery.keywords,'<span style="color: red">'+this.dataGrid.listQuery.keywords+'</span>')
+                thisItem.appInfo = tempTitle.replace(/[\r\n]/g,"<br/>")
+              }
             })
-            thisItem.tradeName = tradeName
+          }
+          if (thisItem.ttrademarksList){
+            let tradeName = []
+            thisItem.ttrademarksList.forEach(tempItem => {
+              if (tempItem.name.indexOf(this.dataGrid.listQuery.keywords)>=0) {
+                // 高亮显示
+                const tempTitle = tempItem.name.replace(this.dataGrid.listQuery.keywords,'<span style="color: red">'+this.dataGrid.listQuery.keywords+'</span>')
+                tradeName.push(tempTitle)
+              }else {
+                tradeName.push(tempItem.name)
+              }
+            })
+            thisItem.tradeName = tradeName.join(' | ')
           }
 
         })
         this.dataGrid.total = this.dataGrid.list.length
+        loading.close()
       })
     },
     selectIndus(data) {
@@ -460,8 +479,9 @@ export default ({
         this.dialogVisible = false;
       })
     },
-    viewScoreDetail() {
-      this.dialogVisible = true;
+    viewScoreDetail(detail) {
+      this.dialogVisibleScore = true;
+      this.tevaluatingIndex = detail
     }
   }
 })

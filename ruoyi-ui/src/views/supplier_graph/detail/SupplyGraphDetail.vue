@@ -4,7 +4,7 @@
       <RelationGraph ref="graphRef" :options="graphOptions" :on-node-click="onNodeClick" :on-line-click="onLineClick">
         <template #graph-plug>
             <div style="position: absolute;width:350px; right:0;top:0;z-index: 600;
-            padding:10px;border-radius: 5px;color: #ffffff;font-size: 12px;"> 
+            padding:10px;border-radius: 5px;color: #ffffff;font-size: 12px;">
               <el-input
                   v-model="searchText"
                   placeholder="图谱节点定位，请输入节点名称"  suffix-icon="el-icon-search"
@@ -16,7 +16,7 @@
               <div v-if="node.data.spcType === 'ctrler'" style="background-color: #4eb548;width: 100%; color: #fff;height:40px;line-height: 40px;border-top-left-radius: 3px;border-top-right-radius: 3px;border-bottom: #cccccc solid 1px;">
                 {{node.data.relpartyp }}
               </div>
-              <div v-else-if="node.data.spcType === 'ctrled'" 
+              <div v-else-if="node.data.spcType === 'ctrled'"
               style="width: 100%; background-color: #d9001b;color: #ffffff;height:40px;line-height: 40px;font-size: 16px;
               border-top-left-radius: 3px;border-top-right-radius: 3px;">
                 被查询企业
@@ -30,8 +30,8 @@
       </RelationGraph>
        <div class="imgstyle" style="width:100%;height: 80px;line-height: 80px; display: flex;justify-content: center; position: absolute;bottom:0;z-index: 600;">
               图例：<div style="color: #d9001b;"><img src="@/assets/images/ls.png" alt=""> 被查询企业</div>
-              <div  style="color: #4eb548;"><img src="@/assets/images/tls.png" alt="">经销商</div>
-              <div style="color: #3399ff;"><img src="@/assets/images/c.png" alt="">供应商</div>
+              <div  style="color: #4eb548;"><img src="@/assets/images/tls.png" alt="">供应商</div>
+<!--              <div style="color: #3399ff;"><img src="@/assets/images/c.png" alt="">供应商</div>-->
           </div>
     </div>
   </div>
@@ -67,63 +67,109 @@ export default ({
         }
         // 这里可以参考"Graph 图谱"中的参数进行设置 https://seeksdream.github.io/#/docs/graph
       },
+      supplyDetail: {},
       uniscid: null
     }
   },
   mounted() {
     this.uniscid = this.$route.query.uniscid
-    this.getGraphData()
-    this.showGraph()
+    this.$nextTick(() => {
+      this.supplyDetail = JSON.parse(sessionStorage.getItem('supplyGraphDetail'))
+      this.getGraphData()
+      this.showGraph()
+    })
+
   },
   methods: {
     getGraphData() {
-      request({
-        url: '/entInfo/getSupplierRelation/'+this.uniscid,
-        method: 'get',
-      }).then(res => {
-        const nodes = []
+      const nodes = []
+      nodes.push({
+        id: this.supplyDetail.uniscid,
+        text: this.supplyDetail.entname,
+        nodeShape: 1,
+        color: 'white',
+        fontColor: 'black',
+        width: 300,
+        data: {
+          spcType: 'ctrled'
+        },
+      })
+
+      const lines = []
+
+      this.supplyDetail.tbiddingsallList.forEach(thisItem => {
         nodes.push({
-          id: res.data.baseEnterpriseInfo.uniscid,
-          text: res.data.baseEnterpriseInfo.entname,
-          data: res.data.baseEnterpriseInfo,
+          id: thisItem.winBidderCreditno,
+          text: thisItem.winBidderName,
+          // data: thisItem,
           nodeShape: 1,
           color: 'white',
           fontColor: 'black',
           width: 300,
           data: {
-          spcType: 'ctrled'
-        },
+            spcType: 'ctrler',
+            relpartyp: '供应商',
+          },
         })
 
-        const lines = []
-
-        res.data.supplierRelevanceList.forEach(thisItem => {
-          nodes.push({
-            id: thisItem.partyid,
-            text: thisItem.partyname,
-            // data: thisItem,
-            nodeShape: 1,
-            color: 'white',
-            fontColor: 'black',
-            width: 300,
-            data: {
-              spcType: 'ctrler',
-              relpartyp: thisItem.relpartyp,
-            },
-          })
-
-          lines.push({
-            from: res.data.baseEnterpriseInfo.uniscid,
-            to: thisItem.partyid,
-            color: '#ccc',
-            fontColor: 'black',
-            width: 300,
-          })
+        lines.push({
+          from: this.supplyDetail.uniscid,
+          to: thisItem.winBidderCreditno,
+          text: '供应商',
+          color: '#ccc',
+          fontColor: 'black',
+          width: 300,
         })
-
-        this.showGraph(res.data.baseEnterpriseInfo.uniscid,nodes,lines)
       })
+      this.showGraph(this.supplyDetail.uniscid,nodes,lines)
     },
+    // getGraphData() {
+    //   request({
+    //     url: '/entInfo/getSupplierRelation/'+this.uniscid,
+    //     method: 'get',
+    //   }).then(res => {
+    //     const nodes = []
+    //     nodes.push({
+    //       id: res.data.baseEnterpriseInfo.uniscid,
+    //       text: res.data.baseEnterpriseInfo.entname,
+    //       nodeShape: 1,
+    //       color: 'white',
+    //       fontColor: 'black',
+    //       width: 300,
+    //       data: {
+    //         spcType: 'ctrled'
+    //       },
+    //     })
+    //
+    //     const lines = []
+    //
+    //     res.data.supplierRelevanceList.forEach(thisItem => {
+    //       nodes.push({
+    //         id: thisItem.partyid,
+    //         text: thisItem.partyname,
+    //         // data: thisItem,
+    //         nodeShape: 1,
+    //         color: 'white',
+    //         fontColor: 'black',
+    //         width: 300,
+    //         data: {
+    //           spcType: 'ctrler',
+    //           relpartyp: thisItem.relpartyp,
+    //         },
+    //       })
+    //
+    //       lines.push({
+    //         from: res.data.baseEnterpriseInfo.uniscid,
+    //         to: thisItem.partyid,
+    //         color: '#ccc',
+    //         fontColor: 'black',
+    //         width: 300,
+    //       })
+    //     })
+    //
+    //     this.showGraph(res.data.baseEnterpriseInfo.uniscid,nodes,lines)
+    //   })
+    // },
     showGraph(rootId,nodes,lines) {
       // list [node1,node2,]
       const jsonData = {
@@ -169,7 +215,7 @@ display: flex;
 align-items: center;
 justify-content: center;
 flex-direction: column;
-  
+
 }
 .c-my-graph1 ::v-deep .c-node-desc{
   text-align: center;

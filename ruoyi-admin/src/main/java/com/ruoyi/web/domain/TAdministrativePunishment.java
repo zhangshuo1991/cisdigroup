@@ -2,6 +2,7 @@ package com.ruoyi.web.domain;
 
 
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -21,7 +22,6 @@ public class TAdministrativePunishment implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(type = IdType.AUTO)
     /**
      * eid
      */
@@ -43,7 +43,8 @@ public class TAdministrativePunishment implements Serializable {
     /**
      * number
      */
-    @ApiModelProperty("number")
+    @ApiModelProperty("pub_number")
+    @TableField("pub_number")
     private String number;
 
     /**
@@ -67,7 +68,8 @@ public class TAdministrativePunishment implements Serializable {
     /**
      * date
      */
-    @ApiModelProperty("date")
+    @ApiModelProperty("pub_date")
+    @TableField("pub_date")
     private String date;
 
     /**
@@ -92,6 +94,7 @@ public class TAdministrativePunishment implements Serializable {
      * based_on_1
      */
     @ApiModelProperty("based_on_1")
+    @TableField("based_on_1")
     private String basedOn1;
 
     public TAdministrativePunishment() {}

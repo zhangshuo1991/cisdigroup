@@ -4,7 +4,7 @@
       <div class="detlbos">
         <div class="detitle">{{entinfo.entname}}（{{entinfo.uniscid}}）</div>
         <div class="detTag">
-          <div>{{entinfo.entstatusCn}}</div>
+          <div style="width: 200px">{{entinfo.entstatusCn}}</div>
           <div>联系方式<i class="el-icon-arrow-down"></i></div>
           <div>官方网址<i class="el-icon-arrow-down"></i></div>
           <div>曾用名<i class="el-icon-arrow-down"></i></div>
@@ -14,8 +14,8 @@
           <el-descriptions class="margin-top" :column="3">
             <el-descriptions-item label="企业法人">{{entinfo.lerepname}} </el-descriptions-item>
             <el-descriptions-item label="注册资金">{{entinfo.regcap}}{{entinfo.regcapcurCn}}</el-descriptions-item>
-            <el-descriptions-item label="所属地区">>{{entinfo.domdistrictCn}}</el-descriptions-item>
-            <el-descriptions-item label="经营年限">1.7年</el-descriptions-item>
+            <el-descriptions-item label="所属地区">{{entinfo.domdistrictCn}}</el-descriptions-item>
+            <el-descriptions-item label="经营年限">10.7年</el-descriptions-item>
             <el-descriptions-item label="是否上市">否</el-descriptions-item>
             <el-descriptions-item label="是否高新">否</el-descriptions-item>
             <el-descriptions-item label="主营行业">{{entinfo.industryname}}</el-descriptions-item>
@@ -140,36 +140,7 @@ export default({
         {id:2,name:'风险事件信息'},
         {id:3,name:'灰名单信息'}
       ],
-      riskSummary:[
-        {
-          enterpriseId: '1001',
-          enterpriseName: '北京科技有限公司',
-          registeredCapital: '1000万',
-          establishmentDate: '2010-01-01',
-          legalRepresentative: '张三',
-          blacklistType: 'A级',
-          blacklistReason: '违法违规',
-          recognizingDepartment: '北京市工商局',
-          dataSource: '公开信息',
-          isRemoved: '否',
-          removalReason: '',
-          dataDate: '2021-10-01'
-        },
-        {
-          enterpriseId: '1002',
-          enterpriseName: '北京科技有限公司2',
-          registeredCapital: '1000万',
-          establishmentDate: '2010-01-01',
-          legalRepresentative: '张三',
-          blacklistType: 'A级',
-          blacklistReason: '违法违规',
-          recognizingDepartment: '北京市工商局',
-          dataSource: '公开信息',
-          isRemoved: '否',
-          removalReason: '',
-          dataDate: '2021-10-01'
-        },
-      ] ,
+      riskSummary: [],
       GreyList:[],
       dataGrid: {
         listQuery: {

@@ -12,7 +12,7 @@
         @select="handleSelect"
         @keyup.enter.native="handleFilter"
       >
-        <el-button slot="append" icon="el-icon-search" @click="handleFilter" />
+        <el-button slot="append" icon="el-icon-search" @click="getList" />
       </el-autocomplete>
     </div>
     <div style="padding-left: 20px;line-height: 40px;height: 40px;background-color: white;font-size: 12px;margin-top: 15px">

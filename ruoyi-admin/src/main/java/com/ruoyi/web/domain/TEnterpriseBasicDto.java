@@ -235,6 +235,12 @@ public class TEnterpriseBasicDto implements Serializable {
     private List<TEnterpriseApp> tEnterpriseAppList;
 
     @TableField(exist = false)
+    private List<TSoftwareCopyright> tSoftwareCopyrightList;
+
+    @TableField(exist = false)
+    private List<TEntWebsite> tEntWebsiteList;
+
+    @TableField(exist = false)
     private TGroupTag tGroupTag;
 
     @TableField(exist = false)
@@ -244,7 +250,25 @@ public class TEnterpriseBasicDto implements Serializable {
     private List<TBlacklist> tBlacklistList;
 
     @TableField(exist = false)
+    private List<TBiddingsallCache> tBiddingsallCacheList;
+
+    @TableField(exist = false)
+    private List<TBiddingsall> tBiddingsallList;
+
+    @TableField(exist = false)
     private List<TGreylist> tGreylistList;
+
+    @TableField(exist = false)
+    private List<TActionPerson> tActionPersonList;
+
+    @TableField(exist = false)
+    private List<TEnterpriseLabel> tEnterpriseLabelList;
+
+    @TableField(exist = false)
+    private long actionPersonNums;
+
+    @TableField(exist = false)
+    private List<String> actionPersonNameList;
 
     @TableField(exist = false)
     private TEvaluatingIndex tEvaluatingIndex;

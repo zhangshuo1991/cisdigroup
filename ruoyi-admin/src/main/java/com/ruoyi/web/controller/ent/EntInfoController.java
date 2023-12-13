@@ -3,10 +3,7 @@ package com.ruoyi.web.controller.ent;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.web.domain.TEnterpriseBasicDto;
-import com.ruoyi.web.domain.TEnterpriseStockholder;
-import com.ruoyi.web.domain.TGroupTag;
-import com.ruoyi.web.domain.TSupplierRelevance;
+import com.ruoyi.web.domain.*;
 import com.ruoyi.web.service.EntInfoService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,6 +121,47 @@ public class EntInfoController extends BaseController {
         return entInfoService.getActualController(searchParams,pageNum,pageSize);
     }
 
+    @PostMapping("/getActionGraph")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "searchParams", value = "搜索参数", dataType = "JSONObject"),
+                    @ApiImplicitParam(name = "pageNum", value = "页码", required = false, dataType = "int"),
+                    @ApiImplicitParam(name = "pageSize", value = "每页数量", required = false, dataType = "int")
+            }
+    )
+    @ApiResponse(code = 200, message = "success", response = TEnterpriseBasicDto.class)
+    @ApiOperation("查询企业一致行动人")
+    public AjaxResult getActionGraph(@RequestBody JSONObject searchParams,
+                                          @RequestParam(required = false,defaultValue = "1") int pageNum,
+                                          @RequestParam(required = false,defaultValue = "10") int pageSize) {
+        return entInfoService.getActionGraph(searchParams,pageNum,pageSize);
+    }
+
+    @GetMapping("/getEntActGraph/{uniscid}")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "uniscid", value = "uniscid", dataType = "String"),
+            }
+    )
+    @ApiResponse(code = 200, message = "success", response = TActionPerson.class)
+    @ApiOperation("查询企业一致行动人")
+    public AjaxResult getEntActGraph(@PathVariable String uniscid) {
+        return entInfoService.getEntActGraph(uniscid);
+    }
+
+    @GetMapping("/getEntActionLineDetail/{uniscid}/{actrelid}")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "uniscid", value = "uniscid", dataType = "String"),
+                    @ApiImplicitParam(name = "actrelid", value = "actrelid", dataType = "String"),
+            }
+    )
+    @ApiResponse(code = 200, message = "success", response = TActionPerson.class)
+    @ApiOperation("查询企业一致行动人")
+    public AjaxResult getEntActionLineDetail(@PathVariable String uniscid,@PathVariable String actrelid) {
+        return entInfoService.getEntActionLineDetail(uniscid,actrelid);
+    }
+
     /**
      * 查询企业关联企业
      */
@@ -203,6 +241,22 @@ public class EntInfoController extends BaseController {
         return entInfoService.getRiskList(searchParams,pageNum,pageSize);
     }
 
+    @GetMapping("/getBlackList")
+    @ApiResponse(code = 200, message = "success", response = TBlacklist.class)
+    @ApiOperation("查询企业黑名单信息")
+    public AjaxResult getBlackList() {
+        return entInfoService.getBlackList();
+    }
+
+    @GetMapping("/getTGreylist")
+    @ApiResponse(code = 200, message = "success", response = TGreylist.class)
+    @ApiOperation("查询企业灰名单信息")
+    public AjaxResult getTGreylist(
+            @RequestParam(required = false,defaultValue = "1") int pageNum,
+            @RequestParam(required = false,defaultValue = "10") int pageSize) {
+        return entInfoService.getTGreylist(pageNum,pageSize);
+    }
+
     @GetMapping("/getEntDetail/{uniscid}")
     @ApiImplicitParams(
             {
@@ -272,4 +326,55 @@ public class EntInfoController extends BaseController {
         return entInfoService.updateDataSetDetail(datasetId,paramsBody);
     }
 
+    /**
+     * 获取数据集列表
+     * @return
+     */
+    @GetMapping("/getAdministrativePunishment")
+    @ApiOperation("获取行政处罚信息")
+    public AjaxResult getDataSetList(
+                                     @RequestParam(required = false,defaultValue = "1") int pageNum,
+                                     @RequestParam(required = false,defaultValue = "10") int pageSize) {
+        return entInfoService.getAdministrativePunishment(pageNum,pageSize);
+    }
+
+    /**
+     * 获取数据集列表
+     * @return
+     */
+    @GetMapping("/getOverduetaxs")
+    @ApiOperation("获取欠税信息")
+    public AjaxResult getOverduetaxs(
+            @RequestParam(required = false,defaultValue = "1") int pageNum,
+            @RequestParam(required = false,defaultValue = "10") int pageSize) {
+        return entInfoService.getOverduetaxs(pageNum,pageSize);
+    }
+
+    /**
+     * 获取数据集列表
+     * @return
+     */
+    @GetMapping("/getLawsuitsRelations")
+    @ApiOperation("获取涉诉信息")
+    public AjaxResult getLawsuitsRelations(
+            @RequestParam(required = false,defaultValue = "1") int pageNum,
+            @RequestParam(required = false,defaultValue = "10") int pageSize) {
+        return entInfoService.getLawsuitsRelations(pageNum,pageSize);
+    }
+
+    @PostMapping("/getTBiddingsallCache")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "paramsBody", value = "搜索参数", dataType = "JSONObject"),
+                    @ApiImplicitParam(name = "pageNum", value = "页码", required = false, dataType = "int"),
+                    @ApiImplicitParam(name = "pageSize", value = "每页数量", required = false, dataType = "int")
+            }
+    )
+    @ApiOperation("获取招投标信息")
+    public AjaxResult getTBiddingsallCache(
+            @RequestBody JSONObject paramsBody,
+            @RequestParam(required = false,defaultValue = "1") int pageNum,
+            @RequestParam(required = false,defaultValue = "10") int pageSize) {
+        return entInfoService.getTBiddingsallCache(paramsBody,pageNum,pageSize);
+    }
 }

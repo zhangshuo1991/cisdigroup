@@ -1,19 +1,15 @@
 <template>
   <div id="app" style="margin: auto;background-color: #f9f9f9;padding: 10px;min-height: 700px">
     <div style="background-color: white;line-height: 70px;height: 70px;text-align: center">
-      <el-autocomplete
-        v-model="keywords"
+      <el-input
+        v-model="searchListQuery.keywords"
         class="input-with-select"
         style="width: 710px;margin-left: 48px;"
         placeholder="请输入企业名称、统⼀社会信⽤代码、⼯商注册号"
-        :fetch-suggestions="querySearchAsync"
-        :trigger-on-focus="false"
-        @select="handleSelect"
-        @input="handleInput"
-        @keyup.enter.native="searchGroupList"
+        @keyup.enter.native="getList"
       >
-        <el-button slot="append" icon="el-icon-search" @click="searchGroupList" />
-      </el-autocomplete>
+        <el-button slot="append" icon="el-icon-search" @click="getList" />
+      </el-input>
     </div>
     <div style="padding-left: 15px;line-height: 40px;height: 40px;background-color: white;font-size: 12px;margin-top: 15px">
       为您找到 <span style="color: #2E4E8F;font-weight: bolder">{{ totalSize }}</span> 家符合条件的企业，此处最多展示10000条。
@@ -34,13 +30,6 @@
           label="企业名称"
           width="200"
         >
-          <template slot-scope="scope">
-            <div
-              v-html="(scope.row.entname_hlf === undefined
-                  || scope.row.entname_hlf === null
-                  || scope.row.entname_hlf === '')?scope.row.entname: scope.row.entname_hlf"
-            />
-          </template>
         </el-table-column>
         <el-table-column
           prop="uniscid"
@@ -50,14 +39,14 @@
           label="企业经营状态"
         >
           <template slot-scope="scope">
-            <span :style="( statusStyle(scope.row.entstatus))">{{ scope.row.entstatus_cn }}</span>
+            {{ scope.row.entstatusCn }}
           </template>
         </el-table-column>
         <el-table-column
           label="注册资本"
         >
           <template slot-scope="scope">
-            {{ scope.row.regcap+scope.row.regcapcur_cn }}
+            {{ scope.row.regcap+scope.row.regcapcurCn }}
           </template>
         </el-table-column>
         <el-table-column
@@ -65,11 +54,11 @@
           label="成立日期"
         />
         <el-table-column
-          prop="regorg_cn"
+          prop="regorgCn"
           label="注册地"
         />
         <el-table-column
-          prop="actgrpCount"
+          prop="actionPersonNums"
           label="一致行动人组（数量）"
         />
         <el-table-column
@@ -77,7 +66,7 @@
         >
           <template slot-scope="scope">
             <span v-html="convertPartyList(scope)" />
-            <el-link v-show=" (scope.row.actlist !== undefined && scope.row.actlist.length>3)" type="primary" :underline="false" @click="showMoreEnt(scope)">更多</el-link>
+            <el-link v-show=" (scope.row.tactionPersonList !== undefined && scope.row.tactionPersonList.length>3)" type="primary" :underline="false" @click="showMoreEnt(scope)">更多</el-link>
           </template>
         </el-table-column>
         <el-table-column
@@ -119,20 +108,6 @@ export default({
     this.getList()
   },
   methods:{
-    searchGroupList() {
-      this.searchListQuery.keywords = this.keywords
-      this.searchListQuery.page = 1
-      this.searchListQuery.limit = 10
-      this.searchListLoading = true
-      this.$http({
-        url: "/actionGraph/searchGroupList",
-        method: "post",
-        data: this.searchListQuery
-      }).then(res => {
-        this.searchListLoading = false
-        this.searchList = res.data.rows
-      })
-    },
     handleSelect(item) {
       this.keywords = item.entname
       this.searchList = []
@@ -144,7 +119,7 @@ export default({
     },
     getList() {
       request({
-        url: "/entInfo/getActualController",
+        url: "/entInfo/getActionGraph",
         method: "post",
         data: { keyword: this.searchListQuery.keywords },
         params: { pageNum: this.searchListQuery.page,pageSize: this.searchListQuery.limit }
@@ -173,24 +148,20 @@ export default({
       return style
     },
     convertPartyList(scope) {
-      if (scope.row.actlist !== null && scope.row.actlist !== undefined && scope.row.actlist !== '') {
+      if (scope.row.tactionPersonList !== null && scope.row.tactionPersonList !== undefined && scope.row.tactionPersonList !== '') {
         const partyname_list = []
-        if (scope.row.actlist.length <= 3) {
-          scope.row.actlist.forEach(thisItem => {
-            if (thisItem.partyname_hlf !== null && thisItem.partyname_hlf !== undefined && thisItem.partyname_hlf !== '') {
-              partyname_list.push(thisItem.partyname_hlf)
-            } else {
-              partyname_list.push(thisItem.partyname)
+        if (scope.row.tactionPersonList.length <= 3) {
+          scope.row.tactionPersonList.forEach(thisItem => {
+            if (thisItem.fromname !== null && thisItem.fromname !== undefined && thisItem.fromname !== '') {
+              partyname_list.push(thisItem.fromname)
             }
           })
           return partyname_list.join(';').toLocaleString()
         } else {
-          scope.row.actlist.forEach(function(thisItem, index) {
+          scope.row.tactionPersonList.forEach(function(thisItem, index) {
             if (index < 3) {
-              if (thisItem.partyname_hlf !== null && thisItem.partyname_hlf !== undefined && thisItem.partyname_hlf !== '') {
-                partyname_list.push(thisItem.partyname_hlf)
-              } else {
-                partyname_list.push(thisItem.partyname)
+              if (thisItem.fromname !== null && thisItem.fromname !== undefined && thisItem.fromname !== '') {
+                partyname_list.push(thisItem.fromname)
               }
             }
           })
@@ -210,7 +181,13 @@ export default({
       })
     },
     viewDetailInfo(row) {
-      this.$router.push({ path: "/supplier_graph/actionGraphDetail" });
+      sessionStorage.setItem("actionOneDetail", JSON.stringify(row))
+      this.$router.push({
+        path: "/supplier_graph/actionGraphDetail",
+        query: {
+          uniscid: row.uniscid,
+        }
+      });
     }
   }
 })

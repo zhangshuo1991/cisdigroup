@@ -8,26 +8,28 @@
         <tbody>
         <tr>
           <td class="c-td-title">企业名称：</td>
-          <td class="c-td-text">{{ ent_baseinfo.entname }}</td>
+          <td class="c-td-text">{{ act_detail_item.entname }}</td>
           <td class="c-td-title">统一社会信用代码 ：</td>
           <td class="c-td-text">{{ act_detail_item.uniscid }}</td>
         </tr>
         <tr>
           <td class="c-td-title">经营状态：</td>
           <td class="c-td-text">
-            <span :style="( statusStyle(act_detail_item.entstatus))">{{ act_detail_item.entstatus_cn }}</span>
+            <span>{{ act_detail_item.entstatusCn }}</span>
           </td>
           <td class="c-td-title">注册资本：</td>
-          <td class="c-td-text" style="width: 30%">{{ act_detail_item.regcap.toLocaleString()+act_detail_item.regcapcur_cn }}</td>
+          <td class="c-td-text" style="width: 30%">
+            {{ act_detail_item.regcap+act_detail_item.regcapcurCn }}
+          </td>
         </tr>
         <tr>
           <td class="c-td-title">注册地：</td>
           <td class="c-td-text">
-            {{ act_detail_item.regorg_cn }}
+            {{ act_detail_item.regAddr }}
           </td>
           <td class="c-td-title">股东总数：</td>
           <td class="c-td-text">
-            {{ ent_baseinfo.invCount }}
+            {{ act_detail_item.tenterpriseStockholderList.length }}
           </td>
         </tr>
         <tr>
@@ -37,7 +39,7 @@
           </td>
           <td class="c-td-title">一致行动人组数量：</td>
           <td class="c-td-text">
-            {{ ent_baseinfo.actgrpCount }}
+            {{ act_detail_item.actionPersonNums }}
           </td>
         </tr>
         </tbody>
@@ -90,7 +92,12 @@
         </el-tabs>
         <div class="c-graph-one" style="height: 420px;">
           <div style="height: 420px;width: 60%;border: 4px solid #F2F2F2;float: left">
-
+            <RelationGraph
+              ref="graphRef"
+              :options="graphOptions"
+              :on-line-click="onLineClick"
+            >
+            </RelationGraph>
 
           </div>
           <div style="height: 420px;width: 38%;border: 4px solid #F2F2F2;float: left;margin-left: 20px;line-height: 20px;padding-left: 5px;">
@@ -102,17 +109,16 @@
         </div>
       </div>
     </div>
-    <!-- <div style="margin-left: 15px;background-color: white;padding-left: 10px;margin-right: 15px;padding-top: 3px;margin-top: 15px;min-height: 580px">
+    <div style="margin-left: 15px;background-color: white;padding-left: 10px;margin-right: 15px;padding-top: 3px;margin-top: 15px;min-height: 580px">
       <div class="c-title-div">
         关系详情信息
       </div>
       <div class="c-my-graph1" style="height: 510px;border: 4px solid #F2F2F2;float: left;width: 60%;">
-        <div style="height: 30px;width: 100%;line-height: 30px;padding-left: 5px;">
-          <span>{{ detailTitle }}</span>
-        </div>
-        <div style="height: 50px;width: 100%;line-height: 25px;color: #7F7F7F;padding-left: 5px;padding-right: 5px">
-          <span>{{ relaInfoText }}</span>
-        </div>
+        <RelationGraph
+          ref="graphRef2"
+          :options="graphOptions"
+        >
+        </RelationGraph>
       </div>
       <div style="height: 510px;width: 38%;float: left;margin-left: 15px;border: 4px solid #F2F2F2;">
         <el-select v-model="exampleGraphValue" placeholder="请选择" style="margin-top: 5px;margin-left: 5px" @change="onSelectChange">
@@ -129,7 +135,7 @@
           </transition>
         </div>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -146,7 +152,7 @@ import OneOneZeroGraph from './graphExample/OneOneZeroGraph'
 import OneZeroNineGraph from './graphExample/OneZeroNineGraph'
 import TwoZeroOneGraph from './graphExample/TwoZeroOneGraph'
 import TwoZeroTwoGraph from './graphExample/TwoZeroTwoGraph'
-
+import request from "@/utils/request";
 export default {
   name: 'ActPersonDetail',
   components: {
@@ -210,29 +216,17 @@ export default {
         '202': '关系密切家族成员控制企业关系（目标企业主要投资者个人、关键管理人员及亲属之间对目标企业共同控制或施加重大影响）',
         '203': '其他关联方关系（投资者之间具有其他关联关系）'
       },
-      userGraphSetting1: {
-        heightByContent: false,
-        fullTools: false,
-        isShowMiniView: false,
-        isAutoFixedTools: false,
-        isMiniNameFilter: true,
-        isMiniToolBar: true,
-        expandPosition: 'bottom',
-        hideTextByZoom: false,
-        lineColor_default: '#dddddd',
-        nodeColor_default: '',
-        layoutName: 'tree-plus-b',
-        layoutDirection: 'v',
-        nodeShape: 0,
-        lineShape: 1,
-        isEndArrow: false,
-        lineMarkerConfig: { // 另一种箭头样式
-          markerWidth: 0,
-          markerHeight: 0,
-          refX: 0,
-          refY: 0,
-          color: '#128bed',
-          data: '00000'
+      graphOptions: {
+        defaultNodeBorderWidth: 0,
+        allowSwitchLineShape: true,
+        allowSwitchJunctionPoint: true,
+        defaultLineShape: 1,
+        defaultJunctionPoint: 'border',
+        layout: {
+          layoutName: 'tree',
+          from: 'bottom',
+          min_per_width: 410, // 根据节点的宽度设置，这个是让图谱看起来偏亮的关键
+          min_per_height: 50,
         }
       },
       userGraphSetting_two: {
@@ -258,15 +252,14 @@ export default {
       act_detail_item: {
         regcap: 0
       },
-      entid: '',
+      uniscid: '',
       detailTitle: ''
     }
   },
   mounted() {
-    this.entid = this.$route.query.entid
-    var ctrlItem = JSON.parse(sessionStorage.getItem('act_detail_item'))
-    this.act_detail_item = ctrlItem || {}
-    this.queryBasicDetail()
+    this.uniscid = this.$route.query.uniscid
+    this.act_detail_item = JSON.parse(sessionStorage.getItem('actionOneDetail'))
+    // this.queryBasicDetail()
     this.queryActGraph()
   },
   methods: {
@@ -282,9 +275,12 @@ export default {
     },
     queryActGraph() {
       this.detailInfoLoading = true
-      const url = '/smart-api/aff-enactinf-ws/enactinf/getEntActGraph?entid=' + this.entid
+      const url = '/entInfo/getEntActGraph/' + this.uniscid
       const _this = this
-      this.SeeksHttp.get(url).then(response => {
+      request({
+        url: '/entInfo/getEntActGraph/' + this.uniscid,
+        method: 'GET'
+      }).then(response => {
         if (response.data.item !== null && response.data.item !== undefined) {
           response.data.item.forEach(function(thisItem, index) {
             _this.tabsNames.push(
@@ -351,10 +347,12 @@ export default {
             to: thisItem.toid,
             color: __color,
             fontColor: _fontColor,
-            text: thisItem.reltype_cn,
-            reltype: thisItem.reltype,
-            actrelid: thisItem.actrelid,
-            isRerverse: true
+            data: {
+              reltype: thisItem.reltype,
+              actrelid: thisItem.actrelid,
+              isRerverse: true
+            },
+            text: thisItem.reltype_cn
           }
         )
       })
@@ -407,7 +405,7 @@ export default {
     },
     loadGraphData(graphData) {
       this.$nextTick(() => {
-        this.$refs.seeksRelationGraph.setJsonData(graphData, function(seeksRGGraph) {
+        this.$refs.graphRef.setJsonData(graphData, function(seeksRGGraph) {
         })
       })
     },
@@ -421,12 +419,16 @@ export default {
       }
     },
     onLineClick(data) {
-      const actrelid = data.actrelid
-      const url = '/smart-api/aff-enactinf-ws/enactinf/getRelDetailsGraph?entid=' + this.entid + '&actrelid=' + actrelid
+      console.log(data)
+      const actrelid = data.data.actrelid
+      const url = '/entInfo/getEntActionLineDetail?entid=' + this.entid + '&actrelid=' + actrelid
       const _this = this
       let actName = ''
       let targetName = ''
-      this.SeeksHttp.get(url).then(response => {
+      request({
+        url: '/entInfo/getEntActionLineDetail/' + this.uniscid+'/' + actrelid,
+        method: 'GET'
+      }).then(response => {
         if (response.data.item !== null && response.data.item !== undefined) {
           const nodes = []
           response.data.item.nodes.forEach(function(thisItem, index) {
@@ -436,15 +438,11 @@ export default {
                 {
                   spcType: 'target',
                   styleClass: 'c-graph-node-person',
-                  color: '#FFFFFF',
-                  fontColor: '#0070C4',
-                  nodeShape: 0,
-                  border: 0,
+                  color: '#25292F',
+                  fontColor: '#EC6941',
                   text: thisItem.nodename,
                   allowClick: false,
-                  x: 0,
-                  y: 180,
-                  fixed: true,
+                  nodeShape: 0,
                   id: thisItem.nodeid
                 }
               )
@@ -455,15 +453,12 @@ export default {
                   {
                     spcType: 'source',
                     styleClass: 'c-graph-node-person',
-                    color: '#FFFFFF',
-                    fontColor: '#0070C4',
-                    nodeShape: 0,
-                    border: 0,
+                    color: '#25292F',
+                    fontColor: '#EC6941',
                     text: thisItem.nodename,
                     allowClick: false,
+                    nodeShape: 0,
                     id: thisItem.nodeid,
-                    x: -150,
-                    y: -50,
                     fixed: true
                   }
                 )
@@ -472,16 +467,12 @@ export default {
                   {
                     spcType: 'source',
                     styleClass: 'c-graph-node-person',
-                    color: '#FFFFFF',
-                    fontColor: '#0070C4',
-                    nodeShape: 0,
-                    border: 0,
+                    color: '#EC6941',
+                    fontColor: '#FFFFFF',
                     text: thisItem.nodename,
                     allowClick: false,
+                    nodeShape: 0,
                     id: thisItem.nodeid,
-                    x: index * 80,
-                    y: -50,
-                    fixed: true
                   }
                 )
               }
@@ -490,21 +481,15 @@ export default {
           const links = []
 
           response.data.item.links.forEach(thisItem => {
-            var __color
-            var _fontColor
-            if (thisItem.reltype_cn) {
-              var colorConfig = this.orgTypeColorMap[thisItem.reltype]
-              if (colorConfig) {
-                __color = colorConfig.color
-                _fontColor = colorConfig.fontColor
-              }
-            }
+            var __color = '#4EA2F0'
+            var _fontColor = '#4EA2F0'
             if (thisItem.reltype === '1') {
               links.push(
                 {
                   from: thisItem.fromid,
                   to: thisItem.toid,
                   color: __color,
+                  nodeShape: 0,
                   fontColor: _fontColor,
                   text: thisItem.reltype_cn + '：' + thisItem.property + '%'
                 }
@@ -515,6 +500,7 @@ export default {
                   from: thisItem.fromid,
                   to: thisItem.toid,
                   color: __color,
+                  nodeShape: 0,
                   fontColor: _fontColor,
                   text: thisItem.reltype_cn + '：' + thisItem.property_cn
                 }
@@ -525,6 +511,7 @@ export default {
                   from: thisItem.fromid,
                   to: thisItem.toid,
                   color: __color,
+                  nodeShape: 0,
                   fontColor: _fontColor,
                   text: thisItem.reltype_cn + '：' + thisItem.property_cn
                 }
@@ -547,7 +534,7 @@ export default {
     },
     loadGraphTwoData(graphData) {
       this.$nextTick(() => {
-        this.$refs.seeksRelationGraph_two.setJsonData(graphData, function(seeksRGGraph) {
+        this.$refs.graphRef2.setJsonData(graphData, function(seeksRGGraph) {
         })
       })
     },
@@ -674,6 +661,27 @@ export default {
 .component-fade-enter, .component-fade-leave-to
   /* .component-fade-leave-active for below version 2.1.8 */ {
   opacity: 0;
+}
+.c-graph-one /deep/ .rel-node-shape-0{
+  border-radius: 3px;
+  padding-left: 5px;
+  padding-right: 5px;
+  height: 52px;
+  width: 120px;
+  /*display: flex;*/
+  /*align-items: center;*/
+  /*justify-content: center;*/
+}
+.c-my-graph1 /deep/ .rel-node-shape-0{
+  padding: 0px 0px 0px 0px;
+  height:75px;
+  width:200px;
+  text-align: center;
+  border-radius: 3px;
+  border:#cccccc solid 1px !important;
+  /*display: flex;*/
+  /*align-items: center;*/
+  /*justify-content: center;*/
 }
 /deep/ .rel-node-checked{
   box-shadow: none;
