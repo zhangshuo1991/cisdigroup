@@ -30,12 +30,6 @@ public class TGreylist implements Serializable {
     private String entname;
 
     /**
-     * is_grey
-     */
-    @ApiModelProperty("is_grey")
-    private String isGrey;
-
-    /**
      * uniscid
      */
     @ApiModelProperty("uniscid")
@@ -52,18 +46,6 @@ public class TGreylist implements Serializable {
      */
     @ApiModelProperty("blacklist_type")
     private String blacklistType;
-
-    /**
-     * datadate
-     */
-    @ApiModelProperty("datadate")
-    private String datadate;
-
-    /**
-     * department
-     */
-    @ApiModelProperty("department")
-    private String department;
 
     /**
      * rel_type

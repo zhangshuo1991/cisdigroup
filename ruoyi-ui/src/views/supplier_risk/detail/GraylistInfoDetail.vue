@@ -15,12 +15,12 @@
             <el-descriptions-item label="企业法人">{{entinfo.lerepname}} </el-descriptions-item>
             <el-descriptions-item label="注册资金">{{entinfo.regcap}}{{entinfo.regcapcurCn}}</el-descriptions-item>
             <el-descriptions-item label="所属地区">{{entinfo.domdistrictCn}}</el-descriptions-item>
-            <el-descriptions-item label="经营年限">10.7年</el-descriptions-item>
-            <el-descriptions-item label="是否上市">否</el-descriptions-item>
+            <el-descriptions-item label="经营年限">{{entinfo.tenterpriseTag.enages}} 年</el-descriptions-item>
+            <el-descriptions-item label="是否上市">{{entinfo.listed === 0 ? '否': '是'}}</el-descriptions-item>
             <el-descriptions-item label="是否高新">否</el-descriptions-item>
             <el-descriptions-item label="主营行业">{{entinfo.industryname}}</el-descriptions-item>
             <el-descriptions-item label="组织形式">{{entinfo.orgtypeCn}}</el-descriptions-item>
-            <el-descriptions-item label="企业规模">大型</el-descriptions-item>
+            <el-descriptions-item label="企业规模">{{entinfo.tenterpriseTag.entscaleCn}}</el-descriptions-item>
             <el-descriptions-item label="企业简介">
               {{entinfo.opscope}}
             </el-descriptions-item>
@@ -67,6 +67,7 @@
           :data="riskSummary"
           border
           fit
+          height="600"
           highlight-current-row
           :header-row-style="{height:'40px',fontSize: '13px'}"
           :header-cell-style="{padding:'0px',textAlign: 'center'}"
@@ -74,15 +75,9 @@
           :cell-style="{padding:'0px','text-align':'center'}"
           style="width: 100%;"
         >
-          <el-table-column label="企业ID" prop="enterpriseId"></el-table-column>
-          <el-table-column label="企业名称" prop="enterpriseName"></el-table-column>
-          <el-table-column label="注册资本" prop="registeredCapital"></el-table-column>
-          <el-table-column label="成立日期" prop="establishmentDate"></el-table-column>
-          <el-table-column label="法定代表人" prop="legalRepresentative"></el-table-column>
-          <el-table-column label="风险信息类型" prop="blacklistType"></el-table-column>
-          <el-table-column label="认定部门" prop="department"></el-table-column>
-          <el-table-column label="纳入黑名单原因" prop="blacklistReason"></el-table-column>
-          <el-table-column label="风险信息发生日期" prop="dataDate"></el-table-column>
+          <el-table-column label="企业名称" prop="entname"></el-table-column>
+          <el-table-column label="风险信息类型" prop="blackType"></el-table-column>
+          <el-table-column label="风险信息发生日期" prop="blackDate"></el-table-column>
           <el-table-column label="详情">
             <template slot-scope="scope">
               <el-link type="primary" @click="riskSumDelit(scope.row)">详情</el-link>
@@ -126,6 +121,7 @@ import blackList from './blackList.vue'
 import RisksummaryDetail from './risksummaryDetail.vue'
 import greyListDetail from './greyListDetail.vue'
 import Pagination from "@/components/Pagination";
+import request from "@/utils/request";
 export default({
   name: "SupplyActualController",
   components: { Pagination,blackList,RisksummaryDetail,greyListDetail},
@@ -182,6 +178,7 @@ export default({
       this.entinfo = JSON.parse(sessionStorage.getItem('riskInfo'))
       this.dataGrid.list = this.entinfo.tblacklistList
       this.GreyList = this.entinfo.tgreylistList
+      this.getList(this.entinfo.uniscid)
     })
   },
   methods:{
@@ -193,7 +190,13 @@ export default({
     },
     handleFilter() {
     },
-    getList() {
+    getList(uniscid) {
+      request({
+        url: '/entInfo/getBlackEvent/'+uniscid,
+        method: 'get'
+      }).then(response => {
+        this.riskSummary = response.data
+      })
     },
     viewDetail() {
       // this.$router.push({ path: "/supplier_graph/actualControllerGraph" });
@@ -207,7 +210,7 @@ export default({
     onGetIdx(index){
       this.currentIndex = index
     },
-    riskSumDelit(){
+    riskSumDelit(row){
       this.visiblesummary = true
     },
     GreyListDetail(){

@@ -42,7 +42,7 @@
           </template>
         </el-table-column>
         <el-table-column label="注册资本">
-          <template slot-scope="scope">{{ scope.row.regcap }}万元</template>
+          <template slot-scope="scope">{{ scope.row.regcap }}万元人民币</template>
         </el-table-column>
         <el-table-column label="详情">
           <template slot-scope="scope">

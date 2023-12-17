@@ -46,7 +46,11 @@
         <el-table-column
           prop="listed"
           label="是否上市"
-        />
+        >
+          <template slot-scope="scope">
+            {{ scope.row.listed == 1 ? "是" : "否" }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="relaNums"
           label="关联企业数量"

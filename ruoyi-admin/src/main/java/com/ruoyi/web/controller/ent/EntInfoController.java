@@ -362,6 +362,18 @@ public class EntInfoController extends BaseController {
         return entInfoService.getLawsuitsRelations(pageNum,pageSize);
     }
 
+    /**
+     * 获取数据集列表
+     * @return
+     */
+    @GetMapping("/getChangeRecords")
+    @ApiOperation("获取变更信息")
+    public AjaxResult getChangeRecords(
+            @RequestParam(required = false,defaultValue = "1") int pageNum,
+            @RequestParam(required = false,defaultValue = "10") int pageSize) {
+        return entInfoService.getChangeRecords(pageNum,pageSize);
+    }
+
     @PostMapping("/getTBiddingsallCache")
     @ApiImplicitParams(
             {
@@ -371,10 +383,40 @@ public class EntInfoController extends BaseController {
             }
     )
     @ApiOperation("获取招投标信息")
+    @ApiResponse(code = 200, message = "success", response = TBiddingsall.class)
     public AjaxResult getTBiddingsallCache(
             @RequestBody JSONObject paramsBody,
             @RequestParam(required = false,defaultValue = "1") int pageNum,
             @RequestParam(required = false,defaultValue = "10") int pageSize) {
         return entInfoService.getTBiddingsallCache(paramsBody,pageNum,pageSize);
+    }
+
+
+    @GetMapping("/getOtherBlackEvent")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "paramsBody", value = "搜索参数", dataType = "JSONObject"),
+                    @ApiImplicitParam(name = "pageNum", value = "页码", required = false, dataType = "int"),
+                    @ApiImplicitParam(name = "pageSize", value = "每页数量", required = false, dataType = "int")
+            }
+    )
+    @ApiOperation("获取其他黑名单信息")
+    @ApiResponse(code = 200, message = "success", response = TBlacklist.class)
+    public AjaxResult getOtherBlackEvent(
+            @RequestParam(required = false,defaultValue = "1") int pageNum,
+            @RequestParam(required = false,defaultValue = "10") int pageSize) {
+        return entInfoService.getOtherBlackEvent(pageNum,pageSize);
+    }
+
+    @GetMapping("/getBlackEvent/{uniscid}")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "uniscid", value = "uniscid", dataType = "String"),
+            }
+    )
+    @ApiOperation("获取企业黑名单信息")
+    @ApiResponse(code = 200, message = "success", response = TBlacklist.class)
+    public AjaxResult getBlackEvent(@PathVariable String uniscid) {
+        return entInfoService.getBlackEvent(uniscid);
     }
 }

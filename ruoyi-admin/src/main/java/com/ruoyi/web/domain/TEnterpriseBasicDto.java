@@ -273,6 +273,9 @@ public class TEnterpriseBasicDto implements Serializable {
     @TableField(exist = false)
     private TEvaluatingIndex tEvaluatingIndex;
 
+    @TableField(exist = false)
+    private TEnterpriseTag tEnterpriseTag;
+
 
     // 关联企业数量
     @TableField(exist = false)

@@ -17,10 +17,7 @@ import org.apache.commons.compress.utils.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -117,6 +114,18 @@ public class EntInfoService {
     @Autowired
     private ITEnterpriseLabelMapper itEnterpriseLabelMapper;
 
+    @Autowired
+    private ITChangeRecordsMapper itChangeRecordsMapper;
+
+    @Autowired
+    private ITEnterpriseTagMapper itEnterpriseTagMapper;
+
+    @Autowired
+    private ITRestrictedConsumerMapper itRestrictedConsumerMapper;
+
+    @Autowired
+    private ITJudicialFreezesMapper itJudicialFreezesMapper;
+
     public AjaxResult searchInfoByKeyword(JSONObject searchParams, int pageNum, int pageSize) {
         if (!searchParams.containsKey("keywords") || StringUtils.isBlank(searchParams.getString("keywords"))) {
             return AjaxResult.error("请输入关键字");
@@ -187,11 +196,10 @@ public class EntInfoService {
         tEntWebsiteList.forEach(tEntWebsite -> {
             allSearchUniscid.add(tEntWebsite.getUniscid());
         });
-        JSONArray entscoreChecks = searchParams.getJSONArray("entscore_checks");
+        Set<String> scoreSelectList = searchScore(searchParams);
 
         Set<String> newResult = allSearchUniscid;
-        if(entscoreChecks.size()>0) {
-            Set<String> scoreSelectList = searchScore(searchParams);
+        if(scoreSelectList.size()>0) {
             // 两个集合是否有交集
             newResult = com.google.common.collect.Sets.intersection(allSearchUniscid,scoreSelectList);
         }
@@ -255,11 +263,7 @@ public class EntInfoService {
 
     private Set<String> searchScore(JSONObject searchParams) {
         JSONArray entscoreChecks = searchParams.getJSONArray("entscore_checks");
-        if(entscoreChecks.size()<=0) {
-            return Sets.newHashSet();
-        }
-
-        Set<String> uniscidSet = Sets.newHashSet();
+        Set<String> uniscidSetScore = Sets.newHashSet();
         for (int i=0;i<entscoreChecks.size();i++) {
             String score = CheckUtils.scoreMap.get((String)entscoreChecks.get(i));
             String start = score.split("-")[0];
@@ -268,10 +272,87 @@ public class EntInfoService {
             queryWrapper.between("overall",start,end);
             List<TEvaluatingIndex> tempList = itEvaluatingIndexMapper.selectList(queryWrapper);
             for(TEvaluatingIndex item: tempList) {
+                uniscidSetScore.add(item.getUniscid());
+            }
+        }
+        Set<String> otherSet=searchTag(searchParams);
+        if (uniscidSetScore.size()>0 && otherSet.size()>0) {
+            return com.google.common.collect.Sets.intersection(uniscidSetScore, otherSet);
+        }
+        if (uniscidSetScore.size()>0) {
+            return uniscidSetScore;
+        }
+        return otherSet;
+    }
+
+    private Set<String> searchTag(JSONObject searchParams) {
+        JSONArray indusChecked = searchParams.getJSONArray("indus_checked");
+        QueryWrapper<TEnterpriseTag> queryWrapper = new QueryWrapper<>();
+        if(indusChecked.size()>0) {
+            Set<String> indusCodeSet = new HashSet<>();
+            for (int i=0;i<indusChecked.size();i++) {
+                JSONArray singleJson = (JSONArray)indusChecked.get(i);
+                indusCodeSet.add((String)singleJson.get(2));
+            }
+            queryWrapper.in("orgtype",indusCodeSet);
+        }
+        JSONArray aeraChecked = searchParams.getJSONArray("aera_checked");
+        if(aeraChecked.size()>0) {
+            Set<String> aeraCodeSet = new HashSet<>();
+            for (int i=0;i<aeraChecked.size();i++) {
+                JSONArray singleJson = (JSONArray)aeraChecked.get(i);
+                aeraCodeSet.add((String)singleJson.get(2));
+            }
+            queryWrapper.in("domdistrict",aeraCodeSet);
+        }
+        JSONArray personNum = searchParams.getJSONArray("person_nums");
+        if(personNum.size()>0) {
+            Set<String> personNumSet = new HashSet<>();
+            for (int i=0;i<personNum.size();i++) {
+                String score = CheckUtils.personNumsMap.get((String) personNum.get(i));
+                personNumSet.add(score);
+            }
+            queryWrapper.in("entscale",personNumSet);
+        }
+        JSONArray enttypeChecks = searchParams.getJSONArray("enttype_checks");
+        if(enttypeChecks.size()>0) {
+            Set<String> enttypeSet = new HashSet<>();
+            for (int i=0;i<enttypeChecks.size();i++) {
+                String score = (String) enttypeChecks.get(i);
+                enttypeSet.add(score);
+            }
+            queryWrapper.in("orgtype",enttypeSet);
+        }
+        Set<String> uniscidSet = Sets.newHashSet();
+        if(indusChecked.size()>0 || aeraChecked.size()>0
+           || personNum.size()>0 || enttypeChecks.size()>0 ) {
+            List<TEnterpriseTag> tEnterpriseTagList = itEnterpriseTagMapper.selectList(queryWrapper);
+            tEnterpriseTagList.forEach(tEnterpriseTag -> {
+                uniscidSet.add(tEnterpriseTag.getUniscid());
+            });
+        }
+
+
+        JSONArray esdateChecks = searchParams.getJSONArray("esdate_checks");
+        Set<String> uniscidSetSecond = Sets.newHashSet();
+        for (int i=0;i<esdateChecks.size();i++) {
+            String score = CheckUtils.enAgesMap.get((String)esdateChecks.get(i));
+            String start = score.split("-")[0];
+            String end = score.split("-")[1];
+            queryWrapper = new QueryWrapper<>();
+            queryWrapper.between("enages",start,end);
+            List<TEnterpriseTag> tempList = itEnterpriseTagMapper.selectList(queryWrapper);
+            for(TEnterpriseTag item: tempList) {
                 uniscidSet.add(item.getUniscid());
             }
         }
-        return uniscidSet;
+        if (uniscidSet.size()>0 && uniscidSetSecond.size()>0) {
+            return com.google.common.collect.Sets.intersection(uniscidSet, uniscidSetSecond);
+        }
+        if (uniscidSet.size()>0) {
+            return uniscidSet;
+        }
+        return uniscidSetSecond;
     }
 
     public AjaxResult searchInfoByKeywordSimple(JSONObject searchParams, int pageNum, int pageSize) {
@@ -650,6 +731,15 @@ public class EntInfoService {
             basic.setTBlacklistList(itBlacklistMapper.selectList(
                     new QueryWrapper<TBlacklist>().eq("uniscid",basic.getUniscid())
             ));
+            basic.setTEnterpriseTag(itEnterpriseTagMapper.selectOne(
+                    new QueryWrapper<TEnterpriseTag>()
+                            .select("uniscid,orgtype,domdistrict,entscale_cn,enages")
+                            .eq("uniscid",basic.getUniscid())
+            ));
+            basic.setTEnterpriseDescList(itEnterpriseDescMapper.selectList(
+                    new QueryWrapper<TEnterpriseDesc>()
+                            .eq("uniscid",basic.getUniscid())
+            ));
             basicList.add(basic);
         }
         JSONObject jsonObject = new JSONObject();
@@ -726,6 +816,19 @@ public class EntInfoService {
         return AjaxResult.success(jsonObject);
     }
 
+    public AjaxResult getChangeRecords(int pageNum, int pageSize) {
+        QueryWrapper<TChangeRecords> queryWrapper = new QueryWrapper<>();
+        Page<TChangeRecords> page = new Page<>(pageNum,pageSize);
+        Page<TChangeRecords> pageResult = itChangeRecordsMapper.selectPage(page, queryWrapper);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("total",pageResult.getTotal());
+        jsonObject.put("pages",pageResult.getPages());
+        jsonObject.put("pageNum",pageResult.getCurrent());
+        jsonObject.put("pageSize",pageResult.getSize());
+        jsonObject.put("item",pageResult.getRecords());
+        return AjaxResult.success(jsonObject);
+    }
+
     public AjaxResult getTBiddingsallCache(JSONObject paramsBody, int pageNum, int pageSize) {
         QueryWrapper<TEnterpriseBasicDto> queryWrapper = new QueryWrapper<>();
         if (paramsBody.containsKey("keyword") && StringUtils.isNotBlank(paramsBody.getString("keyword"))) {
@@ -753,5 +856,83 @@ public class EntInfoService {
         jsonObject.put("pageSize",pageResult.getSize());
         jsonObject.put("item",basicList);
         return AjaxResult.success(jsonObject);
+    }
+
+    public AjaxResult getOtherBlackEvent(int pageNum, int pageSize){
+
+        List<JSONObject> allBlackList = Lists.newArrayList();
+        itRestrictedConsumerMapper.selectList(new QueryWrapper<>()).forEach(item -> {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("uniscid",item.getUniscid());
+            jsonObject.put("blackType","限制高消费");
+            jsonObject.put("blackDate",item.getFilingDate());
+            jsonObject.put("entname",item.getEname());
+            allBlackList.add(jsonObject);
+        });
+
+        itJudicialFreezesMapper.selectList(new QueryWrapper<>()).forEach(item -> {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("uniscid",item.getUniscid());
+            jsonObject.put("blackType","司法冻结");
+            jsonObject.put("blackDate",item.getLoseEfficacyDate());
+            jsonObject.put("entname",item.getEname());
+            allBlackList.add(jsonObject);
+        });
+        return AjaxResult.success(allBlackList);
+    }
+
+    public AjaxResult getBlackEvent(String uniscid){
+
+        List<JSONObject> allBlackList = Lists.newArrayList();
+        itChangeRecordsMapper.selectList(
+                new QueryWrapper<TChangeRecords>().eq("uniscid",uniscid)
+        ).forEach(item -> {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("uniscid",item.getUniscid());
+            jsonObject.put("blackType","工商变更");
+            jsonObject.put("blackDate",item.getChangeDate());
+            jsonObject.put("entname",item.getEname());
+            jsonObject.put("detail",item);
+            allBlackList.add(jsonObject);
+        });
+
+        itAdministrativePunishmentMapper.selectList(
+                new QueryWrapper<TAdministrativePunishment>().eq("uniscid",uniscid)
+        ).forEach(item -> {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("uniscid",item.getUniscid());
+            jsonObject.put("blackType","行政处罚");
+            jsonObject.put("blackDate",item.getPublicDate());
+            jsonObject.put("entname",item.getEname());
+            jsonObject.put("detail",item);
+            allBlackList.add(jsonObject);
+        });
+
+        itOverduetaxsMapper.selectList(
+                new QueryWrapper<TOverduetaxs>().eq("uniscid",uniscid)
+        ).forEach(item -> {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("uniscid",item.getUniscid());
+            jsonObject.put("blackType","欠税公告");
+            jsonObject.put("blackDate",item.getOverdueTime());
+            jsonObject.put("entname",item.getEname());
+            jsonObject.put("detail",item);
+            allBlackList.add(jsonObject);
+        });
+
+        itLawsuitsRelationsMapper.selectList(
+                new QueryWrapper<TLawsuitsRelations>()
+                        .eq("uniscid",uniscid)
+                        .last(" limit 20 ")
+        ).forEach(item -> {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("uniscid",item.getUniscid());
+            jsonObject.put("blackType","法律诉讼");
+            jsonObject.put("blackDate",item.getPubDate());
+            jsonObject.put("entname",item.getEname());
+            jsonObject.put("detail",item);
+            allBlackList.add(jsonObject);
+        });
+        return AjaxResult.success(allBlackList);
     }
 }

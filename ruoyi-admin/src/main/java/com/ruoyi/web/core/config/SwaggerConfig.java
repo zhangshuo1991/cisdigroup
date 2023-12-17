@@ -2,6 +2,8 @@ package com.ruoyi.web.core.config;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.swagger.annotations.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -57,6 +59,7 @@ public class SwaggerConfig
                 .select()
                 // 扫描所有有注解的api，用这种方式更灵活
                 .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
+                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiResponse.class))
                 // 扫描指定包中的swagger注解
                 // .apis(RequestHandlerSelectors.basePackage("com.ruoyi.project.tool.swagger"))
                 // 扫描所有 .apis(RequestHandlerSelectors.any())

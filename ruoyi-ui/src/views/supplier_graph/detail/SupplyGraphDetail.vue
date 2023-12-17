@@ -62,8 +62,8 @@ export default ({
         layout: {
           layoutName: 'tree',
           from: 'left',
-          'min_per_width': 410, // 根据节点的宽度设置，这个是让图谱看起来偏亮的关键
-          'min_per_height': 50,
+          min_per_width: 410, // 根据节点的宽度设置，这个是让图谱看起来偏亮的关键
+          min_per_height: 100,
         }
         // 这里可以参考"Graph 图谱"中的参数进行设置 https://seeksdream.github.io/#/docs/graph
       },

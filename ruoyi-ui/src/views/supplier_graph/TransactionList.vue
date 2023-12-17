@@ -32,7 +32,11 @@
         <el-table-column label="企业名称" prop="entname"></el-table-column>
         <el-table-column label="统一社会信用代码" prop="uniscid"></el-table-column>
         <el-table-column label="法人" prop="lerepname"></el-table-column>
-        <el-table-column label="注册资本" prop="regcap"></el-table-column>
+        <el-table-column label="注册资本" prop="regcap">
+          <template slot-scope="scope">
+            {{ scope.row.regcap }} 万元人民币
+          </template>
+        </el-table-column>
         <el-table-column label="注册时间" prop="esdate"></el-table-column>
         <el-table-column label="交易笔数" prop="tradeNums">
           <template slot-scope="scope">

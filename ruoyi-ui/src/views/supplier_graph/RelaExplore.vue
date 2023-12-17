@@ -84,7 +84,10 @@ export default({
   },
   methods:{
     handleSearch() {
-
+      this.$router.push({
+        path: '/supplier_graph/RelaExploreDetail',
+        query: {textarea2: this.textarea2, radio: this.radio, checkList: this.checkList}
+      })
     }
   }
 })

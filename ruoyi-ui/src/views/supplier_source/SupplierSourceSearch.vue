@@ -54,14 +54,12 @@
         </el-form-item>
         <el-form-item label="企业类型：">
           <el-checkbox-group v-model="dataGrid.listQuery.enttype_checks">
-            <el-checkbox label="01">国有企业</el-checkbox>
-            <el-checkbox label="02">外商投资企业</el-checkbox>
-            <el-checkbox label="03">合伙企业</el-checkbox>
-            <el-checkbox label="04">民营企业</el-checkbox>
-            <el-checkbox label="05">个体工商户</el-checkbox>
-            <el-checkbox label="06">农民专业合作</el-checkbox>
-            <el-checkbox label="07">分公司</el-checkbox>
-            <el-checkbox label="08">其他</el-checkbox>
+            <el-checkbox label="112">国有企业</el-checkbox>
+            <el-checkbox label="15">外商投资企业</el-checkbox>
+            <el-checkbox label="13">合伙企业</el-checkbox>
+            <el-checkbox label="12">民营企业</el-checkbox>
+            <el-checkbox label="14">港澳台资</el-checkbox>
+            <el-checkbox label="16">农民专业合作</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="主体综合评价：">

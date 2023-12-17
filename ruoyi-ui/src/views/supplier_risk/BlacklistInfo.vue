@@ -242,11 +242,11 @@
               <el-card>
                 <div slot="header" class="clearfix">
                   <span style="font-weight: bolder;font-size: 15px">风险事件3：重大变更</span>
-                  <el-button style="float: right; padding: 3px 0" type="text">查看更多</el-button>
+                  <el-button style="float: right; padding: 3px 0" type="text" @click="dialogChangeDialog = true">查看更多</el-button>
                 </div>
                 <div style="width: 100%;height: 250px">
                   <el-table
-                    :data="emptyData"
+                    :data="changeRecord.list"
                     height="250"
                     border
                     :row-style="{fontSize: '10x'}"
@@ -260,26 +260,14 @@
                     >
                     </el-table-column>
                     <el-table-column
-                      prop="taxpayer"
+                      prop="type"
                       label="变更项目"
                       align="left"
                     >
                     </el-table-column>
                     <el-table-column
-                      prop="taxpayerName"
-                      label="变更日期"
-                      align="left"
-                    >
-                    </el-table-column>
-                    <el-table-column
-                      prop="taxType"
-                      label="变更前"
-                      align="left"
-                    >
-                    </el-table-column>
-                    <el-table-column
-                      prop="taxAmount"
-                      label="变更后"
+                      prop="changeItem"
+                      label="变更类型"
                       align="left"
                     >
                     </el-table-column>
@@ -333,11 +321,40 @@
             <el-card style="height: 100%">
               <div slot="header" class="clearfix">
                 <span style="font-weight: bolder;font-size: 15px">风险事件5：其他</span>
-                <el-button style="float: right; padding: 3px 0" type="text">查看更多</el-button>
+                <el-button style="float: right; padding: 3px 0" type="text" @click = "dialogOtherDialog = true">查看更多</el-button>
               </div>
-              <div>
-                <span>暂无数据</span>
+              <div style="width: 100%;height: 670px">
+                <el-table
+                  :data="otherList.list.slice(0,20)"
+                  height="670"
+                  border
+                  :row-style="{fontSize: '10x'}"
+                  :header-row-style="{fontSize: '10px'}"
+                  :cell-style="{fontSize: '10px'}"
+                >
+                  <el-table-column
+                    type="index"
+                    label="序号"
+                    align="left">
+                  </el-table-column>
+                  <el-table-column
+                    prop="entname"
+                    label="企业名称"
+                    align="left">
+                  </el-table-column>
+                  <el-table-column
+                    prop="blackType"
+                    label="风险信息类型"
+                    align="left">
+                  </el-table-column>
+                  <el-table-column
+                    prop="blackDate"
+                    label="风险信息发生日期"
+                    align="left">
+                  </el-table-column>
+                </el-table>
               </div>
+
             </el-card>
           </div>
         </el-col>
@@ -537,6 +554,93 @@
         <el-button type="primary" @click="dialogOverduetaxs = false">关 闭</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      :visible.sync="dialogChangeDialog"
+      title="欠税信息"
+      width="80%"
+    >
+      <el-table :data="changeRecord.list"
+                border fit highlight-current-row :header-row-style="{ height: '40px', fontSize: '13px' }"
+                :header-cell-style="{ padding: '0px', textAlign: 'center' }" :row-style="{ height: '40px', fontSize: '13px' }"
+                :cell-style="{ padding: '0px', 'text-align': 'center' }" style="width: 100%;">
+        <el-table-column label="序号" width="60" align="center">
+          <template slot-scope="scope">{{ scope.$index + 1 }}</template>
+        </el-table-column>
+        <el-table-column
+          prop="ename"
+          label="企业名称"
+          align="left"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="type"
+          label="变更项目"
+          align="left"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="changeItem"
+          label="变更类型"
+          align="left"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="beforeContent"
+          label="变更前"
+          align="left"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="afterContent"
+          label="变更后"
+          align="left"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="changeDate"
+          label="变更日期"
+          align="left"
+        >
+        </el-table-column>
+      </el-table>
+      <pagination style="text-align: right;" :total="changeRecord.total" :page.sync="changeRecord.listQuery.page" :limit.sync="changeRecord.listQuery.limit" @pagination="getList" />
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogChangeDialog = false">关 闭</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      :visible.sync="dialogOtherDialog"
+      title="欠税信息"
+      width="80%"
+    >
+      <el-table :data="otherList.list.slice((otherList.listQuery.page - 1) * otherList.listQuery.limit, otherList.listQuery.page * otherList.listQuery.limit)"
+                border fit highlight-current-row :header-row-style="{ height: '40px', fontSize: '13px' }"
+                :header-cell-style="{ padding: '0px', textAlign: 'center' }" :row-style="{ height: '40px', fontSize: '13px' }"
+                :cell-style="{ padding: '0px', 'text-align': 'center' }" style="width: 100%;">
+        <el-table-column label="序号" width="60" align="center">
+          <template slot-scope="scope">{{ scope.$index + 1 }}</template>
+        </el-table-column>
+        <el-table-column
+          prop="entname"
+          label="企业名称"
+          align="left">
+        </el-table-column>
+        <el-table-column
+          prop="blackType"
+          label="风险信息类型"
+          align="left">
+        </el-table-column>
+        <el-table-column
+          prop="blackDate"
+          label="风险信息发生日期"
+          align="left">
+        </el-table-column>
+      </el-table>
+      <pagination style="text-align: right;" :total="otherList.total" :page.sync="otherList.listQuery.page" :limit.sync="otherList.listQuery.limit"/>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogOtherDialog = false">关 闭</el-button>
+      </span>
+    </el-dialog>
 
   </div>
 </template>
@@ -554,6 +658,8 @@ export default({
       dialogAdminunishment: false,
       dialogLawsuitsRelations: false,
       dialogOverduetaxs: false,
+      dialogChangeDialog: false,
+      dialogOtherDialog: false,
       emptyData: [],
       dataGrid: {
         list: [],
@@ -596,6 +702,26 @@ export default({
         total: 0
       },
       lawsuitsRelations: {
+        list: [],
+        listLoading: false,
+        listQuery: {
+          page: 1,
+          limit: 10,
+          keywords: undefined
+        },
+        total: 0
+      },
+      changeRecord: {
+        list: [],
+        listLoading: false,
+        listQuery: {
+          page: 1,
+          limit: 10,
+          keywords: undefined
+        },
+        total: 0
+      },
+      otherList: {
         list: [],
         listLoading: false,
         listQuery: {
@@ -662,6 +788,24 @@ export default({
       }).then(res => {
         this.lawsuitsRelations.list = res.data.item;
         this.lawsuitsRelations.total = res.data.total;
+      });
+
+      request({
+        url: "/entInfo/getChangeRecords",
+        method: "get",
+        params: { pageNum: this.changeRecord.listQuery.page, pageSize: 10}
+      }).then(res => {
+        this.changeRecord.list = res.data.item;
+        this.changeRecord.total = res.data.total;
+      });
+
+      request({
+        url: "/entInfo/getOtherBlackEvent",
+        method: "get",
+        params: { pageNum: this.otherList.listQuery.page, pageSize: 10}
+      }).then(res => {
+        this.otherList.list = res.data;
+        this.otherList.total = this.otherList.list.length;
       });
     },
   }

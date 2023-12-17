@@ -1,7 +1,7 @@
 <template>
   <div id="app" style="margin: auto;background-color: #f9f9f9;padding-top: 15px;padding-bottom: 30px;padding-right: 15px;padding-left: 15px;min-height: 900px">
     <div style="background-color: white;line-height: 70px;height: 70px;text-align: center">
-      <el-autocomplete
+      <el-input
         v-model="dataGrid.listQuery.keywords"
         placeholder="请输入公司名称/统一社会信用代码"
         clearable
@@ -9,7 +9,7 @@
         class="filter-item"
       >
         <el-button slot="append" icon="el-icon-search" @click="getList"/>
-      </el-autocomplete>
+      </el-input>
     </div>
     <div style="padding-left: 20px;line-height: 40px;height: 40px;background-color: white;font-size: 12px;margin-top: 15px">
       为您找到 <span style="color: #2E4E8F;font-weight: bolder">{{ dataGrid.total }}</span> 家符合条件的企业，此处最多展示10000条。
@@ -27,7 +27,7 @@
                 <tbody>
                 <tr>
                   <td width="5%" align="left" style="height:14px;font-size:12px;font-weight:400;color:rgba(161,161,161,1);line-height:24px;">法定代表人：</td>
-                  <td width="15%" style="height:14px;font-size:12px;font-weight:400;color:rgba(161,161,161,1);line-height:24px;"> {{ item.legal_name }}</td>
+                  <td width="15%" style="height:14px;font-size:12px;font-weight:400;color:rgba(161,161,161,1);line-height:24px;"> {{ item.lerepname }}</td>
                   <td width="5%" align="left" style="height:14px;font-size:12px;font-weight:400;color:rgba(161,161,161,1);line-height:24px;">注册资本：</td>
                   <td width="30%" style="height:14px;font-size:12px;font-weight:400;color:rgba(161,161,161,1);line-height:24px;">{{ item.regcap.toLocaleString() }}{{ item.regcapcurCn }}</td>
                 </tr>

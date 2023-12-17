@@ -38,7 +38,11 @@
         <el-table-column label="统一社会信用代码" prop="uniscid"></el-table-column>
         <el-table-column label="经营状态" prop="entstatusCn"></el-table-column>
         <el-table-column label="法人" prop="lerepname"></el-table-column>
-        <el-table-column label="注册资本" prop="regcap"></el-table-column>
+        <el-table-column label="注册资本" prop="regcap">
+          <template slot-scope="scope">
+            <span>{{ scope.row.regcap }}万元人民币</span>
+          </template>
+        </el-table-column>
         <el-table-column label="注册时间" prop="esdate"></el-table-column>
         <el-table-column label="担保金额" prop="danbao_amount">
           <template slot-scope="scope">
@@ -56,7 +60,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <pagination :total="0" :page.sync="dataGrid.listQuery.page" :limit.sync="dataGrid.listQuery.limit" @pagination="getList" />
+      <pagination :total="dataGrid.total" :page.sync="dataGrid.listQuery.page" :limit.sync="dataGrid.listQuery.limit" @pagination="getList" />
     </div>
   </div>
 </template>
