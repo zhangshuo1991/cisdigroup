@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel("t_enterprise_app")
-public class TEnterpriseApp implements Serializable {
+public class TEnterpriseApp extends BaseWebEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -40,12 +40,6 @@ public class TEnterpriseApp implements Serializable {
      */
     @ApiModelProperty("app_type")
     private String appType;
-
-    /**
-     * uniscid
-     */
-    @ApiModelProperty("uniscid")
-    private String uniscid;
 
     /**
      * app_image

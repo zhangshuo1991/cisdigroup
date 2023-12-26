@@ -13,12 +13,9 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel("t_ent_website")
-public class TEntWebsite implements Serializable {
+public class TEntWebsite extends BaseWebEntity implements Serializable{
 
     private static final long serialVersionUID = 1L;
-
-    @ApiModelProperty("uniscid")
-    private String uniscid;
 
     /**
      * fba_wz_ym

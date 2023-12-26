@@ -48,20 +48,20 @@ export default ({
       graphOptions: {
         allowShowMiniToolBar: true,
         defaultExpandHolderColor:'#3399ff',
-        defaultExpandHolderPosition: "right",
         allowSwitchLineShape: true,
         allowSwitchJunctionPoint: true,
         defaultLineColor: 'rgba(255, 255, 255, 0.6)',
         defaultNodeColor: 'transparent',
         defaultNodeBorderWidth: 1,
+        defaultJunctionPoint: 'tb',
         defaultNodeBorderColor: 'rgba(255, 255, 255, 0.3)',
         defaultNodeFontColor: '#ffffff',
         defaultPloyLineRadius: 10,
-        defaultLineShape: 6,
-        defaultJunctionPoint: 'lr',
+        defaultLineShape: 1,
         layout: {
           layoutName: 'tree',
-          from: 'left',
+          from: 'top',
+          layoutClassName: 'seeks-layout-center',
           min_per_width: 410, // 根据节点的宽度设置，这个是让图谱看起来偏亮的关键
           min_per_height: 100,
         }
@@ -115,7 +115,6 @@ export default ({
         lines.push({
           from: this.supplyDetail.uniscid,
           to: thisItem.winBidderCreditno,
-          text: '供应商',
           color: '#ccc',
           fontColor: 'black',
           width: 300,

@@ -17,7 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Data
 @ApiModel("t_trademarks")
-public class TTrademarks implements Serializable {
+public class TTrademarks extends BaseWebEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -33,12 +33,6 @@ public class TTrademarks implements Serializable {
      */
     @ApiModelProperty("ename")
     private String ename;
-
-    /**
-     * uniscid
-     */
-    @ApiModelProperty("uniscid")
-    private String uniscid;
 
     /**
      * id_id

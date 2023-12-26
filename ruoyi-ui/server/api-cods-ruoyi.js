@@ -9,7 +9,7 @@ var proxyTable = {
     target: 'http://localhost:13131',
     changeOrigin: true,
     pathRewrite: {
-      ['^' + '/prod-api']: ''
+      ['^' + '/prod-api']: '/'
     }
   }
 }

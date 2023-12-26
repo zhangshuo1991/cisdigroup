@@ -21,45 +21,44 @@
         <div style="margin-top: 10px">
           <el-form :label-position="labelPosition"  label-width="80px">
             <el-form-item label="查询层级">
-              <el-radio-group v-model="radio" placeholder="请选择">
-                <el-radio label="1" value="1"></el-radio>
-                <el-radio label="2" value="2"></el-radio>
-                <el-radio label="3" value="3"></el-radio>
-                <el-radio label="4" value="4"></el-radio>
+              <el-radio-group v-model="level_radio" placeholder="请选择">
+                <el-radio :label="1">1</el-radio>
+                <el-radio :label="2">2</el-radio>
+                <el-radio :label="3">3</el-radio>
+                <el-radio :label="4">4</el-radio>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="企业关系">
-              <el-checkbox-group v-model="checkList"  placeholder="请选择">
-                <el-checkbox label="企业股东" value="1"></el-checkbox>
-                <el-checkbox label="企业对外投资" value="2"></el-checkbox>
-                <el-checkbox label="历史企业股东" value="3"></el-checkbox>
-                <el-checkbox label="历史企业对外投资" value="4"></el-checkbox>
+              <el-checkbox-group v-model="check_relation"  placeholder="请选择">
+                <el-checkbox :label="1">企业股东</el-checkbox>
+                <el-checkbox :label="2">企业对外投资</el-checkbox>
+                <el-checkbox :label="3" disabled>历史企业股东</el-checkbox>
+                <el-checkbox :label="4" disabled>历史企业对外投资</el-checkbox>
               </el-checkbox-group>
             </el-form-item>
             <el-form-item label="人员关系">
-              <el-checkbox-group v-model="checkList" placeholder="请选择" style="width: 100%">
-                <el-checkbox label="自然人股东" value="1"></el-checkbox>
-                <el-checkbox label="自然人对外投资" value="2"></el-checkbox>
-                <el-checkbox label="自然人对外投资" value="2"></el-checkbox>
-                <el-checkbox label="公司管理人员" value="2"></el-checkbox>
-                <el-checkbox label="管理人员其他公司任职" value="2"></el-checkbox>
-                <el-checkbox label="历史自然人股东" value="2"></el-checkbox>
-                <el-checkbox label="历史自然人对外投资" value="2"></el-checkbox>
-                <el-checkbox label="历史公司管理人员" value="2"></el-checkbox>
-                <el-checkbox label="历史管理人员其他公司任职" value="2"></el-checkbox>
+              <el-checkbox-group v-model="check_person_relation" placeholder="请选择" style="width: 100%">
+                <el-checkbox :label="1">自然人股东</el-checkbox>
+                <el-checkbox :label="2">自然人对外投资</el-checkbox>
+                <el-checkbox :label="3">公司管理人员</el-checkbox>
+                <el-checkbox :label="4">管理人员其他公司任职</el-checkbox>
+                <el-checkbox :label="5" disabled>历史自然人股东</el-checkbox>
+                <el-checkbox :label="6" disabled>历史自然人对外投资</el-checkbox>
+                <el-checkbox :label="7" disabled>历史公司管理人员</el-checkbox>
+                <el-checkbox :label="8" disabled>历史管理人员其他公司任职</el-checkbox>
               </el-checkbox-group>
             </el-form-item>
             <el-form-item label="商业关系">
-              <el-checkbox-group v-model="checkList" placeholder="请选择" style="width: 100%" >
-                <el-checkbox label="共同投标"></el-checkbox>
-                <el-checkbox label="共同专利"></el-checkbox>
-                <el-checkbox label="诉讼关系"></el-checkbox>
+              <el-checkbox-group v-model="check_buss_relation" placeholder="请选择" style="width: 100%" >
+                <el-checkbox :label="1">共同投标</el-checkbox>
+                <el-checkbox :label="2">共同专利</el-checkbox>
+                <el-checkbox :label="3">诉讼关系</el-checkbox>
               </el-checkbox-group>
             </el-form-item>
             <el-form-item label="潜在关系">
-              <el-checkbox-group v-model="checkList" placeholder="请选择" style="width: 100%">
-                <el-checkbox label="共同联系方式"></el-checkbox>
-                <el-checkbox label="共同注册地址"></el-checkbox>
+              <el-checkbox-group v-model="check_potential_relation" placeholder="请选择" style="width: 100%">
+                <el-checkbox :label="1">共同联系方式</el-checkbox>
+                <el-checkbox :label="2">共同注册地址</el-checkbox>
               </el-checkbox-group>
             </el-form-item>
           </el-form>
@@ -72,22 +71,46 @@
   </div>
 </template>
 <script>
+import request from "@/utils/request";
 export default({
   name: "RelaExplore",
   data() {
     return {
       textarea2: '',
-      checkList: [],
-      radio: '1',
-      labelPosition: 'left'
+      check_relation: [],
+      level_radio: 1,
+      check_person_relation: [],
+      labelPosition: 'left',
+      check_buss_relation: [],
+      // 潜在关系
+      check_potential_relation: [],
     }
   },
   methods:{
     handleSearch() {
-      this.$router.push({
-        path: '/supplier_graph/RelaExploreDetail',
-        query: {textarea2: this.textarea2, radio: this.radio, checkList: this.checkList}
-      })
+      request({
+        url: '/entInfo/relaExplore',
+        method: 'post',
+        data: {
+          textarea2: this.textarea2,
+          check_relation: this.check_relation,
+          level_radio: this.level_radio,
+          check_person_relation: this.check_person_relation,
+          check_buss_relation: this.check_buss_relation,
+          check_potential_relation: this.check_potential_relation
+        }
+      }).then(res => {
+          console.log(res)
+          this.$router.push({
+            path: '/supplier_graph/RelaExploreDetail',
+            query: {textarea2: this.textarea2, radio: this.radio, checkList: this.checkList}
+          })
+        }
+      )
+      // this.$router.push({
+      //   path: '/supplier_graph/RelaExploreDetail',
+      //   query: {textarea2: this.textarea2, radio: this.radio, checkList: this.checkList}
+      // })
     }
   }
 })

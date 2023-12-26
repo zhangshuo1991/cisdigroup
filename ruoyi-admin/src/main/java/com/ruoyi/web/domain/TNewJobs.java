@@ -17,7 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Data
 @ApiModel("t_new_jobs")
-public class TNewJobs implements Serializable {
+public class TNewJobs extends BaseWebEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -32,13 +32,6 @@ public class TNewJobs implements Serializable {
      */
     @ApiModelProperty("ename")
     private String ename;
-
-    /**
-     * uniscid
-     */
-    @ApiModelProperty("uniscid")
-    private String uniscid;
-
     /**
      * id_id
      */

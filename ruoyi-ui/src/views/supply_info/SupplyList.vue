@@ -2,15 +2,14 @@
   <section style="margin: auto;background-color: #f9f9f9;padding-top: 15px;padding-bottom: 30px;padding-right: 15px;">
     <div style="margin-left: 15px;background-color: white;line-height: 70px;height: 70px;text-align: center">
 
-      <el-autocomplete
+      <el-input
         v-model="keyword"
         style="width: 610px;margin-left: 58px;"
         placeholder="请输入公司名称/统一社会信用代码"
-        :trigger-on-focus="false"
         @keyup.enter.native="getList"
       >
         <el-button slot="append" icon="el-icon-search" @click="getList"/>
-      </el-autocomplete>
+      </el-input>
     </div>
     <div style="margin-left: 15px;">
       <div v-loading="loading" style="margin-top: 10px;">

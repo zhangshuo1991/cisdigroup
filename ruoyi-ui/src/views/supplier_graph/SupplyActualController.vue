@@ -65,7 +65,7 @@
         <RelationGraph ref="graphRef" :options="graphOptions" :on-node-click="onNodeClick" :on-line-click="onLineClick">
           <template #graph-plug>
             <div style="position: absolute;width:350px; right:0;top:0;z-index: 600;
-            padding:10px;border-radius: 5px;color: #ffffff;font-size: 12px;"> 
+            padding:10px;border-radius: 5px;color: #ffffff;font-size: 12px;">
               <el-input
                   v-model="searchText"
                   placeholder="图谱节点定位，请输入节点名称"  suffix-icon="el-icon-search"
@@ -102,7 +102,7 @@
 </template>
 <script>
 import RelationGraph from 'relation-graph'
-
+import request from "@/utils/request";
 export default({
   name: "SupplyActualController",
   components: { RelationGraph },
@@ -110,6 +110,7 @@ export default({
     return {
       baseInfoLoading: false,
       baseInfoHidden: false,
+      uniscid: '',
       graphOptions: {
         allowSwitchLineShape: true,
         allowSwitchJunctionPoint: true,

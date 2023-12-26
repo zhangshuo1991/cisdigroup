@@ -17,7 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @Data
 @ApiModel("t_patents_relations")
-public class TPatentsRelations implements Serializable {
+public class TPatentsRelations extends BaseWebEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -32,12 +32,6 @@ public class TPatentsRelations implements Serializable {
      */
     @ApiModelProperty("ename")
     private String ename;
-
-    /**
-     * uniscid
-     */
-    @ApiModelProperty("uniscid")
-    private String uniscid;
 
     /**
      * type

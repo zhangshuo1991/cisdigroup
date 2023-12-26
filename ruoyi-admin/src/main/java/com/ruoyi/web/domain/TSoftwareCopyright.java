@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel("t_software_copyright")
-public class TSoftwareCopyright implements Serializable {
+public class TSoftwareCopyright extends BaseWebEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

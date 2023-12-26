@@ -8,8 +8,19 @@
             placeholder="请输入关键字检索"
             clearable
             style="width: 610px;"
-            class="filter-item"
-          ></el-input>
+          >
+              <el-select v-model="dataGrid.listQuery.checkBoxSearchType" slot="prepend"
+                         multiple clearable collapse-tags style="width: 150px"
+                         placeholder="请选择检索范围"
+              >
+                <el-option
+                  v-for="item in searchScopeConditions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+          </el-input>
         </el-form-item>
         <el-form-item label="所属行业：">
           <el-cascader
@@ -145,7 +156,9 @@
                         <i class="el-icon-paperclip"></i>
                         <span class="c-span-text">软件名称</span>
                       </template>
-                      <span class="c-suggestion-name">阿里巴巴手机客户端&nbsp;| &nbsp;人工智能客户端&nbsp;|&nbsp;人工智能客户端&nbsp;</span>
+                      <span class="c-suggestion-name" v-html="item.softwareName">
+
+                      </span>
                     </el-descriptions-item>
                   </el-descriptions>
                   <el-descriptions v-if="item.tenterpriseAppList && item.tenterpriseAppList.length>0" :column="1" size="small">
@@ -196,7 +209,7 @@
                         <i class="el-icon-paperclip"></i>
                         <span class="c-span-text">网址名称</span>
                       </template>
-                      <span class="c-suggestion-name">1688.com-世界上最大的批发网址</span>
+                      <span class="c-suggestion-name" v-html="item.fbaWzMcs"></span>
                     </el-descriptions-item>
                   </el-descriptions>
                 </div>
@@ -258,7 +271,6 @@ export default ({
   data() {
     return {
       tableKey: 0,
-      checkBoxSearchType: [],
       dialogVisible: false,
       dialogVisibleScore: false,
       checkedAll: false,
@@ -271,22 +283,10 @@ export default ({
       // 搜索范围
       searchScopeConditions: [
         {
-          label: '行业', value: 'industry'
+          label: '企业名称', value: 'entname'
         },
         {
           label: '经营范围', value: 'entBusinessScope'
-        },
-        {
-          label: '企业性质', value: 'entNature'
-        },
-        {
-          label: '区域', value: 'area'
-        },
-        {
-          label: '股东性质', value: 'shareholderNature'
-        },
-        {
-          label: '规模', value: 'scale'
         },
         {
           label: '专利摘要', value: 'patentAbstract'
@@ -295,10 +295,10 @@ export default ({
           label: '专利名称', value: 'patentName'
         },
         {
-          label: '资质/能力', value: 'qualification'
+          label: '软件名称', value: 'softwareName'
         },
         {
-          label: '经营年限', value: 'entBusinessYear'
+          label: '商标', value: 'trademarkName'
         },
         {
           label: '企业简介', value: 'entIntroduction'
@@ -313,7 +313,7 @@ export default ({
           label: '企业APP简介', value: 'entAppAbstract'
         },
         {
-          label: '实力评价分', value: 'strengthScore'
+          label: '招聘岗位名称', value: 'jobName'
         }
       ],
       formLabelAlign: {
@@ -338,6 +338,7 @@ export default ({
           esdate_checks: [],
           enttype_checks: [],
           entscore_checks: [],
+          checkBoxSearchType: [],
           page: 1,
           limit: 10
         }
@@ -382,6 +383,10 @@ export default ({
         text: '正在加载中...',
         background: 'rgba(0, 0, 0, 0.7)'
       });
+      if (this.dataGrid.listQuery.checkBoxSearchType.length === 0) {
+        // 默认全选
+        this.dataGrid.listQuery.checkBoxSearchType = ['entname','entBusinessScope','patentAbstract','patentName','softwareName','trademarkName','entIntroduction','websiteAbstract','websiteName','entAppAbstract','jobName']
+      }
       request({
         url: '/entInfo/searchInfoByKeyword',
         method: 'post',
@@ -402,6 +407,19 @@ export default ({
               }
             })
             thisItem.entJobs = entJobs.join(' | ')
+          }
+          if (thisItem.tsoftwareCopyrightList){
+            let entJobs = []
+            thisItem.tsoftwareCopyrightList.forEach(tempItem => {
+              if (tempItem.frjRjjc.indexOf(this.dataGrid.listQuery.keywords)>=0) {
+                // 高亮显示
+                const tempTitle = tempItem.frjRjjc.replace(this.dataGrid.listQuery.keywords,'<span style="color: red">'+this.dataGrid.listQuery.keywords+'</span>')
+                entJobs.push(tempTitle)
+              }else {
+                entJobs.push(tempItem.frjRjjc)
+              }
+            })
+            thisItem.softwareName = entJobs.join(' | ')
           }
 
           if (thisItem.tpatentsRelationsList){
@@ -446,7 +464,19 @@ export default ({
             })
             thisItem.tradeName = tradeName.join(' | ')
           }
-
+          if (thisItem.tentWebsiteList){
+            let tradeName = []
+            thisItem.tentWebsiteList.forEach(tempItem => {
+              if (tempItem.fbaWzMc.indexOf(this.dataGrid.listQuery.keywords)>=0) {
+                // 高亮显示
+                const tempTitle = tempItem.fbaWzMc.replace(this.dataGrid.listQuery.keywords,'<span style="color: red">'+this.dataGrid.listQuery.keywords+'</span>')
+                tradeName.push(tempItem.fbaWzWz +'-'+tempTitle)
+              }else {
+                tradeName.push(tempItem.fbaWzWz +'-'+tempItem.fbaWzMc)
+              }
+            })
+            thisItem.fbaWzMcs = tradeName.join(' | ')
+          }
         })
         this.dataGrid.total = this.dataGrid.list.length
         loading.close()

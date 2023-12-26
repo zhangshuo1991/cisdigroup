@@ -131,71 +131,81 @@ public class EntInfoService {
             return AjaxResult.error("请输入关键字");
         }
         String keyword = searchParams.getString("keywords");
-        List<TPatentsRelations> tPatentsRelationsList =itPatentsRelationsMapper.selectList(
-                new QueryWrapper<TPatentsRelations>().like("brief",keyword)
-        );
-        List<TTrademarks> tTrademarksList = itTrademarksMapper.selectList(
-                new QueryWrapper<TTrademarks>()
-                        .like("name",keyword)
-        );
-
-        List<TNewJobs> tNewJobsList = itNewJobsMapper.selectList(
-                new QueryWrapper<TNewJobs>().like("title",keyword)
-        );
-
-        List<TEnterpriseBasicDto> tEnterpriseBasicDtoList = itEnterpriseBasicMapper.selectList(
-                new QueryWrapper<TEnterpriseBasicDto>()
-                        .like("entname",keyword)
-                        .or()
-                        .like("uniscid",keyword)
-        );
-
-        List<TEnterpriseDesc> tEnterpriseDescList = itEnterpriseDescMapper.selectList(
-                new QueryWrapper<TEnterpriseDesc>()
-                        .like("ent_desc",keyword)
-        );
-
-        List<TEnterpriseApp> tEnterpriseAppList = itEnterpriseAppMapper.selectList(
-                new QueryWrapper<TEnterpriseApp>()
-                        .like("appinfo",keyword)
-        );
-
-        List<TSoftwareCopyright> tSoftwareCopyrightList = itSoftwareCopyrightMapper.selectList(
-                new QueryWrapper<TSoftwareCopyright>()
-                        .like("frj_rjjc",keyword)
-        );
-
-
-        List<TEntWebsite> tEntWebsiteList = itEntWebsiteMapper.selectList(
-                new QueryWrapper<TEntWebsite>()
-                        .like("fba_wz_mc",keyword)
-        );
-
+        JSONArray checkBoxSearchType = searchParams.getJSONArray("checkBoxSearchType");
         Set<String> allSearchUniscid = Sets.newHashSet();
-        tPatentsRelationsList.forEach(tPatentsRelations -> {
-            allSearchUniscid.add(tPatentsRelations.getUniscid());
-        });
-        tTrademarksList.forEach(tTrademarks -> {
-            allSearchUniscid.add(tTrademarks.getUniscid());
-        });
-        tNewJobsList.forEach(tNewJobs -> {
-            allSearchUniscid.add(tNewJobs.getUniscid());
-        });
-        tEnterpriseBasicDtoList.forEach(tEnterpriseBasicDto -> {
-            allSearchUniscid.add(tEnterpriseBasicDto.getUniscid());
-        });
-        tEnterpriseDescList.forEach(tEnterpriseDesc -> {
-            allSearchUniscid.add(tEnterpriseDesc.getUniscid());
-        });
-        tEnterpriseAppList.forEach(tEnterpriseApp -> {
-            allSearchUniscid.add(tEnterpriseApp.getUniscid());
-        });
-        tSoftwareCopyrightList.forEach(tSoftwareCopyright ->
-            allSearchUniscid.add(tSoftwareCopyright.getUniscid())
-        );
-        tEntWebsiteList.forEach(tEntWebsite -> {
-            allSearchUniscid.add(tEntWebsite.getUniscid());
-        });
+        if (checkBoxSearchType.contains("patentAbstract") ||
+            checkBoxSearchType.contains("patentName") ) {
+            List<TPatentsRelations> tPatentsRelationsList =itPatentsRelationsMapper.selectList(
+                    new QueryWrapper<TPatentsRelations>().like("brief",keyword)
+            );
+
+            tPatentsRelationsList.forEach(tPatentsRelations -> {
+                allSearchUniscid.add(tPatentsRelations.getUniscid());
+            });
+        }
+        if (checkBoxSearchType.contains("trademarkName")) {
+            List<TTrademarks> tTrademarksList = itTrademarksMapper.selectList(
+                    new QueryWrapper<TTrademarks>()
+                            .like("name",keyword)
+            );
+            tTrademarksList.forEach(tTrademarks -> {
+                allSearchUniscid.add(tTrademarks.getUniscid());
+            });
+        }
+        if (checkBoxSearchType.contains("jobName")) {
+            List<TNewJobs> tNewJobsList = itNewJobsMapper.selectList(
+                    new QueryWrapper<TNewJobs>().like("title",keyword)
+            );
+            tNewJobsList.forEach(tNewJobs -> {
+                allSearchUniscid.add(tNewJobs.getUniscid());
+            });
+        }
+        if (checkBoxSearchType.contains("entAppAbstract")) {
+            List<TEnterpriseApp> tEnterpriseAppList = itEnterpriseAppMapper.selectList(
+                    new QueryWrapper<TEnterpriseApp>().like("appinfo",keyword)
+            );
+            tEnterpriseAppList.forEach(tEnterpriseApp -> {
+                allSearchUniscid.add(tEnterpriseApp.getUniscid());
+            });
+        }
+        if (checkBoxSearchType.contains("entIntroduction")) {
+            List<TEnterpriseDesc> tEnterpriseDescList = itEnterpriseDescMapper.selectList(
+                    new QueryWrapper<TEnterpriseDesc>().like("ent_desc",keyword)
+            );
+            tEnterpriseDescList.forEach(tEnterpriseDesc -> {
+                allSearchUniscid.add(tEnterpriseDesc.getUniscid());
+            });
+        }
+        if (checkBoxSearchType.contains("websiteAbstract") ||
+            checkBoxSearchType.contains("websiteName")) {
+            List<TEntWebsite> tEntWebsiteList = itEntWebsiteMapper.selectList(
+                    new QueryWrapper<TEntWebsite>().like("fba_wz_mc",keyword)
+            );
+            tEntWebsiteList.forEach(tEntWebsite -> {
+                allSearchUniscid.add(tEntWebsite.getUniscid());
+            });
+        }
+        if (checkBoxSearchType.contains("softwareName")) {
+            List<TSoftwareCopyright> tSoftwareCopyrightList =
+                    itSoftwareCopyrightMapper.selectList(
+                            new QueryWrapper<TSoftwareCopyright>()
+                                    .like("frj_rjjc",keyword)
+                    );
+            tSoftwareCopyrightList.
+                    forEach(tSoftwareCopyright -> {
+                        allSearchUniscid.add(tSoftwareCopyright
+                                .getUniscid());
+                    });
+        }
+        if (checkBoxSearchType.contains("entname")) {
+            List<TEnterpriseBasicDto> tEnterpriseBasicDtoList = itEnterpriseBasicMapper.selectList(
+                    new QueryWrapper<TEnterpriseBasicDto>()
+                            .like("entname",keyword)
+            );
+            tEnterpriseBasicDtoList.forEach(tEnterpriseBasicDto -> {
+                allSearchUniscid.add(tEnterpriseBasicDto.getUniscid());
+            });
+        }
         Set<String> scoreSelectList = searchScore(searchParams);
 
         Set<String> newResult = allSearchUniscid;
@@ -206,59 +216,120 @@ public class EntInfoService {
         if (newResult.size() == 0) {
             return AjaxResult.success(Lists.newArrayList());
         }
+
+        // 查询企业评分
+        JSONObject tEvaluatingIndexJson = new JSONObject();
+        List<TEvaluatingIndex> tEvaluatingIndexList = itEvaluatingIndexMapper.selectList(
+                new QueryWrapper<TEvaluatingIndex>()
+                        .in("uniscid",newResult)
+        );
+        tEvaluatingIndexList.forEach(tEvaluatingIndex -> {
+            tEvaluatingIndexJson.put(tEvaluatingIndex.getUniscid(),tEvaluatingIndex);
+        });
+        // 查询企业APP
+        List<TEnterpriseApp> tEnterpriseAppList1 = itEnterpriseAppMapper.selectList(
+                new QueryWrapper<TEnterpriseApp>()
+                        .in("uniscid",newResult)
+                        .like("appinfo",keyword)
+        );
+        JSONObject tEnterpriseAppJson = processJsonData(tEnterpriseAppList1);
+
+        // 查询企业网站
+        List<TEntWebsite> tEntWebsiteList1 = itEntWebsiteMapper.selectList(
+                new QueryWrapper<TEntWebsite>()
+                        .in("uniscid",newResult)
+                        .like("fba_wz_mc",keyword)
+        );
+        JSONObject tEntWebsiteJson = processJsonData(tEntWebsiteList1);
+
+        // 查询企业商标
+        List<TTrademarks> tTrademarksList1 = itTrademarksMapper.selectList(
+                new QueryWrapper<TTrademarks>()
+                        .like("name",keyword)
+                        .in("uniscid",newResult)
+        );
+        JSONObject tTrademarksJson = processJsonData(tTrademarksList1);
+
+        List<TSoftwareCopyright> tSoftwareCopyrightList1 = itSoftwareCopyrightMapper.selectList(
+                new QueryWrapper<TSoftwareCopyright>()
+                        .like("frj_rjjc",keyword)
+                        .in("uniscid",newResult)
+        );
+        JSONObject tSoftwareCopyrightJson = processJsonData(tSoftwareCopyrightList1);
+
+        List<TNewJobs> tNewJobsList1 = itNewJobsMapper.selectList(
+                new QueryWrapper<TNewJobs>()
+                        .like("title",keyword)
+                        .in("uniscid",newResult)
+        );
+        JSONObject tNewJobsListJson = processJsonData(tNewJobsList1);
+
+        List<TPatentsRelations> tPatentsRelationsList1 =itPatentsRelationsMapper.selectList(
+                new QueryWrapper<TPatentsRelations>()
+                        .like("brief",keyword)
+                        .in("uniscid",newResult)
+        );
+        JSONObject tPatentsRelationsJson = processJsonData(tPatentsRelationsList1);
+
+        // 查询企业标签
+        List<TEnterpriseLabel> tEnterpriseTagList = itEnterpriseLabelMapper.selectList(
+                new QueryWrapper<TEnterpriseLabel>()
+                        .in("uniscid",newResult)
+        );
+        JSONObject tEnterpriseTagJson = processJsonData(tEnterpriseTagList);
+
+        List<TEnterpriseDesc> tEnterpriseDescList1 = itEnterpriseDescMapper.selectList(
+                new QueryWrapper<TEnterpriseDesc>()
+                        .in("uniscid",newResult)
+                        .like("ent_desc",keyword)
+        );
+        JSONObject tEnterpriseDescJson = processJsonData(tEnterpriseDescList1);
+
         // 根据查询到的信息，查询企业基本信息
         QueryWrapper<TEnterpriseBasicDto> queryWrapper = new QueryWrapper<>();
         queryWrapper.in("uniscid",newResult);
         List<TEnterpriseBasicDto> tempResultList = itEnterpriseBasicMapper.selectList(queryWrapper);
+
+        List<JSONObject> basicJsonList = com.google.common.collect.Lists.newArrayList();
         tempResultList.forEach(tEnterpriseBasicDto -> {
             tEnterpriseBasicDto.setRegcap(tEnterpriseBasicDto.getRegcap().split("\\.")[0]);
-            tEnterpriseBasicDto.setTEvaluatingIndex(itEvaluatingIndexMapper.selectOne(
-                    new QueryWrapper<TEvaluatingIndex>().eq("uniscid",tEnterpriseBasicDto.getUniscid())
-            ));
-            tEnterpriseBasicDto.setTPatentsRelationsList(itPatentsRelationsMapper.selectList(
-                    new QueryWrapper<TPatentsRelations>()
-                            .eq("uniscid",tEnterpriseBasicDto.getUniscid())
-                            .like("brief",keyword)
-            ));
-            tEnterpriseBasicDto.setTTrademarksList(itTrademarksMapper.selectList(
-                    new QueryWrapper<TTrademarks>()
-                            .eq("uniscid",tEnterpriseBasicDto.getUniscid())
-                            .like("name",keyword)
-            ));
-            tEnterpriseBasicDto.setTNewJobsList(itNewJobsMapper.selectList(
-                    new QueryWrapper<TNewJobs>()
-                            .eq("uniscid",tEnterpriseBasicDto.getUniscid())
-                            .like("title",keyword)
-            ));
-            tEnterpriseBasicDto.setTEnterpriseDescList(itEnterpriseDescMapper.selectList(
-                    new QueryWrapper<TEnterpriseDesc>()
-                            .eq("uniscid",tEnterpriseBasicDto.getUniscid())
-                            .like("ent_desc",keyword)
-            ));
-            tEnterpriseBasicDto.setTSoftwareCopyrightList(
-                    itSoftwareCopyrightMapper.selectList(
-                            new QueryWrapper<TSoftwareCopyright>()
-                                    .eq("uniscid",tEnterpriseBasicDto.getUniscid())
-                                    .like("frj_rjjc",keyword)
-                    ));
 
-            tEnterpriseBasicDto.setTEnterpriseAppList(itEnterpriseAppMapper.selectList(
-                    new QueryWrapper<TEnterpriseApp>()
-                            .eq("uniscid",tEnterpriseBasicDto.getUniscid())
-                            .like("appinfo",keyword)
-            ));
-
-            tEnterpriseBasicDto.setTEntWebsiteList(itEntWebsiteMapper.selectList(
-                    new QueryWrapper<TEntWebsite>()
-                            .eq("uniscid",tEnterpriseBasicDto.getUniscid())
-                            .like("fba_wz_mc",keyword)
-            ));
-            tEnterpriseBasicDto.setTEnterpriseLabelList(itEnterpriseLabelMapper.selectList(
-                    new QueryWrapper<TEnterpriseLabel>()
-                            .eq("uniscid",tEnterpriseBasicDto.getUniscid())
-            ));
+            JSONObject basicJson = convertToJSONObject(tEnterpriseBasicDto);
+            String uniscid = tEnterpriseBasicDto.getUniscid();
+            basicJson.put("tenterpriseLabelList",tEnterpriseTagJson.get(uniscid) == null ? new JSONArray() : tEnterpriseTagJson.get(uniscid));
+            basicJson.put("tevaluatingIndex",tEvaluatingIndexJson.get(uniscid) == null ? new JSONObject() : tEvaluatingIndexJson.get(uniscid));
+            basicJson.put("tentWebsiteList",tEntWebsiteJson.get(uniscid) == null ? new JSONArray() : tEntWebsiteJson.get(uniscid));
+            basicJson.put("tpatentsRelationsList",tPatentsRelationsJson.get(uniscid) == null ? new JSONArray() : tPatentsRelationsJson.get(uniscid));
+            basicJson.put("tnewJobsList",tNewJobsListJson.get(uniscid) == null ? new JSONArray() : tNewJobsListJson.get(uniscid));
+            basicJson.put("tsoftwareCopyrightList",tSoftwareCopyrightJson.get(uniscid) == null ? new JSONArray() : tSoftwareCopyrightJson.get(uniscid));
+            basicJson.put("tenterpriseAppList",tEnterpriseAppJson.get(uniscid) == null ? new JSONArray() : tEnterpriseAppJson.get(uniscid));
+            basicJson.put("tenterpriseDescList",tEnterpriseDescJson.get(uniscid) == null ? new JSONArray() : tEnterpriseDescJson.get(uniscid));
+            basicJson.put("ttrademarksList",tTrademarksJson.get(uniscid) == null ? new JSONArray() : tTrademarksJson.get(uniscid));
+            basicJsonList.add(basicJson);
         });
-        return AjaxResult.success(tempResultList);
+        return AjaxResult.success(basicJsonList);
+    }
+
+    public static JSONObject processJsonData(List<?> dataList) {
+        JSONObject jsonObject = new JSONObject();
+        dataList.forEach(data -> {
+            JSONObject tempJson = convertToJSONObject(data);
+            String uniscid = tempJson.getString("uniscid");
+            if (jsonObject.containsKey(uniscid)) {
+                JSONArray jsonArray = jsonObject.getJSONArray(uniscid);
+                jsonArray.add(tempJson);
+                jsonObject.put(uniscid,jsonArray);
+            }else {
+                JSONArray jsonArray = new JSONArray();
+                jsonArray.add(tempJson);
+                jsonObject.put(uniscid,jsonArray);
+            }
+        });
+        return jsonObject;
+    }
+
+    private static JSONObject convertToJSONObject(Object object) {
+        return JSONObject.parseObject(JSONObject.toJSONString(object));
     }
 
     private Set<String> searchScore(JSONObject searchParams) {
@@ -363,6 +434,7 @@ public class EntInfoService {
             queryWrapper.like("entname",keyword)
                     .or().eq("uniscid",keyword);
         }
+        queryWrapper.orderByDesc("regcap");
         Page<TEnterpriseBasicDto> page = new Page<>(pageNum,pageSize);
         Page<TEnterpriseBasicDto> pageResult = itEnterpriseBasicMapper.selectPage(page, queryWrapper);
         List<TEnterpriseBasicDto> basicList = Lists.newArrayList();
@@ -407,6 +479,7 @@ public class EntInfoService {
             queryWrapper.like("entname",keyword)
                     .or().eq("uniscid",keyword);
         }
+        queryWrapper.orderByDesc("regcap");
         Page<TEnterpriseBasicDto> page = new Page<>(pageNum,pageSize);
         Page<TEnterpriseBasicDto> pageResult = itEnterpriseBasicMapper.selectPage(page, queryWrapper);
         List<TEnterpriseBasicDto> basicList = Lists.newArrayList();
@@ -457,6 +530,7 @@ public class EntInfoService {
             queryWrapper.like("entname",keyword)
                     .or().eq("uniscid",keyword);
         }
+        queryWrapper.orderByDesc("regcap");
         Page<TEnterpriseBasicDto> page = new Page<>(pageNum,pageSize);
         Page<TEnterpriseBasicDto> pageResult = itEnterpriseBasicMapper.selectPage(page, queryWrapper);
         List<TEnterpriseBasicDto> basicList = Lists.newArrayList();
@@ -579,6 +653,19 @@ public class EntInfoService {
         basic.setTEvaluatingIndex(itEvaluatingIndexMapper.selectOne(
                 new QueryWrapper<TEvaluatingIndex>().eq("uniscid",uniscid)
         ));
+        basic.setTEnterpriseTag(itEnterpriseTagMapper.selectOne(
+                new QueryWrapper<TEnterpriseTag>()
+                        .eq("uniscid",uniscid)
+        ));
+        basic.setTActualControllerList(itActualControllerMapper.selectList(
+                new QueryWrapper<TActualController>().eq("uniscid",uniscid)
+        ));
+        basic.setTGroupRelationList(itGroupRelationMapper.selectList(
+                new QueryWrapper<TGroupRelation>().eq("groupid",basic.getGrpid())
+        ));
+        basic.setTGroupTag(itGroupTagMapper.selectOne(
+                new QueryWrapper<TGroupTag>().eq("grpid",basic.getGrpid())
+        ));
         return AjaxResult.success(basic);
     }
 
@@ -589,7 +676,7 @@ public class EntInfoService {
             queryWrapper.like("entname",keyword)
                     .or().eq("uniscid",keyword);
         }
-
+        queryWrapper.orderByDesc("regcap");
         List<String> allUniscidList = Lists.newArrayList();
         itActualControllerMapper.selectList(
                 new QueryWrapper<TActualController>().select("uniscid")
@@ -615,6 +702,17 @@ public class EntInfoService {
         jsonObject.put("pageSize",pageResult.getSize());
         jsonObject.put("item",basicList);
         return AjaxResult.success(jsonObject);
+    }
+
+    public AjaxResult getActualControllerDetail(String uniscid) {
+        QueryWrapper<TEnterpriseBasicDto> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("uniscid",uniscid);
+        TEnterpriseBasicDto basic = itEnterpriseBasicMapper.selectOne(queryWrapper);
+        basic.setRegcap(basic.getRegcap().split("\\.")[0]);
+        basic.setTActualControllerList(itActualControllerMapper.selectList(
+                new QueryWrapper<TActualController>().eq("uniscid",basic.getUniscid())
+        ));
+        return AjaxResult.success(basic);
     }
 
     public AjaxResult getActionGraph(JSONObject searchParams, int pageNum, int pageSize) {
@@ -934,5 +1032,42 @@ public class EntInfoService {
             allBlackList.add(jsonObject);
         });
         return AjaxResult.success(allBlackList);
+    }
+
+//    {"textarea2":"中冶京诚工程技术有限公司\n中冶赛迪集团有限公司","check_relation":[1],"level_radio":1,"check_person_relation":[2,6],"check_buss_relation":[1],"check_potential_relation":[1]}
+    public AjaxResult relaExplore(JSONObject paramsBody) {
+        String textarea2=paramsBody.getString("textarea2");
+        String[] entnameList = textarea2.split("\n");
+        if (entnameList.length<=0) {
+            return AjaxResult.error("请输入企业名称！");
+        }
+        if (entnameList.length>10) {
+            return AjaxResult.error("企业名称不能超过10个！");
+        }
+        JSONArray checkRelation=paramsBody.getJSONArray("check_relation");
+        JSONArray checkPersonRelation=paramsBody.getJSONArray("check_person_relation");
+        JSONArray checkBussRelation=paramsBody.getJSONArray("check_buss_relation");
+        JSONArray checkPotentialRelation=paramsBody.getJSONArray("check_potential_relation");
+        int levelRadio=paramsBody.getIntValue("level_radio");
+        if (checkRelation.size()<=0 && checkPersonRelation.size()<=0 && checkBussRelation.size()<=0 && checkPotentialRelation.size()<=0) {
+            return AjaxResult.error("请选择关系类型！");
+        }
+        if (levelRadio<=0) {
+            return AjaxResult.error("请选择关系层级！");
+        }
+        JSONObject jsonObject = new JSONObject();
+        for (int i=0;i<checkRelation.size();i++) {
+            int label = (int)checkRelation.get(i);
+            if (label==1) {
+                List<Map<String, Object>> sameListShareholder = itEnterpriseStockholderMapper.getSameShareholder(entnameList);
+                log.info("sameListShareholder:{}",sameListShareholder.toString());
+            }
+//            if (label==2) {
+//                List<Map<String, Object>> sameListInvestment = itEnterpriseStockholderMapper.getSameInvestment(entnameList);
+//                log.info("sameListShareholder:{}",sameListShareholder.toString());
+//            }
+        }
+
+        return AjaxResult.success();
     }
 }

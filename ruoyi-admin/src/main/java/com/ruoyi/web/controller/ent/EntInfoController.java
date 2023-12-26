@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.web.domain.*;
+import com.ruoyi.web.service.EntDetailService;
 import com.ruoyi.web.service.EntInfoService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class EntInfoController extends BaseController {
 
     @Autowired
     private EntInfoService entInfoService;
+
+    @Autowired
+    private EntDetailService entDetailService;
 
 
     /**
@@ -119,6 +123,18 @@ public class EntInfoController extends BaseController {
                                           @RequestParam(required = false,defaultValue = "1") int pageNum,
                                           @RequestParam(required = false,defaultValue = "10") int pageSize) {
         return entInfoService.getActualController(searchParams,pageNum,pageSize);
+    }
+
+    @GetMapping("/getActualControllerDetail/{uniscid}")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "uniscid", value = "uniscid", dataType = "String"),
+            }
+    )
+    @ApiResponse(code = 200, message = "success", response = TEnterpriseBasicDto.class)
+    @ApiOperation("查询企业实际控制人")
+    public AjaxResult getActualControllerDetail(@PathVariable String uniscid) {
+        return entInfoService.getActualControllerDetail(uniscid);
     }
 
     @PostMapping("/getActionGraph")
@@ -418,5 +434,17 @@ public class EntInfoController extends BaseController {
     @ApiResponse(code = 200, message = "success", response = TBlacklist.class)
     public AjaxResult getBlackEvent(@PathVariable String uniscid) {
         return entInfoService.getBlackEvent(uniscid);
+    }
+
+    @PostMapping("/relaExplore")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "paramsBody", value = "搜索参数", dataType = "JSONObject"),
+            }
+    )
+    @ApiOperation("关联探索")
+    @ApiResponse(code = 200, message = "success", response = JSONObject.class)
+    public AjaxResult relaExplore(@RequestBody JSONObject paramsBody) {
+        return entInfoService.relaExplore(paramsBody);
     }
 }

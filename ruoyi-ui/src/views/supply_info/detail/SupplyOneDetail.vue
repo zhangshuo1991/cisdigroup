@@ -10,87 +10,12 @@
                 <td style="width: 100%;">
                   <div style="padding-top: 10px">
                       <span class="c-ent-title">
-                        {{ entinfo.entname }}<span v-show="entinfo.uniscid">{{ '（'+ entinfo.uniscid +'）' }}</span>
+                        {{ entinfo.entname }}
+                        <span v-show="entinfo.uniscid">{{ '（'+ entinfo.uniscid +'）' }}</span>
+                        <span style="color: #8AD8A9;font-weight: bolder">
+                          （{{ entinfo.entstatusCn }}）
+                        </span>
                       </span>
-                  </div>
-                  <div style="margin-top: 5px;margin-left: 2px">
-                    <div
-                      class="c-ent-label"
-                      style="border: 1px solid #8AD8A9;background-color: white;"
-                    >
-                      <span style="color: #8AD8A9;font-weight: bolder">{{ entinfo.entstatusCn }}</span>
-                    </div>
-                    <div
-                      class="c-ent-label"
-                      style="border: 1px solid #FFC005;background-color: white;"
-                    >
-                      <el-popover
-                        placement="bottom"
-                        width="200"
-                        trigger="hover"
-                        :disabled="tels.length<=0"
-                      >
-                        <div>
-                          <div v-for="item in tels" :key="item">{{ item }}</div>
-                        </div>
-                        <span slot="reference" class="c-title-text" style="color: #FFC005;font-weight: bolder">
-                            联系方式<i class="el-icon-arrow-down el-icon--right" />
-                          </span>
-                      </el-popover>
-                    </div>
-                    <div
-                      class="c-ent-label"
-                      style="border: 1px solid #FFC005;background-color: white;"
-                    >
-                      <el-popover
-                        placement="bottom"
-                        width="200"
-                        trigger="hover"
-                        :disabled="websites.length<=0"
-                      >
-                        <div>
-                          <div v-for="item in websites" :key="item">{{ item }}</div>
-                        </div>
-                        <span slot="reference" class="c-title-text" style="color: #FFC005;font-weight: bolder">
-                            官方网址<i class="el-icon-arrow-down el-icon--right" />
-                          </span>
-                      </el-popover>
-                    </div>
-                    <div
-                      class="c-ent-label"
-                      style="border: 1px solid #3663CB;background-color: white;"
-                    >
-                      <el-popover
-                        placement="bottom"
-                        trigger="hover"
-                        :disabled="used_name.length<=0"
-                      >
-                        <div>
-                          <div v-for="item in used_name" :key="item">{{ item }}</div>
-                        </div>
-                        <span slot="reference" class="c-title-text" style="color: #3663CB;font-weight: bolder">
-                            曾用名<i class="el-icon-arrow-down el-icon--right" />
-                          </span>
-                      </el-popover>
-                    </div>
-                    <div
-                      class="c-ent-label"
-                      style="border: 1px solid #3663CB;background-color: white;"
-                    >
-                      <el-popover
-                        placement="bottom"
-                        width="200"
-                        trigger="hover"
-                        :disabled="syncWords.length<=0"
-                      >
-                        <div>
-                          <div v-for="item in syncWords" :key="item">{{ item }}</div>
-                        </div>
-                        <span slot="reference" class="c-title-text" style="color: #3663CB;font-weight: bolder">
-                            同义词<i class="el-icon-arrow-down el-icon--right" />
-                          </span>
-                      </el-popover>
-                    </div>
                   </div>
                   <div class="c-ent-basic" style="width: 100%;padding-left: 2px;padding-top: 24px;">
                     <div style="min-height: 119px;margin-bottom: 5px;background-color: #f7f7f7;margin-top: 10px;padding-top: 5px;padding-left: 10px">
@@ -101,16 +26,18 @@
                           <td class="c-table-basic-text">{{ entinfo.lerepname }}</td>
                           <td class="c-table-basic-title">注册资金</td>
                           <td class="c-table-basic-text">
-                            <span>{{ entinfo.regcap }}&nbsp;万{{ entinfo.regcapcurCn }}</span>
+                            <span>{{ entinfo.regcap }}&nbsp{{ entinfo.regcapcurCn }}</span>
                           </td>
                           <td class="c-table-basic-title">所属地区</td>
-                          <td class="c-table-basic-text">{{ entinfo.domdistrictCn }}</td>
+                          <td class="c-table-basic-text">
+                            {{ enterpriseTag.enprovCn }}-{{ enterpriseTag.encityCn }}-{{ enterpriseTag.domdistrictCn }}
+                          </td>
                         </tr>
                         <tr>
                           <td class="c-table-basic-title">经营年限</td>
-                          <td class="c-table-basic-text">10.4年</td>
+                          <td class="c-table-basic-text">{{ enterpriseTag.enages }}年</td>
                           <td class="c-table-basic-title">是否上市</td>
-                          <td class="c-table-basic-text">{{ entinfo.listed === true ? '是':'否' }}</td>
+                          <td class="c-table-basic-text">{{ enterpriseTag.islist === 1 ? '是':'否' }}</td>
                           <td class="c-table-basic-title">是否高新</td>
                           <td class="c-table-basic-text">否</td>
                         </tr>
@@ -120,7 +47,7 @@
                           <td class="c-table-basic-title">组织形式</td>
                           <td class="c-table-basic-text">{{ entinfo.orgtypeCn }}</td>
                           <td class="c-table-basic-title">企业规模</td>
-                          <td class="c-table-basic-text"></td>
+                          <td class="c-table-basic-text">{{ enterpriseTag.entscaleCn }}</td>
                         </tr>
                         <tr>
                           <td class="c-table-basic-title">企业简介</td>
@@ -139,7 +66,7 @@
               </tr>
               <tr>
                 <td id="s-footer-td">
-                  <div class="c-other-info" style="width: 170px;padding-right: 4px">
+                  <div v-if="enterpriseTag.ctrlid" class="c-other-info" style="width: 170px;padding-right: 4px">
                     <div style="float: left;width: 30%;text-align: center;padding-top: 5px">
                       <svg-icon icon-class="shijikongzhiren" class="c-other-info-icon" /><br>
                       <div style="font-size: 7px;color: #0070C4;font-weight: bolder;margin-top: 1px">实控人</div>
@@ -147,9 +74,9 @@
                     <div style="float: left;width: 70%;">
                       <div style="height: 31px;">
                         <div
-                          v-if="ctrlInfo"
                           class="c-ent-taginfo"
                           style="font-size: 12px;line-height: 15px;padding-top: 4px"
+                          @click="viewCtrlGraph"
                         >
                           {{ ctrlInfo.ctrlname.length>17?ctrlInfo.ctrlname.substr(0,17)+'...':ctrlInfo.ctrlname }}
                         </div>
@@ -159,7 +86,15 @@
                       </div>
                     </div>
                   </div>
-                  <div class="c-other-info" style="margin-left: 25px;padding-right: 4px;width: 15%">
+                  <div v-else class="c-other-info-gray" style="width: 85px;">
+                    <div style="width: 100%;text-align: center;padding-top: 7px;color: #BFBFBF">
+                      <div style="height: 32px;">
+                        <svg-icon icon-class="shijikongzhiren" class="c-other-info-icon" style="font-size: 27px" />
+                        <div style="font-size: 7px;font-weight: bolder">实控人</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div v-if="enterpriseTag.groupid" class="c-other-info" style="margin-left: 25px;padding-right: 4px;width: 15%">
                     <div style="float: left;width: 30%;text-align: center;padding-top: 7px">
                       <svg-icon icon-class="jituankehu_one" class="c-other-info-icon" style="font-size: 27px" /><br>
                       <div style="font-size: 7px;color: #0070C4;font-weight: bolder;margin-top: 1px">集团</div>
@@ -170,7 +105,7 @@
                           v-if="grpid"
                           class="c-ent-taginfo"
                           style="font-size: 12px;line-height: 15px;padding-top: 4px"
-                          @click="mainBodyIsShow=false;graphView4Group=true;graphView4Group_is_show=true"
+                          @click="viewGroupGraph"
                         >
                           {{ grpname }}
                         </div>
@@ -182,11 +117,19 @@
                       </div>
                     </div>
                   </div>
+                  <div v-else class="c-other-info-gray" style="width: 85px;margin-left: 25px">
+                    <div style="width: 100%;text-align: center;padding-top: 7px;color: #BFBFBF">
+                      <div style="height: 32px;">
+                        <svg-icon icon-class="jituankehu_one" class="c-other-info-icon" style="font-size: 27px" />
+                        <div style="font-size: 7px;font-weight: bolder">集团</div>
+                      </div>
+                    </div>
+                  </div>
                   <div class="c-other-info" style="width:85px;margin-left: 25px;">
                     <div style="width: 100%;text-align: center;padding-top: 5px">
                       <div style="height: 32px;">
                         <svg-icon icon-class="guquanchuantou_one" class="c-other-info-icon" />
-                        <div style="font-size: 7px;color: #0070C4;font-weight: bolder;" class="c-ent-taginfo" @click="mainBodyIsShow=false;graphView4RelatedParty=true;graphView4RelatedParty_is_show=true">股权穿透</div>
+                        <div style="font-size: 7px;color: #0070C4;font-weight: bolder;" class="c-ent-taginfo" @click="viewStockGraph">股权穿透</div>
                       </div>
                     </div>
                   </div>
@@ -194,7 +137,8 @@
                     <div style="width: 100%;text-align: center;padding-top: 5px">
                       <div style="height: 32px;">
                         <svg-icon icon-class="guanlianfang_one" class="c-other-info-icon" />
-                        <div style="font-size: 7px;color: #0070C4;font-weight: bolder;" class="c-ent-taginfo" @click="mainBodyIsShow=false;graphView4RelatedParty=true;graphView4RelatedParty_is_show=true">关联方</div>
+                        <div style="font-size: 7px;color: #0070C4;font-weight: bolder;" class="c-ent-taginfo"
+                             @click="viewRelaDetailInfo">关联方</div>
                       </div>
                     </div>
                   </div>
@@ -422,145 +366,147 @@
           </el-tab-pane>
           <el-tab-pane label="财务信息" name="caiwu">
             <div style="background-color: white;width: 100%;padding: 15px;">
-              <div class="c-data-h1">
-                资产负债表
-              </div>
-              <table class="c-base-table" style="width: 100%;margin-top: 5px">
-                <thead>
-                  <tr>
-                    <td class="c-th-header">序号</td>
-                    <td class="c-th-header"></td>
-                    <td v-for="(item,index) in tlistedCompanyBalanceList" :key="index" class="c-th-header">
-                      {{ item.rptDate }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="c-th-header">1</td>
-                    <td class="c-th-header">企业id</td>
-                    <td class="c-th-header">{{ entinfo.uniscid }}</td>
-                    <td class="c-th-header">{{ entinfo.uniscid }}</td>
-                    <td class="c-th-header">{{ entinfo.uniscid }}</td>
-                    <td class="c-th-header">{{ entinfo.uniscid }}</td>
-                    <td class="c-th-header">{{ entinfo.uniscid }}</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="c-td-text">2</td>
-                    <td class="c-td-text">企业名称</td>
-                    <td class="c-td-text">{{ entinfo.entname }}</td>
-                    <td class="c-td-text">{{ entinfo.entname }}</td>
-                    <td class="c-td-text">{{ entinfo.entname }}</td>
-                    <td class="c-td-text">{{ entinfo.entname }}</td>
-                    <td class="c-td-text">{{ entinfo.entname }}</td>
-                  </tr>
-                  <tr v-for="(index_item,index) in balance_listed_index" :key="index">
-                    <td class="c-td-text">
-                      {{ index+3 }}
-                    </td>
-                    <td class="c-td-text">
-                      {{ index_item.label }}
-                    </td>
-                    <td v-for="(item,index) in tlistedCompanyBalanceList" :key="index" class="c-td-text">
-                      {{ item[index_item.index] }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div class="c-data-h1" style="margin-top: 10px">
-                利润表
-              </div>
-              <table class="c-base-table" style="width: 100%;margin-top: 10px">
-                <thead>
-                  <tr>
-                    <td class="c-th-header">序号</td>
-                    <td class="c-th-header"></td>
-                    <td v-for="(item,index) in tlistedCompanyProfitsInfoList" :key="index" class="c-th-header">
-                      {{ item.rptDate }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="c-th-header">1</td>
-                    <td class="c-th-header">企业id</td>
-                    <td class="c-th-header">{{ entinfo.uniscid }}</td>
-                    <td class="c-th-header">{{ entinfo.uniscid }}</td>
-                    <td class="c-th-header">{{ entinfo.uniscid }}</td>
-                    <td class="c-th-header">{{ entinfo.uniscid }}</td>
-                    <td class="c-th-header">{{ entinfo.uniscid }}</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="c-td-text">2</td>
-                    <td class="c-td-text">企业名称</td>
-                    <td class="c-td-text">{{ entinfo.entname }}</td>
-                    <td class="c-td-text">{{ entinfo.entname }}</td>
-                    <td class="c-td-text">{{ entinfo.entname }}</td>
-                    <td class="c-td-text">{{ entinfo.entname }}</td>
-                    <td class="c-td-text">{{ entinfo.entname }}</td>
-                  </tr>
-                  <tr v-for="(index_item,index) in profits_info_index" :key="index">
-                    <td class="c-td-text">
-                      {{ index+3 }}
-                    </td>
-                    <td class="c-td-text">
-                      {{ index_item.label }}
-                    </td>
-                    <td v-for="(item,index) in tlistedCompanyProfitsInfoList" :key="index" class="c-td-text">
-                      {{ item[index_item.index] }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div class="c-data-h1" style="margin-top: 10px">
-                现金流量表
-              </div>
-              <table class="c-base-table" style="width: 100%;margin-top: 10px">
-                <thead>
-                  <tr>
-                    <td class="c-th-header">序号</td>
-                    <td class="c-th-header"></td>
-                    <td v-for="(item,index) in tlistedCompanyCashFlowList" :key="index" class="c-th-header">
-                      {{ item.rptDate }}
-                    </td>
-                </tr>
-                  <tr>
-                    <td class="c-th-header">1</td>
-                    <td class="c-th-header">企业id</td>
-                    <td class="c-th-header">{{ entinfo.uniscid }}</td>
-                    <td class="c-th-header">{{ entinfo.uniscid }}</td>
-                    <td class="c-th-header">{{ entinfo.uniscid }}</td>
-                    <td class="c-th-header">{{ entinfo.uniscid }}</td>
-                    <td class="c-th-header">{{ entinfo.uniscid }}</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="c-td-text">2</td>
-                    <td class="c-td-text">企业名称</td>
-                    <td class="c-td-text">{{ entinfo.entname }}</td>
-                    <td class="c-td-text">{{ entinfo.entname }}</td>
-                    <td class="c-td-text">{{ entinfo.entname }}</td>
-                    <td class="c-td-text">{{ entinfo.entname }}</td>
-                    <td class="c-td-text">{{ entinfo.entname }}</td>
-                  </tr>
-                  <tr v-for="(index_item,index) in cash_flow_index" :key="index">
-                    <td class="c-td-text">
-                      {{ index+3 }}
-                    </td>
-                    <td class="c-td-text">
-                      {{ index_item.label }}
-                    </td>
-                    <td v-for="(item,index) in tlistedCompanyCashFlowList" :key="index" class="c-td-text">
-                      {{ item[index_item.index] }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <el-tabs v-model="activeNameTwo">
+                <el-tab-pane label="资产负债表（单位:人民币元）" name="zichan">
+                  <table v-if="tlistedCompanyBalanceList.length>0" class="c-base-table" style="width: 100%;margin-top: 5px">
+                    <thead>
+                    <tr>
+                      <td class="c-th-header">序号</td>
+                      <td class="c-th-header"></td>
+                      <td v-for="(item,index) in tlistedCompanyBalanceList" :key="index" class="c-th-header">
+                        {{ item.rptDate }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="c-th-header">1</td>
+                      <td class="c-th-header">企业id</td>
+                      <td class="c-th-header">{{ entinfo.uniscid }}</td>
+                      <td class="c-th-header">{{ entinfo.uniscid }}</td>
+                      <td class="c-th-header">{{ entinfo.uniscid }}</td>
+                      <td class="c-th-header">{{ entinfo.uniscid }}</td>
+                      <td class="c-th-header">{{ entinfo.uniscid }}</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td class="c-td-text">2</td>
+                      <td class="c-td-text">企业名称</td>
+                      <td class="c-td-text">{{ entinfo.entname }}</td>
+                      <td class="c-td-text">{{ entinfo.entname }}</td>
+                      <td class="c-td-text">{{ entinfo.entname }}</td>
+                      <td class="c-td-text">{{ entinfo.entname }}</td>
+                      <td class="c-td-text">{{ entinfo.entname }}</td>
+                    </tr>
+                    <tr v-for="(index_item,index) in balance_listed_index" :key="index">
+                      <td class="c-td-text">
+                        {{ index+3 }}
+                      </td>
+                      <td class="c-td-text">
+                        {{ index_item.label }}
+                      </td>
+                      <td v-for="(item,index) in tlistedCompanyBalanceList" :key="index" class="c-td-text">
+                        {{ convertIndex(item[index_item.index],index_item.label) }}
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <h4 v-else>暂无数据</h4>
+                </el-tab-pane>
+                <el-tab-pane label="利润表（单位:人民币元）" name="lirun">
+                  <table v-if="tlistedCompanyProfitsInfoList.length>0" class="c-base-table" style="width: 100%;margin-top: 10px">
+                    <thead>
+                    <tr>
+                      <td class="c-th-header">序号</td>
+                      <td class="c-th-header"></td>
+                      <td v-for="(item,index) in tlistedCompanyProfitsInfoList" :key="index" class="c-th-header">
+                        {{ item.rptDate }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="c-th-header">1</td>
+                      <td class="c-th-header">企业id</td>
+                      <td class="c-th-header">{{ entinfo.uniscid }}</td>
+                      <td class="c-th-header">{{ entinfo.uniscid }}</td>
+                      <td class="c-th-header">{{ entinfo.uniscid }}</td>
+                      <td class="c-th-header">{{ entinfo.uniscid }}</td>
+                      <td class="c-th-header">{{ entinfo.uniscid }}</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td class="c-td-text">2</td>
+                      <td class="c-td-text">企业名称</td>
+                      <td class="c-td-text">{{ entinfo.entname }}</td>
+                      <td class="c-td-text">{{ entinfo.entname }}</td>
+                      <td class="c-td-text">{{ entinfo.entname }}</td>
+                      <td class="c-td-text">{{ entinfo.entname }}</td>
+                      <td class="c-td-text">{{ entinfo.entname }}</td>
+                    </tr>
+                    <tr v-for="(index_item,index) in profits_info_index" :key="index">
+                      <td class="c-td-text">
+                        {{ index+3 }}
+                      </td>
+                      <td class="c-td-text">
+                        {{ index_item.label }}
+                      </td>
+                      <td v-for="(item,index) in tlistedCompanyProfitsInfoList" :key="index" class="c-td-text">
+                        {{ convertIndex(item[index_item.index],index_item.label) }}
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <h4 v-else>暂无数据</h4>
+                </el-tab-pane>
+                <el-tab-pane label="现金流量表（单位:人民币元）" name="xianjin">
+                  <table v-if="tlistedCompanyCashFlowList.length>0" class="c-base-table" style="width: 100%;margin-top: 10px">
+                    <thead>
+                    <tr>
+                      <td class="c-th-header">序号</td>
+                      <td class="c-th-header"></td>
+                      <td v-for="(item,index) in tlistedCompanyCashFlowList" :key="index" class="c-th-header">
+                        {{ item.rptDate }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="c-th-header">1</td>
+                      <td class="c-th-header">企业id</td>
+                      <td class="c-th-header">{{ entinfo.uniscid }}</td>
+                      <td class="c-th-header">{{ entinfo.uniscid }}</td>
+                      <td class="c-th-header">{{ entinfo.uniscid }}</td>
+                      <td class="c-th-header">{{ entinfo.uniscid }}</td>
+                      <td class="c-th-header">{{ entinfo.uniscid }}</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td class="c-td-text">2</td>
+                      <td class="c-td-text">企业名称</td>
+                      <td class="c-td-text">{{ entinfo.entname }}</td>
+                      <td class="c-td-text">{{ entinfo.entname }}</td>
+                      <td class="c-td-text">{{ entinfo.entname }}</td>
+                      <td class="c-td-text">{{ entinfo.entname }}</td>
+                      <td class="c-td-text">{{ entinfo.entname }}</td>
+                    </tr>
+                    <tr v-for="(index_item,index) in cash_flow_index" :key="index">
+                      <td class="c-td-text">
+                        {{ index+3 }}
+                      </td>
+                      <td class="c-td-text">
+                        {{ index_item.label }}
+                      </td>
+                      <td v-for="(item,index) in tlistedCompanyCashFlowList" :key="index" class="c-td-text">
+                        {{ convertIndex(item[index_item.index],index_item.label) }}
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <h4 v-else>暂无数据</h4>
+                </el-tab-pane>
+              </el-tabs>
             </div>
           </el-tab-pane>
           <el-tab-pane label="企业评价" name="zhuti">
-            <div style="background-color: white;height: 350px">
+            <div v-if="tevaluatingIndex" style="background-color: white;height: 350px">
               <div style="height: 40px;padding: 10px">
                 <span style="font-weight: bolder;color: black;font-size: 15px">{{ entinfo.entname }}</span>
               </div>
@@ -582,55 +528,111 @@
                 <div class="c-data-h1">企业分项评价</div>
                 <el-row>
                   <el-col :span="4" style="padding: 5px">
-                    <div style="text-align: center;font-size: 14px;border: 1px solid gainsboro;height: 70px;margin-top: 5px">
-                      <div style="font-weight: bolder;color: white;background-color: #3A71A8;height: 35px;line-height: 35px">身份特征</div>
-                      <div style="color: #1ab394;height: 35px;line-height: 35px">
-                        <i class="el-icon-star-off"></i>{{ tevaluatingIndex.entIdentity }}
+                    <el-popover
+                      placement="top"
+                      width="400"
+                      trigger="hover"
+                      content="表征企业开展经营活动的天然优势，体现市场和社会公众对企业的基础认知情况。身份特征相关的属性往往会对企业的行业准入、
+                        融资成本和商业模式等产生较大影响，也将潜移默化地影响企业的经营与发展。身份特征指标包括企业经过多年经营积累积淀下的身份特征和股东、
+                        法定代表人特征等各类优质要素为企业增加的商誉特征。"
+                    >
+                      <div slot="reference" style="text-align: center;font-size: 14px;border: 1px solid gainsboro;height: 70px;margin-top: 5px">
+                        <div style="font-weight: bolder;color: white;background-color: #3A71A8;height: 35px;line-height: 35px">身份特征</div>
+                        <div style="color: #1ab394;height: 35px;line-height: 35px">
+                          <i class="el-icon-star-off"></i>{{ tevaluatingIndex.entIdentity }}
+                        </div>
                       </div>
-                    </div>
+                    </el-popover>
                   </el-col>
                   <el-col :span="4" style="padding: 5px">
-                    <div style="text-align: center;font-size: 14px;border: 1px solid gainsboro;height: 70px;margin-top: 5px">
-                      <div style="font-weight: bolder;color: white;background-color: #3A71A8;height: 35px;line-height: 35px">经营风险</div>
-                      <div style="color: #1ab394;height: 35px;line-height: 35px">
-                        <i class="el-icon-star-off"></i>{{ tevaluatingIndex.risk }}
+                    <el-popover
+                      placement="top"
+                      width="200"
+                      trigger="hover"
+                      content="表征企业生产经营中隐含的风险大小以及对风险的抵抗能力，反映企业的经营稳定性。经营风险指标主要包括严重事件风险、
+                        财务风险、合规风险、关联风险和频繁变更风险五个方面。此外，经营风险侧重考虑企业的负面的信息，
+                        根据一段时间内的风险事件发生的严重程度、数量、事件时间来构建模型，进行评分。"
+                    >
+                      <div slot="reference" style="text-align: center;font-size: 14px;border: 1px solid gainsboro;height: 70px;margin-top: 5px">
+                        <div style="font-weight: bolder;color: white;background-color: #3A71A8;height: 35px;line-height: 35px">经营风险</div>
+                        <div style="color: #1ab394;height: 35px;line-height: 35px">
+                          <i class="el-icon-star-off"></i>{{ tevaluatingIndex.risk }}
+                        </div>
                       </div>
-                    </div>
+                    </el-popover>
                   </el-col>
                   <el-col :span="4" style="padding: 5px">
-                    <div style="text-align: center;font-size: 14px;border: 1px solid gainsboro;height: 70px;margin-top: 5px">
-                      <div style="font-weight: bolder;color: white;background-color: #3A71A8;height: 35px;line-height: 35px">行业实力</div>
-                      <div style="color: #1ab394;height: 35px;line-height: 35px">
-                        <i class="el-icon-star-off"></i>{{ tevaluatingIndex.competitiveness }}
+                    <el-popover
+                      placement="top"
+                      width="200"
+                      trigger="hover"
+                      content="表征企业在国内行业中的竞争状况，体现了企业的行业地位。行业实力指标的纠正了行业差异形成的竞争差异，
+                        更全面和准确的评价企业的经营情况。行业实力指标主要包括企业财务指标相对行业的分位数情况、
+                        非财务类指标相对行业的中位数情况以及企业收入增速相对行业平均增速情况。"
+                    >
+                      <div slot="reference" style="text-align: center;font-size: 14px;border: 1px solid gainsboro;height: 70px;margin-top: 5px">
+                        <div style="font-weight: bolder;color: white;background-color: #3A71A8;height: 35px;line-height: 35px">行业实力</div>
+                        <div style="color: #1ab394;height: 35px;line-height: 35px">
+                          <i class="el-icon-star-off"></i>{{ tevaluatingIndex.competitiveness }}
+                        </div>
                       </div>
-                    </div>
+                    </el-popover>
                   </el-col>
                   <el-col :span="4" style="padding: 5px">
-                    <div style="text-align: center;font-size: 14px;border: 1px solid gainsboro;height: 70px;margin-top: 5px">
-                      <div style="font-weight: bolder;color: white;background-color: #3A71A8;height: 35px;line-height: 35px">发展速度</div>
-                      <div style="color: #1ab394;height: 35px;line-height: 35px">
-                        <i class="el-icon-star-off"></i>{{ tevaluatingIndex.development }}
+                    <el-popover
+                      placement="top"
+                      width="200"
+                      trigger="hover"
+                      content="表征企业近期各个指标的变化方向和速度，体现企业的成长性和稳定性。
+            发展速度指标主要包括财务类、市场类、人才类和创新类四个方面。根据企业在两个时间段内的数据项的同比变化情况进行评分。"
+                    >
+                      <div slot="reference" style="text-align: center;font-size: 14px;border: 1px solid gainsboro;height: 70px;margin-top: 5px">
+                        <div style="font-weight: bolder;color: white;background-color: #3A71A8;height: 35px;line-height: 35px">发展速度</div>
+                        <div style="color: #1ab394;height: 35px;line-height: 35px">
+                          <i class="el-icon-star-off"></i>{{ tevaluatingIndex.development }}
+                        </div>
                       </div>
-                    </div>
+                    </el-popover>
                   </el-col>
                   <el-col :span="4" style="padding: 5px">
-                    <div style="text-align: center;font-size: 14px;border: 1px solid gainsboro;height: 70px;margin-top: 5px">
-                      <div style="font-weight: bolder;color: white;background-color: #3A71A8;height: 35px;line-height: 35px">活跃程度</div>
-                      <div style="color: #1ab394;height: 35px;line-height: 35px">
-                        <i class="el-icon-star-off"></i>{{ tevaluatingIndex.vigor }}
+                    <el-popover
+                      placement="top"
+                      width="200"
+                      trigger="hover"
+                      content="表征企业开展经营活动的活跃程度，体现企业的生存状态。活跃度并不考虑事件的好与坏，更侧重考虑企业事件的影响大小。
+            活跃程度包括企业经营活动活跃程度、创新活跃程度、投融资活跃程度等方面。评价体系将经营事件数据按照影响程度的强弱分为三类，
+            分别是与经营活动直接相关的经营事件、与经营活动强相关的创新和投融资事件和与经营活动弱相关的企业成立和变更事件。"
+                    >
+                      <div slot="reference" style="text-align: center;font-size: 14px;border: 1px solid gainsboro;height: 70px;margin-top: 5px">
+                        <div style="font-weight: bolder;color: white;background-color: #3A71A8;height: 35px;line-height: 35px">活跃程度</div>
+                        <div style="color: #1ab394;height: 35px;line-height: 35px">
+                          <i class="el-icon-star-off"></i>{{ tevaluatingIndex.vigor }}
+                        </div>
                       </div>
-                    </div>
+                    </el-popover>
                   </el-col>
                   <el-col :span="4" style="padding: 5px">
-                    <div style="text-align: center;font-size: 14px;border: 1px solid gainsboro;height: 70px;margin-top: 5px">
-                      <div style="font-weight: bolder;color: white;background-color: #3A71A8;height: 35px;line-height: 35px">创新能力</div>
-                      <div style="color: #1ab394;height: 35px;line-height: 35px">
-                        <i class="el-icon-star-off"></i>{{ tevaluatingIndex.creativity }}
+                    <el-popover
+                      placement="top"
+                      width="200"
+                      trigger="hover"
+                      content="表征企业在技术、品牌和商业模式上的创新程度，体现企业的创新性。创新能力指标包括创新投入、技术创新程度、
+            品牌创新四个方面。技术创新不仅包括知识产权的创造，还包括新技术和新模式的应用。从数据项看，
+            一方面体现在企业知识产权的数量、类型、申请时间和授权时间等，另一方面体现在外部投资机构的地位、投资次数、时间等。"
+                    >
+                      <div slot="reference" style="text-align: center;font-size: 14px;border: 1px solid gainsboro;height: 70px;margin-top: 5px">
+                        <div style="font-weight: bolder;color: white;background-color: #3A71A8;height: 35px;line-height: 35px">创新能力</div>
+                        <div style="color: #1ab394;height: 35px;line-height: 35px">
+                          <i class="el-icon-star-off"></i>{{ tevaluatingIndex.creativity }}
+                        </div>
                       </div>
-                    </div>
+                    </el-popover>
                   </el-col>
                 </el-row>
               </div>
+            </div>
+            <div style="background-color: white;height: 150px;padding: 15px" v-else>
+              <h3>暂无数据</h3>
             </div>
           </el-tab-pane>
         </el-tabs>
@@ -658,6 +660,7 @@ export default {
   name: 'EntDetail',
   data() {
     return {
+      activeNameTwo: 'zichan',
       radarStats: null,
       entid: '',
       divHeight: '',
@@ -1018,12 +1021,14 @@ export default {
       tlistedCompanyBalanceList: [],
       tlistedCompanyCashFlowList: [],
       tlistedCompanyProfitsInfoList: [],
-      tevaluatingIndex: {},
+      tevaluatingIndex: null,
       defaultProps: {
         children: 'children',
         label: 'label'
-      }
-    };
+      },
+      enterpriseTag: {},
+      enterpriseDetail: {}
+    }
   },
   created() {
     this.entinfo = JSON.parse(sessionStorage.getItem('supplyOneDetail'));
@@ -1035,6 +1040,18 @@ export default {
   methods: {
     handleClick(val) {
 
+    },
+    convertIndex(val,label) {
+      if (label === '发布时期' ||
+        label === '报表起始日期' ||
+        label === '截止日期' ||
+        label === '报表类型') {
+        return val
+      }
+      if (!val) {
+        return ''
+      }
+      return parseFloat(val).toLocaleString()
     },
     initRadarStats(values) {
       this.radarStats.setOption({
@@ -1081,6 +1098,7 @@ export default {
         method: 'get',
         params: { uniscid: this.uniscid }
       }).then(res => {
+        this.enterpriseDetail = res.data
         if (res.data.tactualControllerList && res.data.tactualControllerList.length>0) {
           this.ctrlInfo = res.data.tactualControllerList[0];
         }
@@ -1091,24 +1109,56 @@ export default {
         this.tlistedCompanyCashFlowList = res.data.tlistedCompanyCashFlowList;
         this.tlistedCompanyProfitsInfoList = res.data.tlistedCompanyProfitsInfoList;
         this.tevaluatingIndex = res.data.tevaluatingIndex;
-        const values = [
-          this.tevaluatingIndex.entIdentity,
-          this.tevaluatingIndex.risk,
-          this.tevaluatingIndex.competitiveness,
-          this.tevaluatingIndex.development,
-          this.tevaluatingIndex.vigor,
-          this.tevaluatingIndex.creativity
-        ]
-        this.$nextTick(() => {
-          this.radarStats = echarts.init(this.$refs.radarStats, "macarons");
-          this.initRadarStats(values)
-        })
+        this.enterpriseTag = res.data.tenterpriseTag;
+        if (this.tevaluatingIndex) {
+          const values = [
+            this.tevaluatingIndex.entIdentity,
+            this.tevaluatingIndex.risk,
+            this.tevaluatingIndex.competitiveness,
+            this.tevaluatingIndex.development,
+            this.tevaluatingIndex.vigor,
+            this.tevaluatingIndex.creativity
+          ]
+          this.$nextTick(() => {
+            this.radarStats = echarts.init(this.$refs.radarStats, "macarons");
+            this.initRadarStats(values)
+          })
+        }
       });
     },
     viewIntro(entIntro) {
       this.entIntro = entIntro;
       this.dialogVisible = true;
     },
+    viewStockGraph() {
+      this.$router.push({
+        path: "/supplier_graph/equity_graph_detail",
+        query: { uniscid: this.uniscid }
+      });
+    },
+    viewCtrlGraph() {
+      sessionStorage.setItem("actualControllerGraph", JSON.stringify(this.enterpriseDetail));
+      this.$router.push({
+        path: "/supplier_graph/actualControllerGraph",
+        query: { uniscid: this.uniscid }
+      });
+    },
+    viewGroupGraph() {
+      let grpInfoTemp = this.enterpriseDetail.tgroupTag;
+      grpInfoTemp.tgroupRelationList = this.enterpriseDetail.tgroupRelationList;
+      sessionStorage.setItem("grpInfo", JSON.stringify(grpInfoTemp));
+      this.$router.push({
+        path: "/supplier_graph/supplyGroupDetail",
+        query: { grpid: this.grpid }
+      });
+    },
+    viewRelaDetailInfo(row) {
+      sessionStorage.setItem("baseRelaInfo", JSON.stringify(this.enterpriseDetail))
+      this.$router.push({
+        path: "/supplier_graph/relaDetailGraph",
+        query: { uniscid: this.uniscid }
+      });
+    }
   }
 };
 </script>
