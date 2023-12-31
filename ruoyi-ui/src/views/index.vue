@@ -57,7 +57,7 @@
             </span>
           </div>
           <div>
-            <el-link type="primary" href="/supplier_info">进入功能模块>></el-link>
+            <el-link type="primary" href="/supply_info">进入功能模块>></el-link>
           </div>
         </div>
       </div>

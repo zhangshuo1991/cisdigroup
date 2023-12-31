@@ -407,6 +407,30 @@ public class EntInfoController extends BaseController {
         return entInfoService.getTBiddingsallCache(paramsBody,pageNum,pageSize);
     }
 
+    @GetMapping("/getTBiddingsallDetail/{uniscid}")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "uniscid", value = "uniscid", dataType = "String"),
+            }
+    )
+    @ApiOperation("获取招投标信息")
+    @ApiResponse(code = 200, message = "success", response = TBiddingsall.class)
+    public AjaxResult getTBiddingsallDetail(@PathVariable String uniscid) {
+        return entInfoService.getTBiddingsallDetail(uniscid);
+    }
+
+    @GetMapping("/getTBiddingsallByDataId/{dataId}")
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "dataId", value = "dataId", dataType = "String"),
+            }
+    )
+    @ApiOperation("获取招投标信息")
+    @ApiResponse(code = 200, message = "success", response = TBiddingsall.class)
+    public AjaxResult getTBiddingsallByDataId(@PathVariable String dataId) {
+        return entInfoService.getTBiddingsallByDataId(dataId);
+    }
+
 
     @GetMapping("/getOtherBlackEvent")
     @ApiImplicitParams(

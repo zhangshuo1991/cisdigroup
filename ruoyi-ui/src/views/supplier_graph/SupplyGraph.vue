@@ -33,12 +33,17 @@
         </el-table-column>
         <el-table-column label="企业名称" prop="entname"></el-table-column>
         <el-table-column label="统一社会信用代码" prop="uniscid"></el-table-column>
-        <el-table-column label="当年采购总金额（人民币）" prop="totalAmountYear"></el-table-column>
-        <el-table-column label="当年前五大供应商合作金额占比" prop="top5suppliers"></el-table-column>
-        <el-table-column label="当年最大供应商名称">
+        <el-table-column label="当年采购总金额（人民币）" prop="totalPurchaseAmount">
           <template slot-scope="scope">
-            <span v-if="scope.row.tbiddingsallList.length>0">{{scope.row.tbiddingsallList[0].winBidderName}}</span>
+            <span>{{scope.row.totalPurchaseAmount.toLocaleString() }}</span>
           </template>
+        </el-table-column>
+        <el-table-column label="当年前五大供应商合作金额占比" prop="topFiveSupplierAmountRatio">
+          <template slot-scope="scope">
+            {{ (scope.row.topFiveSupplierAmountRatio*100).toFixed(2) }}%
+          </template>
+        </el-table-column>
+        <el-table-column label="当年最大供应商名称" prop="maxSupplierId">
         </el-table-column>
         <el-table-column label="详情">
           <template slot-scope="scope">
@@ -105,7 +110,10 @@ export default ({
       sessionStorage.setItem('supplyGraphDetail', JSON.stringify(row));
       this.$router.push({
         path: "/supplier_graph/supplyGraphDetail",
-        query: { uniscid: row.uniscid }
+        query: {
+          uniscid: row.uniscid,
+          entname: row.entname
+        }
       });
     }
   }

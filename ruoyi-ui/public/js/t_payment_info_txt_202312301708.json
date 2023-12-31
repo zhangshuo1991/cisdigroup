@@ -1,0 +1,95 @@
+{
+  "t_payment_info_txt": [
+    {
+      "name": "沈阳透平机械股份有限公司",
+      "credit_no": "912101007157146053",
+      "con_no": "A20220014571",
+      "con_name": "年产55万吨氨醇技术升级改造项目混合冷剂压缩机等成套设备组",
+      "last_amount": "¥7,450,000.00",
+      "paid_amount": "¥22,350,000.00",
+      "last_time": "20231021",
+      "first_time": "20230221",
+      "tail_amount": "¥7,450,000.00",
+      "currency": "CNY",
+      "data_date": "20231231"
+    },
+    {
+      "name": "沈阳透平机械股份有限公司",
+      "credit_no": "912101007157146053",
+      "con_no": "A20220015221",
+      "con_name": "年产55万吨氨醇技术升级改造项目冷冻氨冰机等成套设备",
+      "last_amount": "¥6,596,000.00",
+      "paid_amount": "¥6,596,000.00",
+      "last_time": "20230422",
+      "first_time": "20230422",
+      "tail_amount": "¥26,384,000.00",
+      "currency": "CNY",
+      "data_date": "20231231"
+    },
+    {
+      "name": "沈阳透平机械股份有限公司",
+      "credit_no": "912101007157146053",
+      "con_no": "A20230014321",
+      "con_name": "华能清能院碳捕集工程压缩机及附属设备",
+      "last_amount": "¥10,620,000.00",
+      "paid_amount": "#REF!",
+      "last_time": "20231115",
+      "first_time": "20230925",
+      "tail_amount": "¥26,550,000.00",
+      "currency": "CNY",
+      "data_date": "20231231"
+    },
+    {
+      "name": "沈阳透平机械股份有限公司",
+      "credit_no": "912101007157146053",
+      "con_no": "A20220015281",
+      "con_name": "车间氮压机设备采购",
+      "last_amount": "¥0.00",
+      "paid_amount": "¥0.00",
+      "last_time": "_",
+      "first_time": "_",
+      "tail_amount": "¥9,500,000.00",
+      "currency": "CNY",
+      "data_date": "20231231"
+    },
+    {
+      "name": "河南省防腐企业集团有限公司",
+      "credit_no": "91410000169960955F",
+      "con_no": "A20220017281",
+      "con_name": "日照港岚山港区南作业区17、18、20泊位工程梁板预制芯模制作工程",
+      "last_amount": "¥44,049,600.00",
+      "paid_amount": "#REF!",
+      "last_time": "20230710",
+      "first_time": "20221210",
+      "tail_amount": "¥73,416,000.00",
+      "currency": "CNY",
+      "data_date": "20231231"
+    },
+    {
+      "name": "河南省防腐企业集团有限公司",
+      "credit_no": "91410000169960955F",
+      "con_no": "A20230017323",
+      "con_name": "亚太变等变电站一次设备防腐服务",
+      "last_amount": "¥74,456,000.00",
+      "paid_amount": "¥74,456,000.00",
+      "last_time": "20230908",
+      "first_time": "20230908",
+      "tail_amount": "¥297,824,000.00",
+      "currency": "CNY",
+      "data_date": "20231231"
+    },
+    {
+      "name": "江苏浩瀚钢结构有限公司",
+      "credit_no": "91320925780252187K",
+      "con_no": "A20220012571",
+      "con_name": "中冶钢构临港科技园西区专业分包钢结构加工制作",
+      "last_amount": "¥19,130,000.00",
+      "paid_amount": "¥86,085,000.00",
+      "last_time": "20231115",
+      "first_time": "20221210",
+      "tail_amount": "¥76,520,000.00",
+      "currency": "CNY",
+      "data_date": "20231231"
+    }
+  ]
+}

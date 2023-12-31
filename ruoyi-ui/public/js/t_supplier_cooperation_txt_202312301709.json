@@ -1,0 +1,45 @@
+{
+"t_supplier_cooperation_txt": [
+	{
+		"name" : "沈阳透平机械股份有限公司",
+		"credit_no" : "912101007157146053",
+		"first_appl_time" : "20190318",
+		"first_coo_time" : "20220421",
+		"first_enter_time" : "20220421",
+		"last_enter_time" : "20220421",
+		"coo_duration" : "1.6年",
+		"coo_content" : "年产55万吨氨醇技术升级改造项目混合冷剂压缩机等成套设备组",
+		"coo_amount" : "¥62,780,000.00",
+		"three_amount" : "¥62,780,000.00",
+		"coo_state" : "合作中",
+		"data_date" : "20231231"
+	},
+	{
+		"name" : "河南省防腐企业集团有限公司",
+		"credit_no" : "91410000169960955F",
+		"first_appl_time" : "20220312",
+		"first_coo_time" : "20220819",
+		"first_enter_time" : "20220528",
+		"last_enter_time" : "20220528",
+		"coo_duration" : "1.4年",
+		"coo_content" : "南作业区17、18、20泊位工程梁板预制芯模制作工程",
+		"coo_amount" : "¥146,832,000.00",
+		"three_amount" : "¥146,832,000.00",
+		"coo_state" : "合作中",
+		"data_date" : "20231231"
+	},
+	{
+		"name" : "江苏浩瀚钢结构有限公司",
+		"credit_no" : "91320925780252187K",
+		"first_appl_time" : "20220112",
+		"first_coo_time" : "20220401",
+		"first_enter_time" : "20220320",
+		"last_enter_time" : "20220320",
+		"coo_duration" : "1.6年",
+		"coo_content" : "分包钢结构加工制作",
+		"coo_amount" : "¥95,650,000.00",
+		"three_amount" : "¥95,650,000.00",
+		"coo_state" : "合作中",
+		"data_date" : "20231231"
+	}
+]}

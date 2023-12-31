@@ -2,13 +2,10 @@
   <div id="app" style="margin: auto;background-color: #f9f9f9;padding: 15px;min-height: 700px">
     <div style="background-color: white;height: 100%;">
       <div class="detlbos">
-        <div class="detitle">{{entinfo.entname}}（{{entinfo.uniscid}}）</div>
-        <div class="detTag">
-          <div style="width: 200px">{{entinfo.entstatusCn}}</div>
-          <div>联系方式<i class="el-icon-arrow-down"></i></div>
-          <div>官方网址<i class="el-icon-arrow-down"></i></div>
-          <div>曾用名<i class="el-icon-arrow-down"></i></div>
-          <div>同义词<i class="el-icon-arrow-down"></i></div>
+        <div class="detitle">
+          {{entinfo.entname}}
+          （{{entinfo.uniscid}}）
+          <span style="color:rgba(78, 181, 72, 1)">（{{entinfo.entstatusCn}}）</span>
         </div>
         <div class="eldes">
           <el-descriptions class="margin-top" :column="3">
@@ -236,25 +233,11 @@ export default({
 }
 .detlbos{
   .detitle{
-    font-size: 26px;
-
-
+    font-size: 20px;
+    height: 50px;
+    line-height: 50px;
   }
   .detTag{
-    display: flex;
-    padding: 20px 0px;
-    div{
-      width: 120px;
-      text-align: center;
-      height: 35px;
-      line-height: 35px;
-      margin-right: 18px;
-      border:1px solid #ccc;
-      .el-icon-arrow-down{
-        font-size: 18px;
-        margin-left: 8px;
-      }
-    }
     div:nth-child(1){
       border-color: rgba(78, 181, 72, 1);color:rgba(78, 181, 72, 1);
     }

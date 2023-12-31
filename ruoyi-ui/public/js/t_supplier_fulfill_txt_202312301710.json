@@ -1,0 +1,33 @@
+{
+"t_supplier_fulfill_txt": [
+	{
+		"name" : "沈阳透平机械股份有限公司",
+		"credit_no" : "912101007157146053",
+		"is_postpone" : "否",
+		"postpone_num" : "0",
+		"below_num" : "0",
+		"complained_num" : "0",
+		"is_accident" : "否",
+		"data_date" : "20231231"
+	},
+	{
+		"name" : "河南省防腐企业集团有限公司",
+		"credit_no" : "91410000169960955F",
+		"is_postpone" : "是",
+		"postpone_num" : "1",
+		"below_num" : "0",
+		"complained_num" : "0",
+		"is_accident" : "否",
+		"data_date" : "20231231"
+	},
+	{
+		"name" : "江苏浩瀚钢结构有限公司",
+		"credit_no" : "91320925780252187K",
+		"is_postpone" : "否",
+		"postpone_num" : "0",
+		"below_num" : "0",
+		"complained_num" : "0",
+		"is_accident" : "否",
+		"data_date" : "20231231"
+	}
+]}

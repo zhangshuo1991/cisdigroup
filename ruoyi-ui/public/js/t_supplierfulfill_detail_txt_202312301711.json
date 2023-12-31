@@ -1,0 +1,67 @@
+{
+"t_supplierfulfill_detail_txt": [
+	{
+		"name" : "沈阳透平机械股份有限公司",
+		"credit_no" : "912101007157146053",
+		"con_no" : "A20220014571",
+		"con_name" : "年产55万吨氨醇技术升级改造项目混合冷剂压缩机等成套设备组",
+		"del_date" : "20240920",
+		"product" : "合成氨设置",
+		"prod_num" : "5",
+		"prod_spec" : "3260*31504mm",
+		"act_date" : "——",
+		"act_batch" : "——",
+		"prod_pass" : "——",
+		"is_check" : "未验收",
+		"check_time" : "——",
+		"data_date" : "20231231"
+	},
+	{
+		"name" : "沈阳透平机械股份有限公司",
+		"credit_no" : "912101007157146053",
+		"con_no" : "A20220015221",
+		"con_name" : "年产55万吨氨醇技术升级改造项目冷冻氨冰机等成套设备",
+		"del_date" : "20241030",
+		"product" : "赛鼎碎煤加压气化炉",
+		"prod_num" : "5",
+		"prod_spec" : "4.0MPa",
+		"act_date" : "——",
+		"act_batch" : "——",
+		"prod_pass" : "——",
+		"is_check" : "未验收",
+		"check_time" : "——",
+		"data_date" : "20231231"
+	},
+	{
+		"name" : "沈阳透平机械股份有限公司",
+		"credit_no" : "912101007157146053",
+		"con_no" : "A20230014321",
+		"con_name" : "华能清能院碳捕集工程压缩机及附属设备",
+		"del_date" : "20250410",
+		"product" : "CO2压缩机",
+		"prod_num" : "2",
+		"prod_spec" : "P_lamda=[0.269,0.269,0.269]",
+		"act_date" : "——",
+		"act_batch" : "——",
+		"prod_pass" : "——",
+		"is_check" : "未验收",
+		"check_time" : "——",
+		"data_date" : "20231231"
+	},
+	{
+		"name" : "沈阳透平机械股份有限公司",
+		"credit_no" : "912101007157146053",
+		"con_no" : "A20220015281",
+		"con_name" : "车间氮压机设备采购",
+		"del_date" : "20240130",
+		"product" : "制氮机",
+		"prod_num" : "5",
+		"prod_spec" : "氮气流量: 800Nm3\/h",
+		"act_date" : "——",
+		"act_batch" : "——",
+		"prod_pass" : "——",
+		"is_check" : "未验收",
+		"check_time" : "——",
+		"data_date" : "20231231"
+	}
+]}

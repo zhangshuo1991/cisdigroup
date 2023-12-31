@@ -1,0 +1,148 @@
+{
+  "t_supplierfund_info_txt": [
+    {
+      "name": "沈阳透平机械股份有限公司",
+      "credit_no": "912101007157146053",
+      "trans_amount": "¥5,960,000.00",
+      "trans_type": "工程款",
+      "trans_cur": "CNY",
+      "counterparty": "湖北晋控气体有限公司",
+      "counterparty_id": "91420582MA49MT6K3R",
+      "trans_date": "20230221",
+      "data_date": "20230228",
+      "remark": ""
+    },
+    {
+      "name": "沈阳透平机械股份有限公司",
+      "credit_no": "912101007157146053",
+      "trans_amount": "¥8,940,000.00",
+      "trans_type": "工程款",
+      "trans_cur": "CNY",
+      "counterparty": "湖北晋控气体有限公司",
+      "counterparty_id": "91420582MA49MT6K3R",
+      "trans_date": "20230712",
+      "data_date": "20230730",
+      "remark": ""
+    },
+    {
+      "name": "沈阳透平机械股份有限公司",
+      "credit_no": "912101007157146053",
+      "trans_amount": "¥7,450,000.00",
+      "trans_type": "工程款",
+      "trans_cur": "CNY",
+      "counterparty": "湖北晋控气体有限公司",
+      "counterparty_id": "91420582MA49MT6K3R",
+      "trans_date": "20231021",
+      "data_date": "20231031",
+      "remark": ""
+    },
+    {
+      "name": "沈阳透平机械股份有限公司",
+      "credit_no": "912101007157146053",
+      "trans_amount": "¥6,596,000.00",
+      "trans_type": "工程款",
+      "trans_cur": "CNY",
+      "counterparty": "湖北晋控气体有限公司",
+      "counterparty_id": "91420582MA49MT6K3R",
+      "trans_date": "20230422",
+      "data_date": "20230430",
+      "remark": ""
+    },
+    {
+      "name": "沈阳透平机械股份有限公司",
+      "credit_no": "912101007157146053",
+      "trans_amount": "¥15,930,000.00",
+      "trans_type": "工程款",
+      "trans_cur": "CNY",
+      "counterparty": "中国华能集团清洁能源技术研究院有限公司",
+      "counterparty_id": "9111000071782666XW",
+      "trans_date": "20230925",
+      "data_date": "20230930",
+      "remark": ""
+    },
+    {
+      "name": "沈阳透平机械股份有限公司",
+      "credit_no": "912101007157146053",
+      "trans_amount": "¥10,620,000.00",
+      "trans_type": "工程款",
+      "trans_cur": "CNY",
+      "counterparty": "中国华能集团清洁能源技术研究院有限公司",
+      "counterparty_id": "9111000071782666XW",
+      "trans_date": "20231115",
+      "data_date": "20231130",
+      "remark": ""
+    },
+    {
+      "name": "河南省防腐企业集团有限公司",
+      "credit_no": "91410000169960955F",
+      "trans_amount": "¥29,366,400.00",
+      "trans_type": "工程款",
+      "trans_cur": "CNY",
+      "counterparty": "山东港湾建设集团有限公司",
+      "counterparty_id": "91371100X1359336XD",
+      "trans_date": "20221210",
+      "data_date": "20221231",
+      "remark": ""
+    },
+    {
+      "name": "河南省防腐企业集团有限公司",
+      "credit_no": "91410000169960955F",
+      "trans_amount": "¥44,049,600.00",
+      "trans_type": "工程款",
+      "trans_cur": "CNY",
+      "counterparty": "山东港湾建设集团有限公司",
+      "counterparty_id": "91371100X1359336XD",
+      "trans_date": "20230710",
+      "data_date": "20230730",
+      "remark": ""
+    },
+    {
+      "name": "河南省防腐企业集团有限公司",
+      "credit_no": "91410000169960955F",
+      "trans_amount": "¥74,456,000.00",
+      "trans_type": "工程款",
+      "trans_cur": "CNY",
+      "counterparty": "嘉兴恒创电力集团有限公司",
+      "counterparty_id": "91330411MA29G37P3P",
+      "trans_date": "20230908",
+      "data_date": "20230930",
+      "remark": ""
+    },
+    {
+      "name": "江苏浩瀚钢结构有限公司",
+      "credit_no": "91320925780252187K",
+      "trans_amount": "¥28,695,000.00",
+      "trans_type": "工程款",
+      "trans_cur": "CNY",
+      "counterparty": "中冶（上海）钢结构科技有限公司",
+      "counterparty_id": "91310113MA1GN18W4N",
+      "trans_date": "20221210",
+      "data_date": "20221231",
+      "remark": ""
+    },
+    {
+      "name": "江苏浩瀚钢结构有限公司",
+      "credit_no": "91320925780252187K",
+      "trans_amount": "¥38,260,000.00",
+      "trans_type": "工程款",
+      "trans_cur": "CNY",
+      "counterparty": "中冶（上海）钢结构科技有限公司",
+      "counterparty_id": "91310113MA1GN18W4N",
+      "trans_date": "20230422",
+      "data_date": "20230430",
+      "remark": ""
+    },
+    {
+      "name": "江苏浩瀚钢结构有限公司",
+      "credit_no": "91320925780252187K",
+      "trans_amount": "¥19,130,000.00",
+      "trans_type": "工程款",
+      "trans_cur": "CNY",
+      "counterparty": "中冶（上海）钢结构科技有限公司",
+      "counterparty_id": "91310113MA1GN18W4N",
+      "trans_date": "20231115",
+      "data_date": "20231130",
+      "remark": ""
+    }
+  ]
+}

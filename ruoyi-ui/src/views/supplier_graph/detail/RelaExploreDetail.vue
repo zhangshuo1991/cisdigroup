@@ -17,6 +17,11 @@
                border-radius: 150px;border:6px solid #76dd64;" class="imgqy">
               <img src="@/assets/images/qiye.png" alt="">
             </div>
+            <div v-else-if="node.data.spcType === 'invest'"
+                 style="width: 100%; background: #324154;color: white ;height:80px;font-size: 16px;
+               border-radius: 150px;border:6px solid #76dd64;" class="imgqy">
+              <img src="@/assets/images/qiye.png" alt="">
+            </div>
             <div v-else style="height:10px;" />
             <div style="padding:2px; height:50px;">
               <span :style="{color:node.fontColor}" class="c-node-label">{{ node.text }}</span>
@@ -57,69 +62,91 @@ export default ({
     }
   },
   mounted() {
-    this.showGraph();
+    const relaExplore = JSON.parse(sessionStorage.getItem("relaExplore"))
+    this.$nextTick(() => {
+      this.showGraph(relaExplore);
+    })
   },
   methods: {
-    showGraph() {
-      const __graph_json_data = {
-        rootId: '6F274BC721AE7C57E0539601A8C0ACD65',
-        nodes: [
+    showGraph(relaExplore_detail) {
+      const setEntId = new Set()
+      const nodes = []
+      const links = []
+      if (relaExplore_detail.sameListShareholder && relaExplore_detail.sameListShareholder.length>0) {
+        let sameInvId = relaExplore_detail.sameListShareholder[0].invid
+        nodes.push(
           {
-            id: '91110000105520221M', text: '中国华冶科工集团有限公司',
-            myicon: 'el-icon-setting',
-            data: {
-              spcType: 'ent'
-            }
-          },
-          {
-            id: '91510100201906490X', text: '中国五冶集团有限公司',
-            myicon: 'el-icon-star-on',
-            data: {
-              spcType: 'ent'
-            }          },
-          {
-            id: '91210300765442193F', text: '中冶焦耐工程技术有限公司',
-            myicon: 'el-icon-setting',
-            data: {
-              spcType: 'ent'
-            }
-          },
-          {
-            id: '91500000202801842U', text: '中冶赛迪集团有限公司',
-            myicon: 'el-icon-setting',
-            data: {
-              spcType: 'ent'
-            }
-          },
-          {
-            id: '91110302757700076U', text: '中冶京诚工程技术有限公司',
-            myicon: 'el-icon-star-on',
-            data: {
-              spcType: 'ent'
-            }
-          },
-          {
-            id: '912101007695618516', text: '中冶沈勘工程技术有限公司',
-            myicon: 'el-icon-headset',
-            data: {
-              spcType: 'ent'
-            }
-          },
-          {
-            id: '6F274BC721AE7C57E0539601A8C0ACD65', text: '中国冶金科工股份有限公司',
+            id:  relaExplore_detail.sameListShareholder[0].invid,
+            text:  relaExplore_detail.sameListShareholder[0].invname,
             data: {
               spcType: 'inv'
             }
           }
-        ],
-        lines: [
-          { from: '6F274BC721AE7C57E0539601A8C0ACD65', to: '91110000105520221M', text: '持股：100%',color:'#ff0000' },
-          { from: '6F274BC721AE7C57E0539601A8C0ACD65', to: '91510100201906490X', text: '持股：98.58%',color:'#ff0000' },
-          { from: '6F274BC721AE7C57E0539601A8C0ACD65', to: '91210300765442193F', text: '持股：87.81%',color:'#ff0000' },
-          { from: '6F274BC721AE7C57E0539601A8C0ACD65', to: '91500000202801842U', text: '持股：100%',color:'#ff0000' },
-          { from: '6F274BC721AE7C57E0539601A8C0ACD65', to: '91110302757700076U', text: '持股：88.72%',color:'#ff0000' },
-          { from: '6F274BC721AE7C57E0539601A8C0ACD65', to: '912101007695618516', text: '持股：100%',color:'#ff0000' }
-        ]
+        )
+        relaExplore_detail.sameListShareholder.forEach(thisItem => {
+          if (setEntId.has(thisItem.uniscid1)) {
+            return
+          }
+          setEntId.add(thisItem.uniscid1)
+          nodes.push({
+            id: thisItem.uniscid1,
+            text: thisItem.enterprise1,
+            myicon: 'el-icon-setting',
+            data: {
+              spcType: 'ent'
+            }
+          })
+          links.push({
+            from: sameInvId,
+            to: thisItem.uniscid1,
+            text: '持股：' + parseFloat(thisItem.subconprop).toFixed(2) + '%',
+            color: '#ff0000'
+          })
+        })
+      }
+      if (relaExplore_detail.sameListInvestment && relaExplore_detail.sameListInvestment.length>0) {
+        let sameInvId = relaExplore_detail.sameListInvestment[0].invest_eid
+        nodes.push(
+          {
+            id:  relaExplore_detail.sameListInvestment[0].invest_eid,
+            text:  relaExplore_detail.sameListInvestment[0].invest_name,
+            data: {
+              spcType: 'invest'
+            }
+          }
+        )
+        const linksSet = new Set()
+        relaExplore_detail.sameListInvestment.forEach(thisItem => {
+          if (linksSet.has(thisItem.uniscid1)) {
+            return
+          }
+          linksSet.add(thisItem.uniscid1)
+          links.push({
+            from: thisItem.uniscid1,
+            to: sameInvId,
+            text: '投资：' + parseFloat(thisItem.stock_percent).toFixed(2) + '%',
+            color: '#324154'
+          })
+          if (setEntId.has(thisItem.uniscid1)) {
+            return
+          }
+          setEntId.add(thisItem.uniscid1)
+          nodes.push({
+            id: thisItem.uniscid1,
+            text: thisItem.enterprise1,
+            myicon: 'el-icon-setting',
+            data: {
+              spcType: 'ent'
+            }
+          })
+
+
+        })
+      }
+      const __graph_json_data = {
+        rootId: nodes[0].id,
+        nodes: nodes,
+        links: links
       };
       this.$refs.relationGraph.setJsonData(__graph_json_data, (graphInstance) => {
         // 这些写上当图谱初始化完成后需要执行的代码

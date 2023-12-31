@@ -88,6 +88,12 @@ export default({
   },
   methods:{
     handleSearch() {
+      const loading = this.$loading({
+        lock: true,
+        text: '正在查询中',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
       request({
         url: '/entInfo/relaExplore',
         method: 'post',
@@ -100,10 +106,10 @@ export default({
           check_potential_relation: this.check_potential_relation
         }
       }).then(res => {
-          console.log(res)
+          loading.close();
+          sessionStorage.setItem('relaExplore', JSON.stringify(res.data))
           this.$router.push({
-            path: '/supplier_graph/RelaExploreDetail',
-            query: {textarea2: this.textarea2, radio: this.radio, checkList: this.checkList}
+            path: '/supplier_graph/RelaExploreDetail'
           })
         }
       )

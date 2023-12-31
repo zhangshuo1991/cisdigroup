@@ -187,47 +187,31 @@
                 <div class="c-data-h1">
                   合同信息表
                 </div>
-                <div style="padding: 12px;overflow-y: auto">
-                  <table class="c-base-table" style="width: 120%;background-color: white;">
-                    <thead>
-                      <tr>
-                        <th class="c-th-header">供应商ID</th>
-                        <th class="c-th-header">供应商名称</th>
-                        <th class="c-th-header">合同编号</th>
-                        <th class="c-th-header">合同名称</th>
-                        <th class="c-th-header">合同签订时间</th>
-                        <th class="c-th-header">合同到期时间</th>
-                        <th class="c-th-header">合同金额</th>
-                        <th class="c-th-header">交付时间</th>
-                        <th class="c-th-header">付款方式</th>
-                        <th class="c-th-header">合作状态</th>
-                        <th class="c-th-header">服务形式</th>
-                        <th class="c-th-header">产品规格</th>
-                        <th class="c-th-header">产品数量</th>
-                        <th class="c-th-header">是否延期</th>
-                        <th class="c-th-header">数据日期</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="item in 10" :key="item">
-                        <td class="c-td-text">1000000001</td>
-                        <td class="c-td-text">北京中科三方网络技术有限公司</td>
-                        <td class="c-td-text">HT202001010001</td>
-                        <td class="c-td-text">北京中科三方网络技术有限公司</td>
-                        <td class="c-td-text">2020-01-01</td>
-                        <td class="c-td-text">2020-12-31</td>
-                        <td class="c-td-text">1000000</td>
-                        <td class="c-td-text">2020-01-01</td>
-                        <td class="c-td-text">现金</td>
-                        <td class="c-td-text">正常</td>
-                        <td class="c-td-text">软件开发</td>
-                        <td class="c-td-text">软件开发</td>
-                        <td class="c-td-text">100</td>
-                        <td class="c-td-text">否</td>
-                        <td class="c-td-text">2020-01-01</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div style="margin-top: 10px">
+                  <el-table
+                    :data="t_contract_info"
+                    border
+                    :cell-style="{fontSize: '10px',height: '30px'}"
+                    :row-style="{height: '30px'}"
+                    :header-row-style="{height: '30px'}"
+                    :header-cell-style="{fontSize: '12px', height: '30px'}"
+                  >
+                    <el-table-column prop="credit_no" label="供应商ID" width="150"></el-table-column>
+                    <el-table-column prop="name" label="供应商名称" width="200"></el-table-column>
+                    <el-table-column prop="con_no" label="合同编号" width="140"></el-table-column>
+                    <el-table-column prop="con_name" label="合同名称" width="500"></el-table-column>
+                    <el-table-column prop="con_time" label="合同签订时间" width="140"></el-table-column>
+                    <el-table-column prop="expire_time" label="合同到期时间" width="140"></el-table-column>
+                    <el-table-column prop="con_aoumnt" label="合同金额(人民币)" width="140"></el-table-column>
+                    <el-table-column prop="del_time" label="交付时间"></el-table-column>
+                    <el-table-column prop="pay_method" label="付款方式" width="160"></el-table-column>
+                    <el-table-column prop="co_state" label="合作状态"></el-table-column>
+                    <el-table-column prop="serv_form" label="服务形式"></el-table-column>
+                    <el-table-column prop="prod_spec" label="产品规格"  width="160"></el-table-column>
+                    <el-table-column prop="prod_num" label="产品数量"></el-table-column>
+                    <el-table-column prop="is_postpone" label="是否延期"></el-table-column>
+                    <el-table-column prop="data_date" label="数据日期"></el-table-column>
+                  </el-table>
                 </div>
             </div>
           </el-tab-pane>
@@ -237,38 +221,28 @@
                 履约信息汇总表
               </div>
               <div style="padding: 12px;">
-                <div style="padding: 12px;overflow-y: auto">
-                  <table class="c-base-table" style="width: 120%;background-color: white;">
-                    <thead>
-                      <tr>
-                        <th class="c-th-header">供应商ID</th>
-                        <th class="c-th-header">供应商名称</th>
-                        <th class="c-th-header">历史是否出现过延期交付</th>
-                        <th class="c-th-header">延期交付次数</th>
-                        <th class="c-th-header">产品质量不合格次数</th>
-                        <th class="c-th-header">产品或服务被投诉次数</th>
-                        <th class="c-th-header">是否出现过安全生产事故</th>
-                        <th class="c-th-header">数据日期</th>
-                        <th class="c-th-header">操作</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="item in 10" :key="item">
-                        <td class="c-td-text">1000000001</td>
-                        <td class="c-td-text">中国五矿集团有限公司</td>
-                        <td class="c-td-text">否</td>
-                        <td class="c-td-text">0</td>
-                        <td class="c-td-text">0</td>
-                        <td class="c-td-text">0</td>
-                        <td class="c-td-text">否</td>
-                        <td class="c-td-text">2020-01-01</td>
-                        <td class="c-td-text">
-                          <el-button type="text" style="color: #0070C5">详情</el-button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+                <el-table
+                  :data="t_supplier_fulfill"
+                  border
+                  :cell-style="{fontSize: '10px',height: '30px'}"
+                  :row-style="{height: '30px'}"
+                  :header-row-style="{height: '30px'}"
+                  :header-cell-style="{fontSize: '12px', height: '30px'}"
+                >
+                  <el-table-column prop="credit_no" label="供应商ID" width="150"></el-table-column>
+                  <el-table-column prop="name" label="供应商名称" width="200"></el-table-column>
+                  <el-table-column prop="is_postpone" label="历史是否出现过延期交付" width="140"></el-table-column>
+                  <el-table-column prop="postpone_num" label="延期交付次数" width="140"></el-table-column>
+                  <el-table-column prop="below_num" label="产品质量不合格次数" width="140"></el-table-column>
+                  <el-table-column prop="complained_num" label="产品或服务被投诉次数" width="140"></el-table-column>
+                  <el-table-column prop="is_accident" label="是否出现过安全生产事故" width="140"></el-table-column>
+                  <el-table-column prop="data_date" label="数据日期"></el-table-column>
+                  <el-table-column prop="del_time" label="操作">
+                    <template slot-scope="scope">
+                      <el-button type="text" style="color: #0070C5" size="mini" @click="dialogFulfill = true">详情</el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
               </div>
             </div>
           </el-tab-pane>
@@ -278,44 +252,31 @@
                 绩效评价信息
               </div>
               <div style="padding: 12px;">
-                <div style="padding: 12px;overflow-y: auto">
-                  <table class="c-base-table" style="width: 120%;background-color: white;">
-                    <thead>
-                      <tr>
-                        <th class="c-th-header">供应商ID</th>
-                        <th class="c-th-header">供应商名称</th>
-                        <th class="c-th-header">内部管理评价</th>
-                        <th class="c-th-header">质量管理评价</th>
-                        <th class="c-th-header">进度管理评价</th>
-                        <th class="c-th-header">成本管理评价</th>
-                        <th class="c-th-header">安全文明评价</th>
-                        <th class="c-th-header">沟通协调评价</th>
-                        <th class="c-th-header">售后服务评价</th>
-                        <th class="c-th-header">绩效评价分数</th>
-                        <th class="c-th-header">评价日期</th>
-                        <th class="c-th-header">操作</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="item in 4" :key="item">
-                        <td class="c-td-text">1000000001</td>
-                        <td class="c-td-text">中国五矿集团有限公司</td>
-                        <td class="c-td-text">优秀</td>
-                        <td class="c-td-text">良好</td>
-                        <td class="c-td-text">合格</td>
-                        <td class="c-td-text">优秀</td>
-                        <td class="c-td-text">优秀</td>
-                        <td class="c-td-text">优秀</td>
-                        <td class="c-td-text">优秀</td>
-                        <td class="c-td-text">优秀</td>
-                        <td class="c-td-text">2020-01-01</td>
-                        <td class="c-td-text">
-                          <el-button type="text" style="color: #0070C5" size="mini">详情</el-button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+                <el-table
+                  :data="t_supplier_evaluate"
+                  border
+                  :cell-style="{fontSize: '10px',height: '30px'}"
+                  :row-style="{height: '30px'}"
+                  :header-row-style="{height: '30px'}"
+                  :header-cell-style="{fontSize: '12px', height: '30px'}"
+                >
+                  <el-table-column label="供应商ID" width="150" prop="credit_no"></el-table-column>
+                  <el-table-column label="供应商名称" width="200" prop="name"></el-table-column>
+                  <el-table-column label="内部管理评价" width="100" prop="inn_score"></el-table-column>
+                  <el-table-column label="质量管理评价" width="100" prop="qua_score"></el-table-column>
+                  <el-table-column label="进度管理评价" width="100" prop="sche_score"></el-table-column>
+                  <el-table-column label="成本管理评价" width="100" prop="cost_score"></el-table-column>
+                  <el-table-column label="安全文明评价" width="100" prop="secure_score"></el-table-column>
+                  <el-table-column label="沟通协调评价" width="100" prop="com_score"></el-table-column>
+                  <el-table-column label="售后服务评价" width="100" prop="salaf_score"></el-table-column>
+                  <el-table-column label="绩效评价分数" width="100" prop="perf_score"></el-table-column>
+                  <el-table-column label="评价日期" width="100" prop="eval_date"></el-table-column>
+                  <el-table-column label="操作">
+                    <template slot-scope="scope">
+                      <el-button type="text" style="color: #0070C5" size="mini" @click="viewEvaluate(scope.row)">详情</el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
               </div>
             </div>
           </el-tab-pane>
@@ -325,42 +286,54 @@
                 合作信息表
               </div>
               <div style="padding: 12px;">
-                <div style="padding: 12px;overflow-y: auto">
-                  <table class="c-base-table" style="width: 120%;background-color: white;">
-                    <thead>
-                      <tr>
-                        <th class="c-th-header">供应商ID</th>
-                        <th class="c-th-header">供应商名称</th>
-                        <th class="c-th-header">首次申请时间</th>
-                        <th class="c-th-header">首次合作时间</th>
-                        <th class="c-th-header">首次纳入供应商名单时间</th>
-                        <th class="c-th-header">最后一次纳入供应商名单时间</th>
-                        <th class="c-th-header">当前合作时长</th>
-                        <th class="c-th-header">合作主要项目(内容)</th>
-                        <th class="c-th-header">合作总金额(人民币)</th>
-                        <th class="c-th-header">最近三年合作总金额(人民币)</th>
-                        <th class="c-th-header">当前合作状态</th>
-                        <th class="c-th-header">数据日期</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="item in 4" :key="item">
-                        <td class="c-td-text">1000000001</td>
-                        <td class="c-td-text">中国五矿集团有限公司</td>
-                        <td class="c-td-text">2020-01-01</td>
-                        <td class="c-td-text">2020-01-01</td>
-                        <td class="c-td-text">2020-01-01</td>
-                        <td class="c-td-text">2020-01-01</td>
-                        <td class="c-td-text">1年</td>
-                        <td class="c-td-text">软件开发</td>
-                        <td class="c-td-text">1000000</td>
-                        <td class="c-td-text">1000000</td>
-                        <td class="c-td-text">正常</td>
-                        <td class="c-td-text">2020-01-01</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+                <el-table
+                  :data="t_supplier_cooperation"
+                  border
+                  :cell-style="{fontSize: '10px',height: '30px'}"
+                  :row-style="{height: '30px'}"
+                  :header-row-style="{height: '30px'}"
+                >
+                  <el-table-column label="供应商ID" prop="credit_no" width="150"></el-table-column>
+                  <el-table-column label="供应商名称" prop="name" width="200"></el-table-column>
+                  <el-table-column label="首次申请时间" prop="first_appl_time" width="140"></el-table-column>
+                  <el-table-column label="首次合作时间" prop="first_coo_time" width="140"></el-table-column>
+                  <el-table-column label="首次纳入供应商名单时间" prop="first_enter_time" width="140"></el-table-column>
+                  <el-table-column label="最后一次纳入供应商名单时间" prop="last_enter_time" width="140"></el-table-column>
+                  <el-table-column label="当前合作时长" prop="coo_duration" width="140"></el-table-column>
+                  <el-table-column label="合作主要项目(内容)" prop="coo_content" width="140"></el-table-column>
+                  <el-table-column label="合作总金额(人民币)" prop="coo_amount" width="140"></el-table-column>
+                  <el-table-column label="最近三年合作总金额(人民币)" prop="three_amount" width="140"></el-table-column>
+                  <el-table-column label="当前合作状态" prop="coo_state" width="140"></el-table-column>
+                  <el-table-column label="数据日期" prop="data_date" width="140"></el-table-column>
+                </el-table>
+              </div>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="付款信息" name="fukuan">
+            <div style="background-color: white;width: 100%;padding: 15px;">
+              <div class="c-data-h1">
+                付款信息表
+              </div>
+              <div style="padding: 12px;">
+                <el-table
+                  :data="t_payment_info"
+                  border
+                  :cell-style="{fontSize: '10px',height: '30px'}"
+                  :row-style="{height: '30px'}"
+                  :header-row-style="{height: '30px'}"
+                >
+                  <el-table-column label="公司名称" prop="name" width="150"></el-table-column>
+                  <el-table-column label="社会信用代码" prop="credit_no" width="200"></el-table-column>
+                  <el-table-column label="合同编号" prop="con_no" width="140"></el-table-column>
+                  <el-table-column label="合同名称" prop="con_name" width="140"></el-table-column>
+                  <el-table-column label="最近一次付款金额（元）" prop="last_amount" width="140"></el-table-column>
+                  <el-table-column label="已付款金额（元）" prop="paid_amount" width="140"></el-table-column>
+                  <el-table-column label="最近一笔付款时间" prop="last_time" width="140"></el-table-column>
+                  <el-table-column label="首次付款时间" prop="first_time" width="140"></el-table-column>
+                  <el-table-column label="剩余付款金额（累计）(元)" prop="tail_amount" width="140"></el-table-column>
+                  <el-table-column label="付款币种" prop="currency" width="140"></el-table-column>
+                  <el-table-column label="数据日期" prop="data_date" width="140"></el-table-column>
+                </el-table>
               </div>
             </div>
           </el-tab-pane>
@@ -649,6 +622,69 @@
           <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
         </span>
       </el-dialog>
+      <el-dialog
+        title="履约信息详情"
+        :visible.sync="dialogFulfill"
+        width="80%"
+      >
+        <el-table
+          :data="t_supplierfulfill_detail"
+          border
+          :cell-style="{fontSize: '10px',height: '30px'}"
+          :row-style="{height: '30px'}"
+          :header-row-style="{height: '30px'}"
+          :header-cell-style="{fontSize: '12px', height: '30px'}"
+        >
+          <el-table-column prop="name" label="公司名称" width="150"></el-table-column>
+          <el-table-column prop="credit_no" label="社会信用代码" width="200"></el-table-column>
+          <el-table-column prop="con_no" label="合同编号" width="140"></el-table-column>
+          <el-table-column prop="con_name" label="合同名称" width="140"></el-table-column>
+          <el-table-column prop="del_date" label="应交货日期" width="140"></el-table-column>
+          <el-table-column prop="product" label="货品名称" width="140"></el-table-column>
+          <el-table-column prop="prod_num" label="货品数量" width="140"></el-table-column>
+          <el-table-column prop="prod_spec" label="货品规格"></el-table-column>
+          <el-table-column prop="act_date" label="实际交货日期"></el-table-column>
+          <el-table-column prop="act_batch" label="交货批次"></el-table-column>
+          <el-table-column prop="prod_pass" label="货品合格率"></el-table-column>
+          <el-table-column prop="is_check" label="是否通过验收"></el-table-column>
+          <el-table-column prop="check_time" label="验收时间"></el-table-column>
+          <el-table-column prop="data_date" label="数据日期"></el-table-column>
+        </el-table>
+      </el-dialog>
+      <el-dialog
+        :visible.sync="dialogEvaluate"
+        width="80%"
+        style="padding-bottom: 15px"
+      >
+        <el-descriptions title="评价详情" border>
+          <el-descriptions-item label="公司名称">{{ t_supplier_evaluate_detail.name }}</el-descriptions-item>
+          <el-descriptions-item label="社会信用代码">{{ t_supplier_evaluate_detail.credit_no }}</el-descriptions-item>
+          <el-descriptions-item label="内部管理评价分">{{ t_supplier_evaluate_detail.inn_score }}</el-descriptions-item>
+          <el-descriptions-item label="组织架构评分">{{ t_supplier_evaluate_detail.arch_score }}</el-descriptions-item>
+          <el-descriptions-item label="制度体系评分">{{ t_supplier_evaluate_detail.sys_score }}</el-descriptions-item>
+          <el-descriptions-item label="质量管理评价分">{{ t_supplier_evaluate_detail.qua_score }}</el-descriptions-item>
+          <el-descriptions-item label="工程质量评分">{{ t_supplier_evaluate_detail.eng_score }}</el-descriptions-item>
+          <el-descriptions-item label="质量整改评分">{{ t_supplier_evaluate_detail.rect_score }}</el-descriptions-item>
+          <el-descriptions-item label="进度管理评价分">{{ t_supplier_evaluate_detail.sche_score }}</el-descriptions-item>
+          <el-descriptions-item label="进度计划评分">{{ t_supplier_evaluate_detail.pro_score }}</el-descriptions-item>
+          <el-descriptions-item label="执行计划评分">{{ t_supplier_evaluate_detail.exe_score }}</el-descriptions-item>
+          <el-descriptions-item label="进度控制评分">{{ t_supplier_evaluate_detail.cont_score }}</el-descriptions-item>
+          <el-descriptions-item label="成本管理评价分">{{ t_supplier_evaluate_detail.cost_score }}</el-descriptions-item>
+          <el-descriptions-item label="变更控制评分">{{ t_supplier_evaluate_detail.alt_score }}</el-descriptions-item>
+          <el-descriptions-item label="工程款支付申请评分">{{ t_supplier_evaluate_detail.apply_score }}</el-descriptions-item>
+          <el-descriptions-item label="工作配合评分">{{ t_supplier_evaluate_detail.coo_score }}</el-descriptions-item>
+          <el-descriptions-item label="安全文明评价分">{{ t_supplier_evaluate_detail.secure_score }}</el-descriptions-item>
+          <el-descriptions-item label="文明施工评分">{{ t_supplier_evaluate_detail.civi_score }}</el-descriptions-item>
+          <el-descriptions-item label="安全管理评分">{{ t_supplier_evaluate_detail.man_score }}</el-descriptions-item>
+          <el-descriptions-item label="安全检查评分">{{ t_supplier_evaluate_detail.insp_score }}</el-descriptions-item>
+          <el-descriptions-item label="沟通协调评价分">{{ t_supplier_evaluate_detail.com_score }}</el-descriptions-item>
+          <el-descriptions-item label="廉洁合作评分">{{ t_supplier_evaluate_detail.honest_score }}</el-descriptions-item>
+          <el-descriptions-item label="沟通评价配合评分">{{ t_supplier_evaluate_detail.cec_score }}</el-descriptions-item>
+          <el-descriptions-item label="售后评价分">{{ t_supplier_evaluate_detail.salaf_score }}</el-descriptions-item>
+          <el-descriptions-item label="绩效评价分数">{{ t_supplier_evaluate_detail.perf_score }}</el-descriptions-item>
+          <el-descriptions-item label="评价日期">{{ t_supplier_evaluate_detail.eval_date }}</el-descriptions-item>
+        </el-descriptions>
+      </el-dialog>
     </div>
   </section>
 </template>
@@ -671,7 +707,16 @@ export default {
       newsShow: false,
       groupInfo: {},
       is_monitor: false,
+      dialogFulfill: false,
+      dialogEvaluate: false,
       monitor_tab_names: [],
+      t_contract_info: [],
+      t_supplier_fulfill: [],
+      t_supplierfulfill_detail: [],
+      t_supplier_evaluate: [],
+      t_supplier_cooperation: [],
+      t_payment_info: [],
+      t_supplier_evaluate_detail: {},
       grpid: null,
       grpname: null,
       relaNums: 0,
@@ -1035,9 +1080,31 @@ export default {
   },
   mounted() {
     this.uniscid = this.$route.query.uniscid;
+    this.$axios.get('/js/t_contract_info_txt_202312301707.json').then(res => {
+      this.t_contract_info = res.data.t_contract_info_txt
+    })
+    this.$axios.get('/js/t_supplier_fulfill_txt_202312301710.json').then(res => {
+      this.t_supplier_fulfill = res.data.t_supplier_fulfill_txt
+    })
+    this.$axios.get('/js/t_supplierfulfill_detail_txt_202312301711.json').then(res => {
+      this.t_supplierfulfill_detail = res.data.t_supplierfulfill_detail_txt
+    })
+    this.$axios.get('/js/t_supplier_evaluate_txt_202312301709.json').then(res => {
+      this.t_supplier_evaluate = res.data.t_supplier_evaluate_txt
+    })
+    this.$axios.get('/js/t_supplier_cooperation_txt_202312301709.json').then(res => {
+      this.t_supplier_cooperation = res.data.t_supplier_cooperation_txt
+    })
+    this.$axios.get('/js/t_payment_info_txt_202312301708.json').then(res => {
+      this.t_payment_info = res.data.t_payment_info_txt
+    })
     this.getEntDetail()
   },
   methods: {
+    viewEvaluate(row) {
+      this.t_supplier_evaluate_detail = row
+      this.dialogEvaluate = true
+    },
     handleClick(val) {
 
     },

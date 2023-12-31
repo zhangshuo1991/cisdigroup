@@ -1,23 +1,27 @@
 <template>
   <div id="app" style="margin: auto;padding-top: 15px;background-color: #F2F2F2;min-height: 1200px;padding-bottom: 15px">
-    <div style="margin-left: 15px;background-color: white;padding-left: 10px;margin-right: 15px;padding-top: 3px;padding-right: 10px;padding-bottom: 10px;height: 300px">
+    <div style="margin-left: 15px;background-color: white;
+    padding-left: 10px;margin-right: 15px;padding-top: 3px;padding-right: 10px;padding-bottom: 10px;height: 400px">
       <div class="c-title-div">
         企业业务往来信息
       </div>
       <div style="height: 300px">
         <el-table
-          height="200"
+          height="320"
           :data = "entWarrantyList"
+          :cell-style="{fontSize: '10px',height: '30px'}"
+          :row-style="{height: '30px'}"
+          :header-cell-style="{fontSize: '12px', height: '30px'}"
           border
         >
-          <el-table-column label="企业ID" prop="entname"></el-table-column>
-          <el-table-column label="企业名称" prop="waramount"></el-table-column>
-          <el-table-column label="交易金额" prop="b_waramount"></el-table-column>
-          <el-table-column label="交易类型"></el-table-column>
-          <el-table-column label="交易币种"></el-table-column>
-          <el-table-column label="交易对手名称"></el-table-column>
-          <el-table-column label="交易对手ID"></el-table-column>
-          <el-table-column label="交易日期"></el-table-column>
+          <el-table-column label="企业ID" prop="credit_no"></el-table-column>
+          <el-table-column label="企业名称" prop="name"></el-table-column>
+          <el-table-column label="交易金额" prop="trans_amount"></el-table-column>
+          <el-table-column label="交易类型" prop="trans_type"></el-table-column>
+          <el-table-column label="交易币种" prop="trans_cur"></el-table-column>
+          <el-table-column label="交易对手名称" prop="counterparty"></el-table-column>
+          <el-table-column label="交易对手ID" prop="counterparty_id"></el-table-column>
+          <el-table-column label="交易日期" prop="trans_date"></el-table-column>
         </el-table>
       </div>
     </div>
@@ -37,7 +41,7 @@
               <div v-if="node.data.spcType === 'ctrler'" style="width:300px;background-color: #409eff;font-size: 16px;color: #fff;height:40px;line-height: 40px;">
                 交易对手
               </div>
-              <div v-else-if="node.data.spcType === 'ctrled'" 
+              <div v-else-if="node.data.spcType === 'ctrled'"
               style="width: 300px; background-color: #d9001b;color: #ffffff;height:40px;line-height: 40px;font-size: 16px;
               border-top-left-radius: 3px;border-top-right-radius: 3px;">
                 被查询企业
@@ -80,6 +84,9 @@ export default ({
     }
   },
   mounted() {
+    this.$axios.get('/js/t_supplierfund_info_txt_202312301705.json').then(res => {
+      this.entWarrantyList = res.data.t_supplierfund_info_txt
+    })
     this.showGraph()
   },
   methods: {
@@ -87,19 +94,13 @@ export default ({
       const jsonData = {
         rootId: 'a',
         nodes: [
-          { id: 'a', text: '供应商1', nodeShape: 1,data:{spcType: 'ctrled' ,textId:'33423412341234s'}},
-          { id: 'b', text: '供应商2', nodeShape: 1,data:{spcType: 'ctrler',textId:'33423412341234s'} },
-          { id: 'c', text: '供应商3', nodeShape: 1,data:{spcType: 'ctrler',textId:'33423412341234s'} },
-          { id: 'd', text: '供应商4', nodeShape: 1,data:{spcType: 'ctrler',textId:'33423412341234s'}},
-          { id: 'e', text: '供应商5', nodeShape: 1,data:{spcType: 'ctrler',textId:'33423412341234s'}},
-          { id: 'f', text: '北京阿里巴巴企业有限公司', nodeShape: 1,data:{spcType: 'ctrler',textId:'33423412341234s'} }
+          { id: 'd', text: '湖北晋控气体有限公司', nodeShape: 1,data:{spcType: 'ctrler',textId:'91420582MA49MT6K3R'}},
+          { id: 'e', text: '中国华能集团清洁能源技术研究院有限公司', nodeShape: 1,data:{spcType: 'ctrler',textId:'9111000071782666XW'}},
+          { id: 'a', text: '沈阳透平机械股份有限公司', nodeShape: 1,data:{spcType: 'ctrled',textId:'912101007157146053'} }
         ],
         lines: [
-          { from: 'a', to: 'b', text: '关系1', fontColor: '#3399ff' },
-          { from: 'a', to: 'c', text: '关系2', fontColor: '#3399ff' },
-          { from: 'a', to: 'd', text: '关系3', fontColor: '#3399ff' },
-          { from: 'a', to: 'e', text: '关系4', fontColor: '#3399ff' },
-          { from: 'a', to: 'f', text: '关系5', fontColor: '#3399ff' }
+          { from: 'a', to: 'd', text: '交易对手', fontColor: '#3399ff' },
+          { from: 'a', to: 'e', text: '交易对手', fontColor: '#3399ff' },
         ]
       }
       // 以上数据中的node和link可以参考"Node节点"和"Link关系"中的参数进行配置
@@ -134,9 +135,9 @@ export default ({
 
 }
 .c-my-graph1 ::v-deep .my-node-content{
- 
+
   color: #333 !important;
-  
+
 }
 ::v-deep .rel-node-shape-1{
   padding-top: 0px;

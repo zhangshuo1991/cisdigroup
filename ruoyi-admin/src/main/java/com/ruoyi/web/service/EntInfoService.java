@@ -94,7 +94,7 @@ public class EntInfoService {
     private ITEntWebsiteMapper itEntWebsiteMapper;
 
     @Autowired
-    private ITBiddingsallMapper itBiddingsallMapper;
+    private ITBiddingsAllNewMapper itBiddingsAllNewMapper;
 
     @Autowired
     private ITActionPersonMapper itActionPersonMapper;
@@ -125,6 +125,9 @@ public class EntInfoService {
 
     @Autowired
     private ITJudicialFreezesMapper itJudicialFreezesMapper;
+
+    @Autowired
+    private ITBiddingIndexMapper itBiddingIndexMapper;
 
     public AjaxResult searchInfoByKeyword(JSONObject searchParams, int pageNum, int pageSize) {
         if (!searchParams.containsKey("keywords") || StringUtils.isBlank(searchParams.getString("keywords"))) {
@@ -565,7 +568,9 @@ public class EntInfoService {
 
     public AjaxResult getRelaEntList(String uniscid) {
         List<TSupplierRelevance> supplierRelevanceList = itSupplierRelevanceMapper.selectList(
-                new QueryWrapper<TSupplierRelevance>().eq("uniscid",uniscid));
+                new QueryWrapper<TSupplierRelevance>()
+                        .select("distinct entname,uniscid,relpartyp,partyid,partyname,partytyp,partystatus")
+                        .eq("uniscid",uniscid));
         return AjaxResult.success(supplierRelevanceList);
     }
 
@@ -817,6 +822,7 @@ public class EntInfoService {
             queryWrapper.like("entname",keyword)
                     .or().eq("uniscid",keyword);
         }
+        queryWrapper.orderByDesc("regcap");
 
         Page<TEnterpriseBasicDto> page = new Page<>(pageNum,pageSize);
         Page<TEnterpriseBasicDto> pageResult = itEnterpriseBasicMapper.selectPage(page, queryWrapper);
@@ -928,32 +934,53 @@ public class EntInfoService {
     }
 
     public AjaxResult getTBiddingsallCache(JSONObject paramsBody, int pageNum, int pageSize) {
-        QueryWrapper<TEnterpriseBasicDto> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<TBiddingIndex> queryWrapper = new QueryWrapper<>();
         if (paramsBody.containsKey("keyword") && StringUtils.isNotBlank(paramsBody.getString("keyword"))) {
             String keyword = paramsBody.getString("keyword");
             queryWrapper.like("entname",keyword)
                     .or().eq("uniscid",keyword);
         }
+        queryWrapper.orderByDesc("total_purchase_amount");
 
-        Page<TEnterpriseBasicDto> page = new Page<>(pageNum,pageSize);
-        Page<TEnterpriseBasicDto> pageResult = itEnterpriseBasicMapper.selectPage(page, queryWrapper);
-        List<TEnterpriseBasicDto> basicList = Lists.newArrayList();
-        for (TEnterpriseBasicDto basic : pageResult.getRecords()) {
-            basic.setRegcap(basic.getRegcap().split("\\.")[0]);
-            basic.setTBiddingsallList(
-                itBiddingsallMapper.selectList(
-                        new QueryWrapper<TBiddingsall>().eq("bidder_creditno",basic.getUniscid())
-                )
-            );
-            basicList.add(basic);
-        }
+        Page<TBiddingIndex> page = new Page<>(pageNum,pageSize);
+        Page<TBiddingIndex> pageResult = itBiddingIndexMapper.selectPage(page,queryWrapper);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("total",pageResult.getTotal());
         jsonObject.put("pages",pageResult.getPages());
         jsonObject.put("pageNum",pageResult.getCurrent());
         jsonObject.put("pageSize",pageResult.getSize());
-        jsonObject.put("item",basicList);
+        jsonObject.put("item",pageResult.getRecords());
         return AjaxResult.success(jsonObject);
+    }
+
+    public AjaxResult getTBiddingsallDetail(String uniscid) {
+
+        String entname = itBiddingIndexMapper.selectById(uniscid).getEntname();
+
+        QueryWrapper<TBiddingsAllNew> queryWrapper = new QueryWrapper<>();
+        queryWrapper
+                .eq("ename",entname)
+                .eq("bidding_role","招标人");
+
+        Set<String> dataIdSet = Sets.newHashSet();
+        List<TBiddingsAllNew> listAllBidding = itBiddingsAllNewMapper.selectList(queryWrapper);
+        for (TBiddingsAllNew item: listAllBidding) {
+            dataIdSet.add(item.getDataId());
+        }
+        List<TBiddingsAllNew> biddingEntList = itBiddingsAllNewMapper.selectList(
+                new QueryWrapper<TBiddingsAllNew>()
+                        .eq("bidding_role", "中标人")
+                        .in("data_id", dataIdSet)
+        );
+        return AjaxResult.success(biddingEntList);
+    }
+
+    public AjaxResult getTBiddingsallByDataId(String dataId) {
+        QueryWrapper<TBiddingsAllNew> queryWrapper = new QueryWrapper<>();
+        queryWrapper
+                .select(" notice_type, proj_num, area_code, area_name, data_id, bid_amount, bidding_role, eid, ename, dt ")
+                .eq("data_id",dataId);
+        return AjaxResult.success(itBiddingsAllNewMapper.selectList(queryWrapper));
     }
 
     public AjaxResult getOtherBlackEvent(int pageNum, int pageSize){
@@ -1060,14 +1087,14 @@ public class EntInfoService {
             int label = (int)checkRelation.get(i);
             if (label==1) {
                 List<Map<String, Object>> sameListShareholder = itEnterpriseStockholderMapper.getSameShareholder(entnameList);
-                log.info("sameListShareholder:{}",sameListShareholder.toString());
+                jsonObject.put("sameListShareholder",sameListShareholder);
             }
-//            if (label==2) {
-//                List<Map<String, Object>> sameListInvestment = itEnterpriseStockholderMapper.getSameInvestment(entnameList);
-//                log.info("sameListShareholder:{}",sameListShareholder.toString());
-//            }
+            if (label==2) {
+                List<Map<String, Object>> sameListInvestment = itEnterpriseStockholderMapper.getSameInvestment(entnameList);
+                jsonObject.put("sameListInvestment",sameListInvestment);
+            }
         }
 
-        return AjaxResult.success();
+        return AjaxResult.success(jsonObject);
     }
 }
