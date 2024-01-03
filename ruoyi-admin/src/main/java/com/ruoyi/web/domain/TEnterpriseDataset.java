@@ -1,6 +1,7 @@
 package com.ruoyi.web.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -28,6 +29,10 @@ public class TEnterpriseDataset {
 
     @ApiModelProperty("create_time")
     private Date createTime;
+
+    @ApiModelProperty("create_time_str")
+    @TableField(exist = false)
+    private String createTimeStr;
 
     @ApiModelProperty("create_user_id")
     private int createUserId;

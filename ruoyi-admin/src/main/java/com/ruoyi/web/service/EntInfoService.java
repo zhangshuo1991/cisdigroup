@@ -6,6 +6,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.uuid.UUID;
 import com.ruoyi.web.domain.*;
@@ -806,6 +807,11 @@ public class EntInfoService {
         queryWrapper.orderByDesc("create_time");
         Page<TEnterpriseDataset> page = new Page<>(pageNum,pageSize);
         Page<TEnterpriseDataset> pageResult = itEnterpriseDatasetMapper.selectPage(page, queryWrapper);
+        // 转化create_time
+        List<TEnterpriseDataset> tEnterpriseDatasetList = pageResult.getRecords();
+        for (TEnterpriseDataset tEnterpriseDataset : tEnterpriseDatasetList) {
+            tEnterpriseDataset.setCreateTimeStr(DateUtils.parseDateToStr("yyyy-MM-dd HH:mm:ss",tEnterpriseDataset.getCreateTime()));
+        }
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("total",pageResult.getTotal());
         jsonObject.put("pages",pageResult.getPages());

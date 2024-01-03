@@ -20,7 +20,7 @@
           <el-table-column type="index" label="序号" width="50"></el-table-column>
           <el-table-column prop="datasetName" label="目标集名称"></el-table-column>
           <el-table-column prop="visibleDataset" label="可见状态"></el-table-column>
-          <el-table-column prop="createTime" label="创建时间"></el-table-column>
+          <el-table-column prop="createTimeStr" label="创建时间"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
                 <el-link type="primary" @click="viewDetail(scope.row.id)">查看</el-link>

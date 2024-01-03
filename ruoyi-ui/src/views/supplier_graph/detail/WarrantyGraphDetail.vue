@@ -27,7 +27,7 @@
     </div>
     <div style="margin-left: 15px;background-color: white;padding-left: 10px;margin-right: 15px;padding-bottom: 20px;padding-top: 3px;margin-top: 15px">
       <div class="c-title-div">
-        集团知识图谱
+        担保关系图谱
       </div>
       <div style="height:calc(100vh - 60px);">
         <RelationGraph
@@ -41,7 +41,7 @@
               <div v-if="node.data.spcType === 'ctrler'" style="width:300px;background-color: #4eb548;font-size: 16px;color: #fff;height:40px;line-height: 40px;">
                 被担保公司
               </div>
-              <div v-else-if="node.data.spcType === 'ctrled'" 
+              <div v-else-if="node.data.spcType === 'ctrled'"
               style="width:300px; background-color: #d9001b;color: #ffffff;height:40px;line-height: 40px;font-size: 16px;
               border-top-left-radius: 3px;border-top-right-radius: 3px;">
                 被查询企业
@@ -52,7 +52,7 @@
               </div>
             </div>
             <!-- <div v-if="node.data.regcap" class="c-node-desc" style="line-height: 15px;">
-              认缴金额:<span>{{ node.data.regcap }}{{ node.data.regcapcur_cn }}</span>  
+              认缴金额:<span>{{ node.data.regcap }}{{ node.data.regcapcur_cn }}</span>
                状态:<span>{{ node.data.entstatusCn }}</span>
             </div> -->
           </template>
@@ -106,7 +106,7 @@ export default({
           { id: '4', text: '被担保公司1', myicon: 'el-icon-star-on',data:{spcType: 'ctrler'}  },
           { id: '6', text: '被担保公司1', myicon: 'el-icon-setting',data:{spcType: 'ctrler'}  },
           { id: '7', text: '被担保公司1', myicon: 'el-icon-setting',data:{spcType: 'ctrler'}  },
-         
+
         ],
         lines: [
           { from: '1', to: '2', text: '被担保', fontColor: '#3399ff',},
