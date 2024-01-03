@@ -97,20 +97,69 @@
           :cell-style="{padding:'0px','text-align':'center'}"
           style="width: 100%;"
         >
-          <el-table-column label="企业ID" prop="uniscid"></el-table-column>
-          <el-table-column label="企业名称" prop="ename"></el-table-column>
-          <el-table-column label="风险信息类型" prop="blacklistType"></el-table-column>
-          <el-table-column label="认定部门" prop="department"></el-table-column>
-          <el-table-column label="关联黑名单名称" prop="entname"></el-table-column>
+          <el-table-column label="企业ID" prop="entid"></el-table-column>
+          <el-table-column label="企业名称" prop="entname"></el-table-column>
+          <el-table-column label="关联黑名单名称" prop="ename"></el-table-column>
           <el-table-column label="关联类型" prop="relType"></el-table-column>
+          <el-table-column label="风险信息类型" prop="blacklistType"></el-table-column>
         </el-table>
       </div>
     </div>
-
-    <blackList :visible="visibleblackList" @visibleFlag="blckFlag"></blackList>
-    <RisksummaryDetail :visible="visiblesummary" @visibleFlag="blckFlag"/>
-    <greyListDetail :visible="greyListvisible" @visibleFlag="blckFlag"></greyListDetail>
-
+    <el-dialog
+      :visible.sync="dialogVisibleChange"
+    >
+     <div style="min-height: 100px;padding-bottom: 20px">
+       <el-descriptions title="工商变更详情" border :column="1" :label-style="{'width': '100px'}">
+         <el-descriptions-item label="变更前：">{{ changeReord.beforeContent }}</el-descriptions-item>
+         <el-descriptions-item label="变更后：">{{ changeReord.afterContent }}</el-descriptions-item>
+         <el-descriptions-item label="变更项：">{{ changeReord.changeItem }}</el-descriptions-item>
+         <el-descriptions-item label="变更日期：">{{ changeReord.changeDate }}</el-descriptions-item>
+       </el-descriptions>
+     </div>
+    </el-dialog>
+    <el-dialog
+      :visible.sync="dialogVisiblePunishment"
+    >
+      <div style="min-height: 100px;padding-bottom: 20px">
+        <el-descriptions title="行政处罚详情" border :column="1" :label-style="{'width': '140px'}">
+          <el-descriptions-item label="决定文书号：">{{ punishmentDetail.number }}</el-descriptions-item>
+          <el-descriptions-item label="违法行为类型：">{{ punishmentDetail.illegalType }}</el-descriptions-item>
+          <el-descriptions-item label="决定机关：">{{ punishmentDetail.department }}</el-descriptions-item>
+          <el-descriptions-item label="社会信用代码：">{{ punishmentDetail.description }}</el-descriptions-item>
+          <el-descriptions-item label="行政处罚内容：">{{ punishmentDetail.content }}</el-descriptions-item>
+          <el-descriptions-item label="处罚依据：">{{ punishmentDetail.basedOn }}</el-descriptions-item>
+          <el-descriptions-item label="决定日期：">{{ punishmentDetail.publicDate }}</el-descriptions-item>
+        </el-descriptions>
+      </div>
+    </el-dialog>
+    <el-dialog
+      :visible.sync="dialogVisibleLawsuits"
+    >
+      <div style="min-height: 100px;padding-bottom: 20px">
+        <el-descriptions title="裁判文书详情" border :column="1" :label-style="{'width': '140px'}">
+          <el-descriptions-item label="案件名称：">{{ lawsuitDetail.title }}</el-descriptions-item>
+          <el-descriptions-item label="案号：">{{ lawsuitDetail.caseNo }}</el-descriptions-item>
+          <el-descriptions-item label="案由：">{{ lawsuitDetail.causeAction }}</el-descriptions-item>
+          <el-descriptions-item label="案件类型：">{{ lawsuitDetail.type }}</el-descriptions-item>
+          <el-descriptions-item label="判决法院：">{{ lawsuitDetail.court }}</el-descriptions-item>
+          <el-descriptions-item label="案件原告/被告：">{{ lawsuitDetail.role }}</el-descriptions-item>
+          <el-descriptions-item label="判决结果：">{{ lawsuitDetail.judgeresult }}</el-descriptions-item>
+          <el-descriptions-item label="判决日期：">{{ lawsuitDetail.pubDate }}</el-descriptions-item>
+        </el-descriptions>
+      </div>
+    </el-dialog>
+    <el-dialog
+      :visible.sync="dialogVisibleOverduetaxs"
+    >
+      <div style="min-height: 100px;padding-bottom: 20px">
+        <el-descriptions title="欠税信息详情" border :column="1" :label-style="{'width': '140px'}">
+          <el-descriptions-item label="发布时间：">{{ overduetaxsDetail.overdueTime }}</el-descriptions-item>
+          <el-descriptions-item label="税务机关：">{{ overduetaxsDetail.pubDepartment }}</el-descriptions-item>
+          <el-descriptions-item label="类型：">{{ overduetaxsDetail.overdueType }}</el-descriptions-item>
+          <el-descriptions-item label="金额：">{{ overduetaxsDetail.overdueAmount }}元人民币</el-descriptions-item>
+        </el-descriptions>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -127,7 +176,15 @@ export default({
       visibleblackList:false,
       visiblesummary:false,
       greyListvisible:false,
+      dialogVisibleChange:false,
+      dialogVisiblePunishment: false,
+      dialogVisibleLawsuits: false,
+      dialogVisibleOverduetaxs: false,
       currentIndex:0,
+      changeReord: {},
+      punishmentDetail: {},
+      lawsuitDetail: {},
+      overduetaxsDetail: {},
       dataList:[
         {id:1,name:'黑名单信息'},
         {id:2,name:'风险事件信息'},
@@ -208,7 +265,29 @@ export default({
       this.currentIndex = index
     },
     riskSumDelit(row){
-      this.visiblesummary = true
+      console.log('row',row)
+      if (row.blackType === "法律诉讼") {
+        this.lawsuitDetail = row.detail
+        this.dialogVisibleChange = false
+        this.dialogVisiblePunishment = false
+        this.dialogVisibleLawsuits = true
+      }else if (row.blackType === '工商变更') {
+        this.changeReord = row.detail
+        this.dialogVisibleChange = true
+        this.dialogVisiblePunishment = false
+        this.dialogVisibleLawsuits = false
+      }else if (row.blackType === '行政处罚') {
+        this.punishmentDetail = row.detail
+        this.dialogVisibleChange = false
+        this.dialogVisiblePunishment = true
+        this.dialogVisibleLawsuits = false
+      }else if (row.blackType === '欠税公告') {
+        this.overduetaxsDetail = row.detail
+        this.dialogVisibleChange = false
+        this.dialogVisiblePunishment = false
+        this.dialogVisibleLawsuits = false
+        this.dialogVisibleOverduetaxs = true
+      }
     },
     GreyListDetail(){
       this.greyListvisible = true
@@ -223,6 +302,13 @@ export default({
   display: flex;
   justify-content: center;
   padding: 20px 20px 10px 20px;
+}
+::v-deep .el-dialog__body{
+  padding: 10px 10px;
+}
+::v-deep .el-dialog__header{
+  padding: 0px;
+  padding-bottom: 0px;
 }
 ::v-deep .el-descriptions__body .el-descriptions__table {
   border-collapse: collapse;

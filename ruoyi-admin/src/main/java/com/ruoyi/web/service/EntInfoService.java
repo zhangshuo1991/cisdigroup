@@ -825,9 +825,27 @@ public class EntInfoService {
         QueryWrapper<TEnterpriseBasicDto> queryWrapper = new QueryWrapper<>();
         if (paramsBody.containsKey("keyword") && StringUtils.isNotBlank(paramsBody.getString("keyword"))) {
             String keyword = paramsBody.getString("keyword");
-            queryWrapper.like("entname",keyword)
-                    .or().eq("uniscid",keyword);
+            queryWrapper.like("entname",keyword);
         }
+        List<TBlacklist> tBlacklistsUniscid = itBlacklistMapper.selectList(
+                new QueryWrapper<TBlacklist>()
+                        .select("distinct uniscid")
+        );
+        List<TGreylist> tGreyList = itGreylistMapper.selectList(
+                new QueryWrapper<TGreylist>()
+                        .select("DISTINCT entid")
+        );
+        Set<String> blackUniscid = Sets.newHashSet();
+        for (TBlacklist tBlacklist : tBlacklistsUniscid) {
+            blackUniscid.add(tBlacklist.getUniscid());
+        }
+        for (TGreylist tGreylistItem : tGreyList) {
+            if (tGreylistItem == null || tGreylistItem.getEntid() == null) {
+                continue;
+            }
+            blackUniscid.add(tGreylistItem.getEntid());
+        }
+        queryWrapper.in("uniscid",blackUniscid);
         queryWrapper.orderByDesc("regcap");
 
         Page<TEnterpriseBasicDto> page = new Page<>(pageNum,pageSize);
@@ -836,11 +854,9 @@ public class EntInfoService {
         for (TEnterpriseBasicDto basic : pageResult.getRecords()) {
             basic.setRegcap(basic.getRegcap().split("\\.")[0]);
             basic.setTGreylistList(itGreylistMapper.selectList(
-                    new QueryWrapper<TGreylist>().eq("uniscid",basic.getUniscid())
+                    new QueryWrapper<TGreylist>().eq("entid",basic.getUniscid())
             ));
-            basic.setTBlacklistList(itBlacklistMapper.selectList(
-                    new QueryWrapper<TBlacklist>().eq("uniscid",basic.getUniscid())
-            ));
+
             basic.setTEnterpriseTag(itEnterpriseTagMapper.selectOne(
                     new QueryWrapper<TEnterpriseTag>()
                             .select("uniscid,orgtype,domdistrict,entscale_cn,enages")
@@ -850,6 +866,10 @@ public class EntInfoService {
                     new QueryWrapper<TEnterpriseDesc>()
                             .eq("uniscid",basic.getUniscid())
             ));
+            List<TBlacklist> tBlacklist = itBlacklistMapper.selectList(
+                    new QueryWrapper<TBlacklist>().eq("uniscid",basic.getUniscid())
+            );
+            basic.setTBlacklistList(tBlacklist);
             basicList.add(basic);
         }
         JSONObject jsonObject = new JSONObject();

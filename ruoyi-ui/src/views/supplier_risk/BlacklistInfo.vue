@@ -457,7 +457,7 @@
     </el-dialog>
     <el-dialog
       :visible.sync="dialogLawsuitsRelations"
-      title="行政处罚"
+      title="司法诉讼"
       width="80%"
     >
       <el-table :data="lawsuitsRelations.list"
@@ -556,7 +556,7 @@
     </el-dialog>
     <el-dialog
       :visible.sync="dialogChangeDialog"
-      title="欠税信息"
+      title="变更信息"
       width="80%"
     >
       <el-table :data="changeRecord.list"
@@ -610,7 +610,7 @@
     </el-dialog>
     <el-dialog
       :visible.sync="dialogOtherDialog"
-      title="欠税信息"
+      title="其他风险信息"
       width="80%"
     >
       <el-table :data="otherList.list.slice((otherList.listQuery.page - 1) * otherList.listQuery.limit, otherList.listQuery.page * otherList.listQuery.limit)"
