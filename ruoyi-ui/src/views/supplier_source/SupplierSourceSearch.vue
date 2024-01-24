@@ -111,10 +111,28 @@
             <el-col :span="3">
               <div class="grid-content bg-purple" style="line-height: 300px;height: 200px;;float: left">
                 <el-image
+                  v-if="item.logoBase64"
                   style="width: 100px; height: 100px;border: 1px solid gainsboro"
                   :src="item.logoBase64"
                   fit="fill">
                 </el-image>
+                <div
+                  v-else
+                  style="width: 100px;
+                  height: 100px;
+                  border: 1px solid gainsboro;
+                  font-size: 20px;
+                  position: relative;
+                  top:60px;
+                  color: #00afff;
+                  font-weight: bolder;
+                  line-height: 100px;
+                  text-align: center;"
+                >
+                  <span>
+                    {{item.entname.substring(0,4)}}
+                  </span>
+                </div>
               </div>
             </el-col>
             <el-col :span="16">

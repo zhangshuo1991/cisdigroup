@@ -160,6 +160,11 @@
                     :cell-style="{fontSize: '10px'}"
                   >
                     <el-table-column
+                      prop="ename"
+                      label="企业名称"
+                      align="left"
+                    />
+                    <el-table-column
                       prop="number"
                       label="决定文书号"
                       align="left"
@@ -296,6 +301,10 @@
                       align="left">
                     </el-table-column>
                     <el-table-column
+                      prop="ename"
+                      label="企业名称"
+                      align="left"/>
+                    <el-table-column
                       prop="overdueTime"
                       label="发布时间"
                       align="left">
@@ -420,6 +429,18 @@
           <template slot-scope="scope">{{ scope.$index + 1 }}</template>
         </el-table-column>
         <el-table-column
+          prop="ename"
+          label="企业名称"
+          align="left"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="basedOn"
+          label="处罚依据"
+          align="left"
+        >
+        </el-table-column>
+        <el-table-column
           prop="number"
           label="决定文书号"
           align="left"
@@ -532,6 +553,18 @@
                 :cell-style="{ padding: '0px', 'text-align': 'center' }" style="width: 100%;">
         <el-table-column label="序号" width="60" align="center">
           <template slot-scope="scope">{{ scope.$index + 1 }}</template>
+        </el-table-column>
+        <el-table-column
+          prop="ename"
+          label="企业名称"
+          align="left"/>
+        <el-table-column
+          prop="overdueAmount"
+          label="欠税金额"
+          align="left">
+          <template slot-scope="scope">
+            <span>{{ scope.row.overdueAmount }} 元人民币</span>
+          </template>
         </el-table-column>
         <el-table-column
           prop="overdueTime"

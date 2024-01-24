@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.http.HttpUtils;
 import com.ruoyi.common.utils.uuid.UUID;
 import com.ruoyi.web.domain.*;
 import com.ruoyi.web.mapper.*;
@@ -18,6 +19,10 @@ import org.apache.commons.compress.utils.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Service
@@ -213,7 +218,7 @@ public class EntInfoService {
         Set<String> scoreSelectList = searchScore(searchParams);
 
         Set<String> newResult = allSearchUniscid;
-        if(scoreSelectList.size()>0) {
+        if(scoreSelectList != null) {
             // 两个集合是否有交集
             newResult = com.google.common.collect.Sets.intersection(allSearchUniscid,scoreSelectList);
         }
@@ -338,23 +343,29 @@ public class EntInfoService {
 
     private Set<String> searchScore(JSONObject searchParams) {
         JSONArray entscoreChecks = searchParams.getJSONArray("entscore_checks");
-        Set<String> uniscidSetScore = Sets.newHashSet();
-        for (int i=0;i<entscoreChecks.size();i++) {
-            String score = CheckUtils.scoreMap.get((String)entscoreChecks.get(i));
-            String start = score.split("-")[0];
-            String end = score.split("-")[1];
-            QueryWrapper<TEvaluatingIndex> queryWrapper = new QueryWrapper<>();
-            queryWrapper.between("overall",start,end);
-            List<TEvaluatingIndex> tempList = itEvaluatingIndexMapper.selectList(queryWrapper);
-            for(TEvaluatingIndex item: tempList) {
-                uniscidSetScore.add(item.getUniscid());
+        Set<String> uniscidSetScore;
+        if (entscoreChecks.size()>0) {
+            uniscidSetScore = Sets.newHashSet();
+            for (int i=0;i<entscoreChecks.size();i++) {
+                String score = CheckUtils.scoreMap.get((String)entscoreChecks.get(i));
+                String start = score.split("-")[0];
+                String end = score.split("-")[1];
+                QueryWrapper<TEvaluatingIndex> queryWrapper = new QueryWrapper<>();
+                queryWrapper.between("overall",start,end);
+                List<TEvaluatingIndex> tempList = itEvaluatingIndexMapper.selectList(queryWrapper);
+                for(TEvaluatingIndex item: tempList) {
+                    uniscidSetScore.add(item.getUniscid());
+                }
             }
+        } else {
+            uniscidSetScore = null;
         }
+
         Set<String> otherSet=searchTag(searchParams);
-        if (uniscidSetScore.size()>0 && otherSet.size()>0) {
+        if (uniscidSetScore != null && otherSet != null) {
             return com.google.common.collect.Sets.intersection(uniscidSetScore, otherSet);
         }
-        if (uniscidSetScore.size()>0) {
+        if (uniscidSetScore != null) {
             return uniscidSetScore;
         }
         return otherSet;
@@ -366,17 +377,17 @@ public class EntInfoService {
         if(indusChecked.size()>0) {
             Set<String> indusCodeSet = new HashSet<>();
             for (int i=0;i<indusChecked.size();i++) {
-                JSONArray singleJson = (JSONArray)indusChecked.get(i);
-                indusCodeSet.add((String)singleJson.get(2));
+                List<String> singleJson = (List)indusChecked.get(i);
+                indusCodeSet.add(singleJson.get(2));
             }
-            queryWrapper.in("orgtype",indusCodeSet);
+            queryWrapper.in("industryco",indusCodeSet);
         }
         JSONArray aeraChecked = searchParams.getJSONArray("aera_checked");
         if(aeraChecked.size()>0) {
             Set<String> aeraCodeSet = new HashSet<>();
             for (int i=0;i<aeraChecked.size();i++) {
-                JSONArray singleJson = (JSONArray)aeraChecked.get(i);
-                aeraCodeSet.add((String)singleJson.get(2));
+                List<String> singleJson = (List)aeraChecked.get(i);
+                aeraCodeSet.add(singleJson.get(2));
             }
             queryWrapper.in("domdistrict",aeraCodeSet);
         }
@@ -398,33 +409,41 @@ public class EntInfoService {
             }
             queryWrapper.in("orgtype",enttypeSet);
         }
-        Set<String> uniscidSet = Sets.newHashSet();
+        Set<String> uniscidSet;
         if(indusChecked.size()>0 || aeraChecked.size()>0
            || personNum.size()>0 || enttypeChecks.size()>0 ) {
+            uniscidSet = Sets.newHashSet();
             List<TEnterpriseTag> tEnterpriseTagList = itEnterpriseTagMapper.selectList(queryWrapper);
             tEnterpriseTagList.forEach(tEnterpriseTag -> {
                 uniscidSet.add(tEnterpriseTag.getUniscid());
             });
+        } else {
+            uniscidSet = null;
         }
 
 
         JSONArray esdateChecks = searchParams.getJSONArray("esdate_checks");
-        Set<String> uniscidSetSecond = Sets.newHashSet();
-        for (int i=0;i<esdateChecks.size();i++) {
-            String score = CheckUtils.enAgesMap.get((String)esdateChecks.get(i));
-            String start = score.split("-")[0];
-            String end = score.split("-")[1];
-            queryWrapper = new QueryWrapper<>();
-            queryWrapper.between("enages",start,end);
-            List<TEnterpriseTag> tempList = itEnterpriseTagMapper.selectList(queryWrapper);
-            for(TEnterpriseTag item: tempList) {
-                uniscidSet.add(item.getUniscid());
+        Set<String> uniscidSetSecond;
+        if (esdateChecks.size()>0) {
+            uniscidSetSecond = Sets.newHashSet();
+            for (int i=0;i<esdateChecks.size();i++) {
+                String score = CheckUtils.enAgesMap.get((String)esdateChecks.get(i));
+                String start = score.split("-")[0];
+                String end = score.split("-")[1];
+                queryWrapper = new QueryWrapper<>();
+                queryWrapper.between("enages",start,end);
+                List<TEnterpriseTag> tempList = itEnterpriseTagMapper.selectList(queryWrapper);
+                for(TEnterpriseTag item: tempList) {
+                    uniscidSetSecond.add(item.getUniscid());
+                }
             }
+        } else {
+            uniscidSetSecond = null;
         }
-        if (uniscidSet.size()>0 && uniscidSetSecond.size()>0) {
+        if (uniscidSet != null && uniscidSetSecond != null) {
             return com.google.common.collect.Sets.intersection(uniscidSet, uniscidSetSecond);
         }
-        if (uniscidSet.size()>0) {
+        if (uniscidSet != null) {
             return uniscidSet;
         }
         return uniscidSetSecond;
@@ -514,7 +533,7 @@ public class EntInfoService {
         List<TGroupTag> groupList = Lists.newArrayList();
         for (TGroupTag group : pageResult.getRecords()) {
             group.setTGroupRelationList(itGroupRelationMapper.selectList(
-                    new QueryWrapper<TGroupRelation>().eq("groupid",group.getGrpid()).last(" limit 20 ")
+                    new QueryWrapper<TGroupRelation>().eq("groupid",group.getGrpid())
             ));
             groupList.add(group);
         }
@@ -579,29 +598,54 @@ public class EntInfoService {
         return AjaxResult.success(itBlacklistMapper.selectList(new QueryWrapper<TBlacklist>()));
     }
 
-    public AjaxResult getEntActGraph(String uniscid) {
-
-        TActionPersonGraphDetail tActionPersonGraphDetail= itActionPersonGraphDetailMapper.selectList(
-                new QueryWrapper<TActionPersonGraphDetail>()
-                        .select("graph_detail")
-                        .eq("uniscid",uniscid)).get(0);
-        JSONObject graphDetailJson = JSONObject.parseObject(tActionPersonGraphDetail.getGraphDetail());
-        return AjaxResult.success(graphDetailJson);
-    }
-
-    public AjaxResult getEntActionLineDetail(String uniscid,String actrelid) {
-        List<TActionPersonGraphDetail> actionPersonGraphDetailsList= itActionPersonGraphDetailMapper.selectList(
-                new QueryWrapper<TActionPersonGraphDetail>()
-                        .select("line_detail")
+    public AjaxResult getEntActGraph(String uniscid) throws Exception {
+        String entname = itEnterpriseBasicMapper.selectOne(
+                new QueryWrapper<TEnterpriseBasicDto>()
+                        .select("entname")
                         .eq("uniscid",uniscid)
-                        .eq("actrelid",actrelid)
-        );
-        if(actionPersonGraphDetailsList.size()<=0) {
+        ).getEntname();
+        String url = " http://192.168.1.196:32017/enactinf/entSearch?keyword="+ URLEncoder.encode(entname, "utf-8") +"&limit=10";
+        JSONObject graphDetailJson = JSONObject.parseObject(HttpUtils.sendGet(url));
+        JSONArray items = graphDetailJson.getJSONArray("item");
+        if (items.size()<=0) {
             return AjaxResult.error("未找到相关的数据！");
         }
-        TActionPersonGraphDetail tActionPersonGraphDetail = actionPersonGraphDetailsList.get(0);
-        JSONObject graphDetailJson = JSONObject.parseObject(tActionPersonGraphDetail.getLineDetail());
-        return AjaxResult.success(graphDetailJson);
+        JSONObject item = items.getJSONObject(0);
+        String entid = item.getString("entid");
+        String url2 = "http://192.168.1.196:32017/enactinf/getEntActGraph?entid="+ entid;
+        JSONObject graphDetailJson2 = JSONObject.parseObject(HttpUtils.sendGet(url2));
+        return AjaxResult.success(graphDetailJson2);
+    }
+
+    public AjaxResult getEntActionLineDetail(String uniscid,String actrelid) throws UnsupportedEncodingException {
+//        List<TActionPersonGraphDetail> actionPersonGraphDetailsList= itActionPersonGraphDetailMapper.selectList(
+//                new QueryWrapper<TActionPersonGraphDetail>()
+//                        .select("line_detail")
+//                        .eq("uniscid",uniscid)
+//                        .eq("actrelid",actrelid)
+//        );
+//        if(actionPersonGraphDetailsList.size()<=0) {
+//            return AjaxResult.error("未找到相关的数据！");
+//        }
+//        TActionPersonGraphDetail tActionPersonGraphDetail = actionPersonGraphDetailsList.get(0);
+//        JSONObject graphDetailJson = JSONObject.parseObject(tActionPersonGraphDetail.getLineDetail());
+        String entname = itEnterpriseBasicMapper.selectOne(
+                new QueryWrapper<TEnterpriseBasicDto>()
+                        .select("entname")
+                        .eq("uniscid",uniscid)
+        ).getEntname();
+        String url = " http://192.168.1.196:32017/enactinf/entSearch?keyword="+ URLEncoder.encode(entname, "utf-8") +"&limit=10";
+        JSONObject graphDetailJson = JSONObject.parseObject(HttpUtils.sendGet(url));
+        JSONArray items = graphDetailJson.getJSONArray("item");
+        if (items.size()<=0) {
+            return AjaxResult.error("未找到相关的数据！");
+        }
+        JSONObject item = items.getJSONObject(0);
+        String entid = item.getString("entid");
+        String url2 = "http://192.168.1.196:32017/enactinf/getRelDetailsGraph?entid="+entid+
+                "&actrelid="+actrelid;
+        JSONObject graphDetailJson2 = JSONObject.parseObject(HttpUtils.sendGet(url2));
+        return AjaxResult.success(graphDetailJson2);
     }
 
     public AjaxResult getTGreylist(int pageNum, int pageSize) {
@@ -1122,5 +1166,46 @@ public class EntInfoService {
         }
 
         return AjaxResult.success(jsonObject);
+    }
+
+    public List<DataSetEnt>  exportDataset(Map paramsBody) {
+        JSONArray dataSetIdList = JSONArray.parseArray((String) paramsBody.get("dataSetIdList"));
+        List<DataSetEnt> dataSetEntList = Lists.newArrayList();
+        for (int i=0;i<dataSetIdList.size();i++) {
+            String dataSetId = dataSetIdList.getString(i);
+            TEnterpriseDataset dataSetOne = itEnterpriseDatasetMapper.selectById(dataSetId);
+            itDatasetEnterpriseMapper.selectList(
+                    new QueryWrapper<TDatasetEnterprise>().eq("dataset_id",dataSetId)
+            ).forEach(item -> {
+                TEnterpriseBasicDto basic = itEnterpriseBasicMapper.selectOne(
+                        new QueryWrapper<TEnterpriseBasicDto>().eq("uniscid", item.getUniscid())
+                );
+
+                TEvaluatingIndex tEvaluatingIndex = itEvaluatingIndexMapper.selectOne(
+                        new QueryWrapper<TEvaluatingIndex>().eq("uniscid", item.getUniscid())
+                );
+                DataSetEnt dataSetEnt = new DataSetEnt();
+                dataSetEnt.setDataSetName(dataSetOne.getDatasetName());
+                dataSetEnt.setEntName(basic.getEntname());
+                dataSetEnt.setCreditCode(basic.getUniscid());
+                dataSetEnt.setBusiScope(basic.getOpscope());
+                dataSetEnt.setRegCap(basic.getRegcap()+"万人民币");
+                dataSetEnt.setRegAddr(basic.getRegAddr());
+                dataSetEnt.setEntStatus(basic.getEntstatusCn());
+                dataSetEnt.setLegalPerson(basic.getLerepname());
+                dataSetEnt.setEstDate(basic.getEsdate());
+                dataSetEnt.setOverall(tEvaluatingIndex.getOverall());
+                dataSetEnt.setRisk(tEvaluatingIndex.getRisk());
+                dataSetEnt.setCreativity(tEvaluatingIndex.getCreativity());
+                dataSetEnt.setCompetitiveness(tEvaluatingIndex.getCompetitiveness());
+                dataSetEnt.setDevelopment(tEvaluatingIndex.getDevelopment());
+                dataSetEnt.setVigor(tEvaluatingIndex.getVigor());
+                dataSetEnt.setEntIdentity(tEvaluatingIndex.getEntIdentity());
+                dataSetEntList.add(dataSetEnt);
+            });
+
+        }
+
+        return dataSetEntList;
     }
 }

@@ -81,7 +81,6 @@
         >
           <template slot-scope="scope">
             <el-link type="primary" :underline="false" @click="viewDetailInfo(scope.row)" style="margin-right: 10px">详情</el-link>
-            <el-link type="primary" :underline="false" @click="downLoadExcel(scope.row)">下载集团成员</el-link>
           </template>
         </el-table-column>
       </el-table>

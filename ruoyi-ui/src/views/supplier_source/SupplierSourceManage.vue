@@ -10,21 +10,28 @@
             <el-button type="primary" size="small">检索</el-button>
           </el-col>
           <el-col :span="17" style="text-align: right">
-            <el-button type="primary" size="small">导出目标集</el-button>
+            <el-button type="primary" size="small" @click="exportData">导出目标集</el-button>
           </el-col>
         </el-row>
       </div>
       <div style="padding: 15px">
-        <el-table :data="tableData" border>
+        <el-table :data="tableData" border
+                  ref="multipleTable"
+        >
           <el-table-column type="selection" width="50"></el-table-column>
           <el-table-column type="index" label="序号" width="50"></el-table-column>
           <el-table-column prop="datasetName" label="目标集名称"></el-table-column>
-          <el-table-column prop="visibleDataset" label="可见状态"></el-table-column>
+          <el-table-column prop="visibleDataset" label="可见状态">
+            <template slot-scope="scope">
+              <el-tag v-if="scope.row.visibleDataset == 1" type="success">仅自己可见</el-tag>
+              <el-tag v-else type="danger">公开可见</el-tag>
+            </template>
+          </el-table-column>
           <el-table-column prop="createTimeStr" label="创建时间"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-                <el-link type="primary" @click="viewDetail(scope.row.id)">查看</el-link>
-                <el-link type="danger" style="margin-left: 5px" @click="deleteData(scope.row.id)">删除</el-link>
+              <el-link type="primary" @click="viewDetail(scope.row.id)">查看</el-link>
+              <el-link type="danger" style="margin-left: 5px" @click="deleteData(scope.row.id)">删除</el-link>
             </template>
           </el-table-column>
         </el-table>
@@ -112,6 +119,17 @@ export default ({
         this.detailData = res.data;
         this.dialogVisibleDetail = true;
       })
+    },
+    exportData() {
+      // this.download('monitor/operlog/export', {
+      //   ...this.queryParams
+      // }, `operlog_${new Date().getTime()}.xlsx`
+      // )
+      const selectIds = this.$refs.multipleTable.selection.map(item => item.id);
+      let query = {
+        dataSetIdList: JSON.stringify(selectIds)
+      }
+      this.download('/entInfo/exportDataset', {...query}, `dataset_${new Date().getTime()}.xlsx`)
     },
     deleteData(id) {
       // 删除数据，用户需要确认

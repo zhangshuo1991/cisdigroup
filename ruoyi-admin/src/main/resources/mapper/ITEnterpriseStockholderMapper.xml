@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.mapper.ITEnterpriseStockholderMapper">
+    <select id="getSameShareholder" parameterType="String" resultType="java.util.Map">
+        SELECT t1.entname AS enterprise1,
+               t1.uniscid as uniscid1,
+               t1.invname ,t1.invid ,
+               t2.entname AS enterprise2,t2.uniscid as uniscid2,
+                t1.subconprop ,t2.subconprop
+        FROM cisdigroup.t_enterprise_stockholder AS t1
+        JOIN cisdigroup.t_enterprise_stockholder AS t2 ON t1.invid  = t2.invid
+        WHERE t1.entname <![CDATA[ <> ]]> t2.entname
+        AND t1.entname IN (
+         <foreach collection="entnames" item="entname" index="index" separator=",">
+            #{entname}
+         </foreach>
+        )
+        AND t2.entname IN (
+            <foreach collection="entnames" item="entname" index="index" separator=",">
+                #{entname}
+            </foreach>
+        )
+    </select>
+
+    <select id="getSameInvestment" parameterType="String" resultType="java.util.Map">
+        SELECT t1.ename AS enterprise1,
+               t1.uniscid as uniscid1,
+               t1.invest_name  ,t2.ename AS enterprise2,t2.invest_name ,
+        t1.invest_eid  ,t2.invest_eid ,t1.stock_percent ,t2.stock_percent
+        FROM cisdigroup.t_enterprise_investment AS t1
+        JOIN cisdigroup.t_enterprise_investment AS t2 ON t1.invest_eid  = t2.invest_eid
+        WHERE t1.ename <![CDATA[ <> ]]> t2.ename
+        AND t1.ename IN (
+        <foreach collection="entnames" item="entname" index="index" separator=",">
+            #{entname}
+        </foreach>
+        )
+        AND t2.ename IN (
+        <foreach collection="entnames" item="entname" index="index" separator=",">
+            #{entname}
+        </foreach>
+        )
+    </select>
+</mapper>

@@ -3,6 +3,8 @@ package com.ruoyi.web.controller.ent;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.quartz.domain.SysJobLog;
 import com.ruoyi.web.domain.*;
 import com.ruoyi.web.service.EntDetailService;
 import com.ruoyi.web.service.EntInfoService;
@@ -10,7 +12,10 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Map;
 
 @Api("企业信息管理")
 @RestController
@@ -161,7 +166,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiResponse(code = 200, message = "success", response = TActionPerson.class)
     @ApiOperation("查询企业一致行动人")
-    public AjaxResult getEntActGraph(@PathVariable String uniscid) {
+    public AjaxResult getEntActGraph(@PathVariable String uniscid) throws Exception {
         return entInfoService.getEntActGraph(uniscid);
     }
 
@@ -174,7 +179,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiResponse(code = 200, message = "success", response = TActionPerson.class)
     @ApiOperation("查询企业一致行动人")
-    public AjaxResult getEntActionLineDetail(@PathVariable String uniscid,@PathVariable String actrelid) {
+    public AjaxResult getEntActionLineDetail(@PathVariable String uniscid,@PathVariable String actrelid) throws UnsupportedEncodingException {
         return entInfoService.getEntActionLineDetail(uniscid,actrelid);
     }
 
@@ -296,6 +301,14 @@ public class EntInfoController extends BaseController {
 
         long userId = getUserId();
         return entInfoService.createDataSet(paramsBody,userId);
+    }
+
+    @PostMapping("/exportDataset")
+    public void exportDataset(HttpServletResponse response, @RequestParam Map paramsBody)
+    {
+        List<DataSetEnt> list = entInfoService.exportDataset(paramsBody);
+        ExcelUtil<DataSetEnt> util = new ExcelUtil<DataSetEnt>(DataSetEnt.class);
+        util.exportExcel(response, list, "数据集名称");
     }
 
     /**

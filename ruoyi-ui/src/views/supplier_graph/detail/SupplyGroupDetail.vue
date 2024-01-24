@@ -110,43 +110,17 @@
 <!--                <th class="c-th-header" style="width: 18%;">关联龙头</th>-->
                 <th class="c-th-header" style="width: 7%;">穿透比例</th>
                 <th class="c-th-header" style="width: 18%;">穿透详情</th>
-                <th class="c-th-header" style="width: 10%;">操作</th>
               </tr>
               </thead>
               <tbody>
               <tr v-for="(item,index) in groupMembers.slice((currentPage-1)*10,currentPage*10) " :key="index">
                 <td class="c-td-text" style="text-align: center">{{ index+1 }}</td>
                 <td class="c-td-text" style="padding-left: 10px">{{ item.toname }}</td>
-<!--                <td class="c-td-text" style="text-align: center">-->
-<!--                  <el-popover-->
-<!--                    placement="top-start"-->
-<!--                    trigger="hover"-->
-<!--                    :content="item.entstatus_cn"-->
-<!--                  >-->
-<!--                    <el-button slot="reference" type="text">-->
-<!--                      {{ item.entstatus_cn }}-->
-<!--                    </el-button>-->
-<!--                  </el-popover>-->
-<!--                </td>-->
-<!--                <td class="c-td-text" style="text-align: center">{{ item.mbrroles_cn }}</td>-->
-<!--                <td class="c-td-text" style="text-align: center">{{ item.islist_cn }}<span v-show="(item.islist_cn==='是')">({{ item.skcode }})</span></td>-->
-<!--                <td class="c-td-text" style="padding-left: 10px">{{ (item.leaderName !== undefined && item.leaderName !== '')?item.leaderName:'-' }}</td>-->
                 <td class="c-td-text" style="text-align: center">
-                  {{ item.property }}
+                  <span v-if="item.property">{{ parseFloat(item.property).toFixed(2) }} %</span>
                 </td>
                 <td class="c-td-text" style="font-size: 10px;padding-left: 10px">
                   {{ handleRelPath(item.relpath) }} <br>
-                </td>
-                <td class="c-td-text" style="text-align: center">
-                  <el-link
-                    v-show="(item.relpath !== null && item.relpath !== undefined && item.relpath.length>0)"
-                    type="primary"
-                    :underline="false"
-                    style="font-size: 14px;margin-bottom: 2.5px"
-                    @click="showMorePath(item)"
-                  >
-                    详情
-                  </el-link>
                 </td>
               </tr>
               </tbody>
@@ -207,7 +181,7 @@
         >
         <template #graph-plug>
             <div style="position: absolute;width:350px; right:0;top:0;z-index: 600;
-            padding:10px;border-radius: 5px;color: #ffffff;font-size: 12px;"> 
+            padding:10px;border-radius: 5px;color: #ffffff;font-size: 12px;">
               <el-input
                   v-model="searchText"
                   placeholder="图谱节点定位，请输入节点名称"  suffix-icon="el-icon-search"
@@ -221,7 +195,7 @@
              border-radius: 150px;border:6px solid #3399ff;" class="imgqy">
               <img src="@/assets/images/qiye.png" alt="">
               </div>
-              <div v-else-if="node.data.spcType === 'ctrled'" 
+              <div v-else-if="node.data.spcType === 'ctrled'"
                style="width: 100%; background: #4eb548;color: #1a0404;height:80px;font-size: 16px;
                border-radius: 150px;border:6px solid #76dd64;" class="imgqy">
               <img src="@/assets/images/qiye.png" alt="">
@@ -232,11 +206,11 @@
               </div>
             </div>
             <!-- <div v-if="node.data.regcap" class="c-node-desc" style="line-height: 15px;">
-              认缴金额:<span>{{ node.data.regcap }}{{ node.data.regcapcur_cn }}</span>  
+              认缴金额:<span>{{ node.data.regcap }}{{ node.data.regcapcur_cn }}</span>
                状态:<span>{{ node.data.entstatusCn }}</span>
             </div> -->
           </template>
-          
+
       </RelationGraph>
       </div>
     </div>
@@ -257,7 +231,7 @@ export default({
         allowSwitchJunctionPoint: true,
         defaultLineShape: 1,
         defaultJunctionPoint: 'border',
-        
+
       },
       searchText:'',
       labelLoading: false,
@@ -296,7 +270,7 @@ export default({
           text: item.toname,
           data: {
               spcType: 'ctrler',
-            
+
             },
         })
         lines.push({
