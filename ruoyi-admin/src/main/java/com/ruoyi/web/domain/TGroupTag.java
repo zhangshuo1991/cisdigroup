@@ -108,6 +108,12 @@ public class TGroupTag implements Serializable {
     @ApiModelProperty("licnums")
     private Integer licnums;
 
+    /**
+     * uniscid
+     */
+    @ApiModelProperty("uniscid")
+    private String uniscid;
+
     @TableField(exist = false)
     List<TGroupRelation> tGroupRelationList;
 

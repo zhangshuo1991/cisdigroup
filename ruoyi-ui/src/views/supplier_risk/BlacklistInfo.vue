@@ -381,7 +381,7 @@
         <el-table-column label="序号" width="60" align="center">
           <template slot-scope="scope">{{ scope.$index + 1 }}</template>
         </el-table-column>
-        <el-table-column label="企业ID" prop="uniscid" width="150"></el-table-column>
+        <el-table-column label="统一社会信用代码" prop="uniscid" width="150"></el-table-column>
         <el-table-column label="企业名称" prop="ename" width="300"></el-table-column>
         <el-table-column label="纳入黑名单原因" prop="reason" width="500"></el-table-column>
         <el-table-column label="认定部门" prop="department" width="300"></el-table-column>
@@ -406,7 +406,7 @@
         <el-table-column label="序号" width="60" align="center">
           <template slot-scope="scope">{{ scope.$index + 1 }}</template>
         </el-table-column>
-        <el-table-column label="企业ID" prop="uniscid"></el-table-column>
+        <el-table-column label="统一社会信用代码" prop="uniscid"></el-table-column>
         <el-table-column label="企业名称" prop="entname"></el-table-column>
         <el-table-column label="关联黑名单名称" prop="ename"></el-table-column>
         <el-table-column label="关联类型" prop="relType"></el-table-column>

@@ -36,6 +36,16 @@
           :on-node-click="onNodeClick"
           :on-line-click="onLineClick"
         >
+        <template #graph-plug>
+          <div style="position: absolute;width:350px; right:0;top:0;z-index: 600;
+          padding:10px;border-radius: 5px;color: #ffffff;font-size: 12px;">
+            <el-input
+              v-model="searchText"
+              placeholder="图谱节点定位，请输入节点名称"  suffix-icon="el-icon-search"
+              @input="handleFilter"
+            ></el-input>
+          </div>
+        </template>
         <template slot="node" slot-scope="{node}">
             <div class="my-node-content">
               <div v-if="node.data.spcType === 'ctrler'" style="width:300px;background-color: #4eb548;font-size: 16px;color: #fff;height:40px;line-height: 40px;">
@@ -76,7 +86,6 @@ export default({
         allowSwitchJunctionPoint: true,
         defaultLineShape: 1,
         nodeShape: 1,
-        defaultJunctionPoint: 'border',
         allowShowMiniToolBar: true,
         'layouts': [
           {
@@ -88,15 +97,23 @@ export default({
         defaultJunctionPoint: 'border'
       },
       entWarrantyList: [],
+      searchText: ''
     }
   },
   mounted() {
     this.showSeeksGraph();
   },
   methods: {
-    data: {
-          spcType: 'ctrled'
-        },
+    handleFilter(){
+      const allNodes = this.$refs.graphRef.getNodes()
+      for (let i = 0; i < allNodes.length; i++) {
+        // 模糊匹配
+        if (allNodes[i].text.indexOf(this.searchText) !== -1) {
+          this.$refs.graphRef.focusNode(allNodes[i].id)
+          break
+        }
+      }
+    },
     showSeeksGraph() {
       const __graph_json_data = {
         rootId: '2',

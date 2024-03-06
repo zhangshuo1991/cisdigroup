@@ -29,7 +29,11 @@
                   <td width="5%" align="left" style="height:14px;font-size:12px;font-weight:400;color:rgba(161,161,161,1);line-height:24px;">法定代表人：</td>
                   <td width="15%" style="height:14px;font-size:12px;font-weight:400;color:rgba(161,161,161,1);line-height:24px;"> {{ item.lerepname }}</td>
                   <td width="5%" align="left" style="height:14px;font-size:12px;font-weight:400;color:rgba(161,161,161,1);line-height:24px;">注册资本：</td>
-                  <td width="30%" style="height:14px;font-size:12px;font-weight:400;color:rgba(161,161,161,1);line-height:24px;">{{ item.regcap.toLocaleString() }}{{ item.regcapcurCn }}</td>
+                  <td width="30%" style="height:14px;font-size:12px;font-weight:400;color:rgba(161,161,161,1);line-height:24px;">
+                    <span v-if="item.regcap">
+                      {{ item.regcap.toLocaleString() }}{{ item.regcapcurCn }}
+                    </span>
+                  </td>
                 </tr>
                 <tr>
                   <td align="left" style="height:14px;font-size:12px;font-weight:400;color:rgba(161,161,161,1);line-height:24px;">成立时间：</td>

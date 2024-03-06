@@ -1,19 +1,16 @@
 <template>
   <div style="margin: auto;background-color: #f9f9f9;padding-top: 15px;min-height: 700px">
     <div style="background-color: white;line-height: 70px;height: 70px;text-align: center">
-      <el-autocomplete
+      <el-input
         v-model="dataGrid.listQuery.keywords"
-        :fetch-suggestions="querySearchAsync"
         placeholder="请输入公司名称/统一社会信用代码"
         clearable
         style="width: 610px;"
         class="filter-item"
-        @input="handleInput"
-        @select="handleSelect"
         @keyup.enter.native="handleFilter"
       >
         <el-button slot="append" icon="el-icon-search" @click="handleFilter" />
-      </el-autocomplete>
+      </el-input>
     </div>
     <div style="padding-left: 20px;line-height: 40px;height: 40px;background-color: white;font-size: 12px;margin-top: 15px">
       为您找到 <span style="color: #2E4E8F;font-weight: bolder">{{ dataGrid.total }}</span> 家符合条件的企业，此处最多展示10000条。
@@ -94,6 +91,12 @@ export default({
   },
   methods: {
     getList() {
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
       this.dataGrid.listLoading = true;
       request({
         url: "/entInfo/getGuaranteeList",
@@ -104,6 +107,7 @@ export default({
         this.dataGrid.listLoading = false;
         this.dataGrid.list = res.data.item;
         this.dataGrid.total = res.data.total;
+        loading.close();
       });
     },
 

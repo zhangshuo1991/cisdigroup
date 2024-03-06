@@ -29,6 +29,11 @@
         :cell-style="{padding:'0px'}"
         style="width: 100%;background-color: white;"
       >
+        <el-table-column label="序号" width="50">
+          <template slot-scope="scope">
+            <span>{{ scope.$index + 1 }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="grpname"
           label="集团名称"
@@ -37,6 +42,11 @@
           <template slot-scope="scope">
             <div v-html="grpnameHtml(scope.row)" />
           </template>
+        </el-table-column>
+        <el-table-column
+          prop="uniscid"
+          label="统一社会信用代码">
+
         </el-table-column>
         <el-table-column
           width="110"
@@ -84,7 +94,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <pagination :total="100" :page.sync="dataGrid.listQuery.page" :limit.sync="dataGrid.listQuery.limit" @pagination="getList" />
+      <pagination :total="dataGrid.total" :page.sync="dataGrid.listQuery.page" :limit.sync="dataGrid.listQuery.limit" @pagination="getList" />
     </div>
     <el-dialog title="集团企业列表（此处最多展示100条集团成员企业）" :visible.sync="dialogTableVisible" width="800px" style="height: 800px">
       <el-table :data="gridMemberData" style="font-size: 14px;" height="400">
@@ -170,6 +180,12 @@ export default({
       this.getList()
     },
     getList() {
+      const loading = this.$loading({
+        lock: true,
+        text: '正在加载数据...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       request({
         url: '/entInfo/getGroupList',
         method: 'post',
@@ -181,6 +197,7 @@ export default({
       }).then(res => {
         this.tableData = res.data.item
         this.dataGrid.total = res.data.total
+        loading.close()
       }).catch(err => {
         console.log(err)
       })

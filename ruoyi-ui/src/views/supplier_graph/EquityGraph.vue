@@ -1,19 +1,16 @@
 <template>
   <div id="app" style="margin: auto;background-color: #f9f9f9;padding-top: 15px;min-height: 700px">
     <div style="background-color: white;line-height: 70px;height: 70px;text-align: center">
-      <el-autocomplete
+      <el-input
         v-model="dataGrid.listQuery.keyword"
-        :fetch-suggestions="querySearchAsync"
         placeholder="请输入公司名称/统一社会信用代码"
         clearable
         style="width: 610px;"
         class="filter-item"
-        @input="handleInput"
-        @select="handleSelect"
         @keyup.enter.native="handleFilter"
       >
         <el-button slot="append" icon="el-icon-search" @click="handleFilter" />
-      </el-autocomplete>
+      </el-input>
     </div>
     <div style="padding-left: 20px;line-height: 40px;height: 40px;background-color: white;font-size: 12px;margin-top: 15px">
       为您找到 <span style="color: #2E4E8F;font-weight: bolder">{{ dataGrid.total }}</span> 家符合条件的企业，此处最多展示10000条。
@@ -39,7 +36,9 @@
         <el-table-column label="法人" prop="lerepname"></el-table-column>
         <el-table-column label="注册资本" prop="regCapital" width="200">
           <template slot-scope="scope">
-            {{ scope.row.regcap }}{{ scope.row.regcapcurCn }}
+            <span v-if="scope.row.regcap">
+              {{ scope.row.regcap }}{{ scope.row.regcapcurCn }}
+            </span>
           </template>
         </el-table-column>
         <el-table-column label="注册时间" prop="esdate"></el-table-column>
@@ -98,6 +97,15 @@ export default ({
       this.getList();
     },
     getList() {
+      const loading = this.$loading({
+        lock: true,
+        text: "正在加载数据...",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+      setTimeout(() => {
+        loading.close();
+      }, 10000);
       this.dataGrid.loading = true;
       request({
         url: "/entInfo/searchInfoByKeywordSimple",
@@ -108,6 +116,7 @@ export default ({
         this.dataGrid.list = res.data.item;
         this.dataGrid.total = res.data.total;
         this.dataGrid.loading = false;
+        loading.close();
       });
     },
     querySearchAsync(queryString, cb) {

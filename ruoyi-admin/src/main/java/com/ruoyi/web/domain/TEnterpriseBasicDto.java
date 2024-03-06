@@ -152,6 +152,12 @@ public class TEnterpriseBasicDto implements Serializable {
     private String regAddr;
 
     /**
+     * reg_addr
+     */
+    @ApiModelProperty("overall_ent")
+    private Float overallEnt;
+
+    /**
      * orgtype
      */
     @ApiModelProperty("orgtype")

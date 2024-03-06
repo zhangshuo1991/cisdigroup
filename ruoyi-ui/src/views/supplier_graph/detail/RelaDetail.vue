@@ -111,8 +111,13 @@
             padding:10px;border-radius: 5px;color: #ffffff;font-size: 12px;">
               <el-input
                   v-model="searchText"
-                  placeholder="图谱节点定位，请输入节点名称"  suffix-icon="el-icon-search"
-                ></el-input>
+                  placeholder="图谱节点定位，请输入节点名称"
+                  @click="handleFilter"
+                >
+                <template slot="append" >
+                  <el-button icon="el-icon-search" @click="handleFilter" />
+                </template>
+              </el-input>
             </div>
           </template>
         <template slot="node" slot-scope="{node}">
@@ -155,6 +160,7 @@ export default({
   components: { RelationGraph },
   data() {
     return {
+      searchText: '',
       activeName: 'relaList',
       graphOptions: {
         allowSwitchLineShape: true,
@@ -241,6 +247,16 @@ export default({
     handleCurrentChange(val) {
       this.currentPage = val
       console.log(`当前页: ${val}`);
+    },
+    handleFilter(){
+      const allNodes = this.$refs.graphRef.getNodes()
+      for (let i = 0; i < allNodes.length; i++) {
+        // 模糊匹配
+        if (allNodes[i].text.indexOf(this.searchText) !== -1) {
+          this.$refs.graphRef.focusNode(allNodes[i].id)
+          break
+        }
+      }
     }
   }
 })

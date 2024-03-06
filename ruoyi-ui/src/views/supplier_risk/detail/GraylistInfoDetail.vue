@@ -45,7 +45,7 @@
           style="width: 100%;"
           height="600"
         >
-          <el-table-column label="企业ID" prop="uniscid"></el-table-column>
+          <el-table-column label="统一社会信用代码" prop="uniscid"></el-table-column>
           <el-table-column label="企业名称" prop="ename"></el-table-column>
           <el-table-column label="黑名单类型" prop="blacklistType"></el-table-column>
           <el-table-column label="纳入黑名单原因" prop="reason"></el-table-column>
@@ -97,8 +97,6 @@
           :cell-style="{padding:'0px','text-align':'center'}"
           style="width: 100%;"
         >
-          <el-table-column label="企业ID" prop="entid"></el-table-column>
-          <el-table-column label="企业名称" prop="entname"></el-table-column>
           <el-table-column label="关联黑名单名称" prop="ename"></el-table-column>
           <el-table-column label="关联类型" prop="relType"></el-table-column>
           <el-table-column label="风险信息类型" prop="blacklistType"></el-table-column>

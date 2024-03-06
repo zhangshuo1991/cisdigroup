@@ -5,11 +5,11 @@
         ref="graphRef"
         :on-node-click="onNodeClick"
         :on-line-click="onLineClick"
-        :options="graphOptions" 
+        :options="graphOptions"
         :style="{ width: '100%', height: '100%' }">
         <template #graph-plug>
             <div style="position: absolute;width:350px; right:0;top:0;z-index: 600;
-            padding:10px;border-radius: 5px;color: #ffffff;font-size: 12px;"> 
+            padding:10px;border-radius: 5px;color: #ffffff;font-size: 12px;">
               <el-input
                   v-model="searchText"
                   placeholder="图谱节点定位，请输入节点名称"  suffix-icon="el-icon-search"
@@ -19,9 +19,9 @@
         <template slot="node" slot-scope="{node}">
             <div class="my-node-content">
               <div v-if="node.data.spcType === 'ctrler'" style="">
-                
+
               </div>
-              <div v-else-if="node.data.spcType === 'ctrled'" 
+              <div v-else-if="node.data.spcType === 'ctrled'"
               style="width: 100%; background-color: #128bed;color: #ffffff;height:40px;line-height: 40px;font-size: 16px;
               border-top-left-radius: 3px;border-top-right-radius: 3px;">
                 被查询企业
@@ -31,7 +31,7 @@
                 <span :style="{color:node.fontColor}" class="c-node-label">{{ node.text }}</span>
               </div>
             </div>
-          
+
             <div v-if="node.data.regcap" class="c-node-desc" style="line-height: 15px;">
               认缴金额：<span>{{ node.data.regcap }}{{ node.data.regcapcur_cn }}</span>&ensp;
               状态：<span style="color: #70b603;">{{ node.data.entstatusCn }}</span>
@@ -68,7 +68,7 @@ export default ({
             'label': '中心',
             'layoutName': 'tree',
             from: 'top',
-          
+
           }
         ]
       },
@@ -97,6 +97,12 @@ export default ({
       }
       return style
     },
+    convertStrToNumber(str) {
+      if (!str) {
+        return ''
+      }
+      return parseFloat(str).toFixed(2)
+    },
     getGraphDetail() {
       request({
         url: '/entInfo/getShareHolderAndInvestment/'+this.uniscid,
@@ -108,33 +114,30 @@ export default ({
         nodes.push({
           id: res.data.baseEnterpriseInfo.uniscid,
           text: res.data.baseEnterpriseInfo.entname,
-          data: res.data.baseEnterpriseInfo,
           nodeShape: 1,
           color: 'white',
           fontColor: 'black',
           width: 300,
           data: {
-          spcType: 'ctrled'
-        },
+            spcType: 'ctrled'
+          },
         })
         res.data.investmentList.forEach(item => {
           console.log('iii',item)
           nodes.push({
             id: item.investCreditNo,
             text: item.investName,
-            data: item,
             nodeShape: 1,
             width: 300,
             color: 'white',
             fontColor: 'black',
             data: {
               spcType: 'ctrler',
-              regcap: item.investRegistCapi,
+              // regcap: item.investRegistCapi,
+              regcap: this.convertStrToNumber(item.investRegistCapi),
               // regcapcur_cn: item.regcapcur_cn,
               entstatusCn: item.investStatus,
             },
-            
-           
           })
         })
         res.data.stockholderList.forEach(item => {
@@ -142,14 +145,14 @@ export default ({
           nodes.push({
             id: item.invid,
             text: item.invname,
-            data: item,
             nodeShape: 1,
             color: 'white',
             fontColor: 'black',
             width: 300,
             data: {
               spcType: 'ctrler',
-              regcap: item.subconam,
+              // regcap: item.subconam,
+              regcap: this.convertStrToNumber(item.subconam),
               regcapcur_cn: item.regcapcur_cn,
               entstatusCn: item.entstatusCn,
             },
@@ -160,7 +163,7 @@ export default ({
           lines.push({
             from: res.data.baseEnterpriseInfo.uniscid,
             to: item.investCreditNo,
-            text: (parseFloat(item.stockPercent)*100).toLocaleString() + '%',
+            text: item.stockPercent ? (parseFloat(item.stockPercent)*100).toFixed(2) + '%': '',
             color: '#ccc',
             fontColor:'#3399ff',
             width: 300,
@@ -173,7 +176,8 @@ export default ({
           lines.push({
             from: item.invid,
             to: res.data.baseEnterpriseInfo.uniscid,
-            text: parseFloat(item.subconprop).toLocaleString() + '%',
+            // text: parseFloat(item.subconprop).toLocaleString() + '%',
+            text: item.subconprop ? (parseFloat(item.subconprop)).toFixed(2) + '%': '',
             color: '#ccc',
             width: 300,
             fontColor:'#3399ff',
@@ -230,7 +234,7 @@ display: flex;
 align-items: center;
 justify-content: center;
 flex-direction: column;
-  
+
 }
 .c-my-graph1 ::v-deep .c-node-desc{
   text-align: center;

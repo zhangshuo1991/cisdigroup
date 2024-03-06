@@ -66,7 +66,7 @@
               </tr>
               <tr>
                 <td id="s-footer-td">
-                  <div v-if="enterpriseTag.ctrlid" class="c-other-info" style="width: 170px;padding-right: 4px">
+                  <div v-if="enterpriseTag.ctrlid" class="c-other-info" style="width: 170px;padding-right: 4px" @click="viewCtrlGraph">
                     <div style="float: left;width: 30%;text-align: center;padding-top: 5px">
                       <svg-icon icon-class="shijikongzhiren" class="c-other-info-icon" /><br>
                       <div style="font-size: 7px;color: #0070C4;font-weight: bolder;margin-top: 1px">实控人</div>
@@ -76,7 +76,6 @@
                         <div
                           class="c-ent-taginfo"
                           style="font-size: 12px;line-height: 15px;padding-top: 4px"
-                          @click="viewCtrlGraph"
                         >
                           {{ ctrlInfo.ctrlname.length>17?ctrlInfo.ctrlname.substr(0,17)+'...':ctrlInfo.ctrlname }}
                         </div>
@@ -94,7 +93,7 @@
                       </div>
                     </div>
                   </div>
-                  <div v-if="enterpriseTag.groupid" class="c-other-info" style="margin-left: 25px;padding-right: 4px;width: 15%">
+                  <div v-if="enterpriseTag.groupid" class="c-other-info" style="margin-left: 25px;padding-right: 4px;width: 15%" @click="viewGroupGraph">
                     <div style="float: left;width: 30%;text-align: center;padding-top: 7px">
                       <svg-icon icon-class="jituankehu_one" class="c-other-info-icon" style="font-size: 27px" /><br>
                       <div style="font-size: 7px;color: #0070C4;font-weight: bolder;margin-top: 1px">集团</div>
@@ -105,7 +104,7 @@
                           v-if="grpid"
                           class="c-ent-taginfo"
                           style="font-size: 12px;line-height: 15px;padding-top: 4px"
-                          @click="viewGroupGraph"
+
                         >
                           {{ grpname }}
                         </div>
@@ -125,20 +124,19 @@
                       </div>
                     </div>
                   </div>
-                  <div class="c-other-info" style="width:85px;margin-left: 25px;">
+                  <div class="c-other-info" style="width:85px;margin-left: 25px;" @click="viewStockGraph">
                     <div style="width: 100%;text-align: center;padding-top: 5px">
                       <div style="height: 32px;">
                         <svg-icon icon-class="guquanchuantou_one" class="c-other-info-icon" />
-                        <div style="font-size: 7px;color: #0070C4;font-weight: bolder;" class="c-ent-taginfo" @click="viewStockGraph">股权穿透</div>
+                        <div style="font-size: 7px;color: #0070C4;font-weight: bolder;" class="c-ent-taginfo" >股权穿透</div>
                       </div>
                     </div>
                   </div>
-                  <div class="c-other-info" style="width:85px;margin-left: 25px;">
+                  <div class="c-other-info" style="width:85px;margin-left: 25px;" @click="viewRelaDetailInfo">
                     <div style="width: 100%;text-align: center;padding-top: 5px">
                       <div style="height: 32px;">
                         <svg-icon icon-class="guanlianfang_one" class="c-other-info-icon" />
-                        <div style="font-size: 7px;color: #0070C4;font-weight: bolder;" class="c-ent-taginfo"
-                             @click="viewRelaDetailInfo">关联方</div>
+                        <div style="font-size: 7px;color: #0070C4;font-weight: bolder;" class="c-ent-taginfo">关联方</div>
                       </div>
                     </div>
                   </div>
@@ -617,10 +615,6 @@
         width="800px"
       >
         <div style="line-height: 40px">{{ entIntro }}</div>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-        </span>
       </el-dialog>
       <el-dialog
         title="履约信息详情"
@@ -1317,6 +1311,7 @@ export default {
   padding-bottom: 4px;
   border-radius: 4px;
   color: #0070C4;
+  cursor: pointer;
   background-color: #D3E1F3;
 }
 .c-other-info:hover{

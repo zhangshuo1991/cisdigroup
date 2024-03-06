@@ -5,10 +5,10 @@
         v-model="searchListQuery.keywords"
         class="input-with-select"
         style="width: 710px;margin-left: 48px;"
-        placeholder="请输入企业名称、统⼀社会信⽤代码、⼯商注册号"
-        @keyup.enter.native="getList"
+        placeholder="请输入企业名称搜索"
+        @keyup.enter.native="handleSelect"
       >
-        <el-button slot="append" icon="el-icon-search" @click="getList" />
+        <el-button slot="append" icon="el-icon-search" @click="handleSelect" />
       </el-input>
     </div>
     <div style="padding-left: 15px;line-height: 40px;height: 40px;background-color: white;font-size: 12px;margin-top: 15px">
@@ -25,6 +25,11 @@
         :cell-style="{padding:'0px'}"
         style="width: 100%;background-color: white;"
       >
+        <el-table-column label="序号" width="50">
+          <template slot-scope="scope">
+            <span>{{ scope.$index + 1 }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="entname"
           label="企业名称"
@@ -81,6 +86,22 @@
       </el-table>
       <pagination :total="totalSize" :page.sync="searchListQuery.page" :limit.sync="searchListQuery.limit" @pagination="getList" />
     </div>
+    <el-dialog
+      title="⼀致⾏动⼈组详情"
+      :visible.sync="dialogVisible"
+      width="30%"
+    >
+      <el-table
+        :data = "tactionPersonListDetail"
+        border
+      >
+        <el-table-column
+          prop="fromname"
+          label="企业名称"
+        />
+      </el-table>
+      <el-button slot="footer" type="primary" @click="dialogVisible = false">关闭</el-button>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -93,10 +114,12 @@ export default({
     return {
       keywords: "",
       searchType: "1",
+      dialogVisible: false,
       searchList: [],
       searchListLoading: false,
       totalSize: 0,
       tableData: [],
+      tactionPersonListDetail: [],
       searchListQuery: {
         page: 1,
         limit: 10,
@@ -109,8 +132,8 @@ export default({
   },
   methods:{
     handleSelect(item) {
-      this.keywords = item.entname
-      this.searchList = []
+      this.searchListQuery.page = 1
+      this.getList()
     },
     handleInput() {
       this.searchList = []
@@ -118,15 +141,21 @@ export default({
     querySearchAsync(queryString, cb) {
     },
     getList() {
+      const loading = this.$loading({
+        lock: true,
+        text: "正在加载数据...",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      })
       request({
         url: "/entInfo/getActionGraph",
         method: "post",
         data: { keyword: this.searchListQuery.keywords },
         params: { pageNum: this.searchListQuery.page,pageSize: this.searchListQuery.limit }
       }).then(res => {
-        console.log('tttt',res)
         this.tableData = res.data.item
         this.totalSize = res.data.total
+        loading.close()
       })
     },
     statusStyle(status) {
@@ -171,14 +200,8 @@ export default({
       return ''
     },
     showMoreEnt(scope) {
-      this.$router.push({
-        path: '/actionGraph/moreEnt',
-        query: {
-          entname: scope.row.entname,
-          uniscid: scope.row.uniscid,
-          entid: scope.row.entid
-        }
-      })
+      this.tactionPersonListDetail = scope.row.tactionPersonList
+      this.dialogVisible = true
     },
     viewDetailInfo(row) {
       sessionStorage.setItem("actionOneDetail", JSON.stringify(row))

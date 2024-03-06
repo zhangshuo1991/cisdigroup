@@ -92,7 +92,7 @@
         <div slot="header">
           <el-row>
             <el-col :span="23">
-              <el-checkbox v-model="checkedAll" size="mini">
+              <el-checkbox v-model="checkedAll" size="mini" @change="changeAllSelect">
                 企业列表（共检索出{{this.dataGrid.total}}条结果）
               </el-checkbox>
             </el-col>
@@ -175,6 +175,17 @@
                         <span class="c-span-text">软件名称</span>
                       </template>
                       <span class="c-suggestion-name" v-html="item.softwareName">
+
+                      </span>
+                    </el-descriptions-item>
+                  </el-descriptions>
+                  <el-descriptions v-if="item.entOpscope" :column="1" size="small">
+                    <el-descriptions-item>
+                      <template slot="label">
+                        <i class="el-icon-paperclip"></i>
+                        <span class="c-span-text">经营范围</span>
+                      </template>
+                      <span class="c-suggestion-name" v-html="item.entOpscope">
 
                       </span>
                     </el-descriptions-item>
@@ -394,13 +405,36 @@ export default ({
         this.indusOptions = res.data
       })
     },
+    changeAllSelect(val) {
+      if (val) {
+        this.dataGrid.list.forEach(item => {
+          item.checked = true
+          this.checked_uniscids.push(item.uniscid)
+        })
+      } else {
+        this.dataGrid.list.forEach(item => {
+          item.checked = false
+          this.checked_uniscids = []
+        })
+      }
+    },
     getList() {
+      if (!this.dataGrid.listQuery.keywords) {
+        this.$message({
+          message: '请输入关键字',
+          type: 'warning'
+        });
+        return
+      }
       // 页面loading
       const loading = this.$loading({
         lock: true,
         text: '正在加载中...',
         background: 'rgba(0, 0, 0, 0.7)'
       });
+      setTimeout(() => {
+        loading.close();
+      }, 10000);
       if (this.dataGrid.listQuery.checkBoxSearchType.length === 0) {
         // 默认全选
         this.dataGrid.listQuery.checkBoxSearchType = ['entname','entBusinessScope','patentAbstract','patentName','softwareName','trademarkName','entIntroduction','websiteAbstract','websiteName','entAppAbstract','jobName']
@@ -460,6 +494,10 @@ export default ({
               }
             })
           }
+          if (thisItem.opscope){
+            const tempTitle = thisItem.opscope.replace(this.dataGrid.listQuery.keywords,'<span style="color: red">'+this.dataGrid.listQuery.keywords+'</span>')
+            thisItem.entOpscope = tempTitle.replace(/[\r\n]/g,"<br/>")
+          }
           if (thisItem.tenterpriseAppList){
             thisItem.tenterpriseAppList.forEach(tempItem => {
               if (tempItem.appinfo.indexOf(this.dataGrid.listQuery.keywords)>=0) {
@@ -504,11 +542,16 @@ export default ({
 
     },
     saveList() {
-      console.log('保存结果集')
       this.dialogVisible = true;
     },
     onSubmit() {
       // 提示保存成功
+      const loading = this.$loading({
+        lock: true,
+        text: '正在保存...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
       request({
         url: '/entInfo/createDataSet',
         method: 'post',
@@ -523,6 +566,7 @@ export default ({
           type: 'success'
         });
         this.dialogVisible = false;
+        loading.close()
       })
     },
     viewScoreDetail(detail) {

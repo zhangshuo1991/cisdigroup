@@ -36,6 +36,16 @@
           :on-node-click="onNodeClick"
           :on-line-click="onLineClick"
         >
+        <template #graph-plug>
+          <div style="position: absolute;width:350px; right:0;top:0;z-index: 600;
+              padding:10px;border-radius: 5px;color: #ffffff;font-size: 12px;">
+            <el-input
+              v-model="searchText"
+              placeholder="图谱节点定位，请输入节点名称"  suffix-icon="el-icon-search"
+              @click="searchNode"
+            ></el-input>
+          </div>
+        </template>
         <template slot="node" slot-scope="{node}">
             <div class="my-node-content">
               <div v-if="node.data.spcType === 'ctrler'" style="width:300px;background-color: #409eff;font-size: 16px;color: #fff;height:40px;line-height: 40px;">
@@ -72,6 +82,7 @@ export default ({
   data() {
     return {
       entWarrantyList: [],
+      searchText: '',
       graphOptions: {
         defaultNodeColor: '#fff',
         allowSwitchLineShape: true,
@@ -113,6 +124,16 @@ export default ({
     },
     onLineClick(lineObject, $event) {
       console.log('onLineClick:', lineObject)
+    },
+    searchNode() {
+      const allNodes = this.$refs.graphRef.getNodes()
+      for (let i = 0; i < allNodes.length; i++) {
+        // 模糊匹配
+        if (allNodes[i].text.indexOf(this.searchText) !== -1) {
+          this.$refs.graphRef.focusNode(allNodes[i].id)
+          break
+        }
+      }
     }
   }
 })

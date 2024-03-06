@@ -180,14 +180,14 @@
           :options="graphOptions"
         >
         <template #graph-plug>
-            <div style="position: absolute;width:350px; right:0;top:0;z-index: 600;
-            padding:10px;border-radius: 5px;color: #ffffff;font-size: 12px;">
-              <el-input
-                  v-model="searchText"
-                  placeholder="图谱节点定位，请输入节点名称"  suffix-icon="el-icon-search"
-                ></el-input>
-            </div>
-          </template>
+          <div style="position: absolute;width:350px; right:0;top:0;z-index: 600;
+                padding:10px;border-radius: 5px;color: #ffffff;font-size: 12px;">
+            <el-input
+                v-model="searchText"
+                placeholder="图谱节点定位，请输入节点名称"  suffix-icon="el-icon-search"
+              ></el-input>
+          </div>
+        </template>
         <template slot="node" slot-scope="{node}">
             <div class="my-node-content">
               <div v-if="node.data.spcType === 'ctrler'"  style="width: 100%;
@@ -251,7 +251,14 @@ export default({
   mounted() {
     this.$nextTick(()=> {
       this.grpInfo = JSON.parse(sessionStorage.getItem('grpInfo'))
-      this.groupMembers = this.grpInfo.tgroupRelationList
+      const toIdSet = new Set()
+      // this.groupMembers = this.grpInfo.tgroupRelationList
+      this.grpInfo.tgroupRelationList.forEach(item => {
+        if (item.toid && !toIdSet.has(item.toid)) {
+          toIdSet.add(item.toid)
+          this.groupMembers.push(item)
+        }
+      })
 
       const nodes = []
       const lines = []
@@ -276,7 +283,7 @@ export default({
         lines.push({
           from: rootId,
           to: item.toid,
-          text:' 持股 '+item.property,
+          text:' 持股 '+ this.convertedStrToNumber(item.property),
           data: item,
           fontColor:'#4eb548',
         })
@@ -286,7 +293,12 @@ export default({
     })
     this.showSeeksGraph();
   },
+
   methods: {
+    convertedStrToNumber(str) {
+      if (str === null || str === undefined) return ''
+      return parseFloat(str).toFixed(2) + '%'
+    },
     changeSelected(itemId) {
         console.log('changeSelected:', itemId);
         const graphInstance = this.$refs.graphRef.getInstance();
@@ -319,7 +331,7 @@ export default({
       console.log(tab, event)
     },
     handleGroup() {
-      this.groupMembers = this.grpInfo.mbrs.filter(item => item.mbrname.indexOf(this.groupInput) !== -1)
+      this.groupMembers = this.grpInfo.tgroupRelationList.filter(item => item.fromname.indexOf(this.groupInput) !== -1)
       this.groupMembersTotal = this.groupMembers.length
     },
     handleRelPath(relPath) {

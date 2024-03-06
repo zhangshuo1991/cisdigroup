@@ -105,6 +105,7 @@ export default ({
     },
     handleCurrentChange(val) {
       this.currentPage = val;
+      this.getList();
     },
   }
 })

@@ -1,19 +1,16 @@
 <template>
   <div id="app" style="margin: auto;background-color: #f9f9f9;padding: 15px;min-height: 700px">
     <div style="background-color: white;line-height: 70px;height: 70px;text-align: center">
-      <el-autocomplete
+      <el-input
         v-model="dataGrid.listQuery.keywords"
-        :fetch-suggestions="querySearchAsync"
         placeholder="请输入公司名称/统一社会信用代码"
         clearable
         style="width: 610px;"
         class="filter-item"
-        @input="handleInput"
-        @select="handleSelect"
         @keyup.enter.native="handleFilter"
       >
         <el-button slot="append" icon="el-icon-search" @click="handleFilter" />
-      </el-autocomplete>
+      </el-input>
     </div>
     <div style="clear: both;background-color: white;margin-top: 15px;min-height: 300px;padding:15px">
       <el-table
@@ -103,10 +100,21 @@ export default({
     handleSelect(item) {
     },
     handleFilter() {
+      this.dataGrid.listQuery.page = 1
+      this.getList()
     },
     querySearchAsync(queryString, cb) {
     },
     getList() {
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+      setTimeout(() => {
+        loading.close();
+      }, 10000);
       this.dataGrid.listLoading = true
       request({
         url: "/entInfo/getRelatedEnterprise",
@@ -117,6 +125,7 @@ export default({
         this.dataGrid.list = res.data.item
         this.dataGrid.total = res.data.total
         this.dataGrid.listLoading = false
+        loading.close()
       })
     },
     viewDetailInfo(row) {

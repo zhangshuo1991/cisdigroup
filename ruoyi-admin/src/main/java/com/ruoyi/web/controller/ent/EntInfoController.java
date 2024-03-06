@@ -1,8 +1,10 @@
 package com.ruoyi.web.controller.ent;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.quartz.domain.SysJobLog;
 import com.ruoyi.web.domain.*;
@@ -47,6 +49,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiResponse(code = 200, message = "success", response = TEnterpriseBasicDto.class)
     @ApiOperation("根据关键字搜索企业信息")
+    @Log(title = "根据关键字搜索企业信息", businessType = BusinessType.QUERY)
     public AjaxResult searchInfoByKeyword(@RequestBody JSONObject searchParams,
                                           @RequestParam(required = false,defaultValue = "1") int pageNum,
                                           @RequestParam(required = false,defaultValue = "10") int pageSize) {
@@ -71,6 +74,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiResponse(code = 200, message = "success", response = TEnterpriseBasicDto.class)
     @ApiOperation("根据关键字搜索企业信息简单版，只查询基本信息")
+    @Log(title = "根据关键字搜索企业信息简单版，只查询基本信息", businessType = BusinessType.QUERY)
     public AjaxResult searchInfoByKeywordSimple(@RequestBody JSONObject searchParams,
                                           @RequestParam(required = false,defaultValue = "1") int pageNum,
                                           @RequestParam(required = false,defaultValue = "10") int pageSize) {
@@ -90,6 +94,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiResponse(code = 200, message = "success", response = TEnterpriseStockholder.class)
     @ApiOperation("根据uniscid查询企业企业股东和对外投资")
+    @Log(title = "根据uniscid查询企业企业股东和对外投资", businessType = BusinessType.QUERY)
     public AjaxResult getShareHolderAndInvestment(@PathVariable String uniscid) {
         return entInfoService.getShareHolderAndInvestment(uniscid);
     }
@@ -107,6 +112,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiResponse(code = 200, message = "success", response = TEnterpriseStockholder.class)
     @ApiOperation("根据uniscid查询企业供应商关系")
+    @Log(title = "根据uniscid查询企业供应商关系", businessType = BusinessType.QUERY)
     public AjaxResult getSupplierRelation(@PathVariable String uniscid) {
         return entInfoService.getSupplierRelation(uniscid);
     }
@@ -124,6 +130,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiResponse(code = 200, message = "success", response = TEnterpriseBasicDto.class)
     @ApiOperation("查询企业实际控制人")
+    @Log(title = "查询企业实际控制人", businessType = BusinessType.QUERY)
     public AjaxResult getActualController(@RequestBody JSONObject searchParams,
                                           @RequestParam(required = false,defaultValue = "1") int pageNum,
                                           @RequestParam(required = false,defaultValue = "10") int pageSize) {
@@ -138,6 +145,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiResponse(code = 200, message = "success", response = TEnterpriseBasicDto.class)
     @ApiOperation("查询企业实际控制人")
+    @Log(title = "查询企业实际控制人", businessType = BusinessType.QUERY)
     public AjaxResult getActualControllerDetail(@PathVariable String uniscid) {
         return entInfoService.getActualControllerDetail(uniscid);
     }
@@ -152,6 +160,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiResponse(code = 200, message = "success", response = TEnterpriseBasicDto.class)
     @ApiOperation("查询企业一致行动人")
+    @Log(title = "查询企业一致行动人", businessType = BusinessType.QUERY)
     public AjaxResult getActionGraph(@RequestBody JSONObject searchParams,
                                           @RequestParam(required = false,defaultValue = "1") int pageNum,
                                           @RequestParam(required = false,defaultValue = "10") int pageSize) {
@@ -166,6 +175,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiResponse(code = 200, message = "success", response = TActionPerson.class)
     @ApiOperation("查询企业一致行动人")
+    @Log(title = "查询企业一致行动人", businessType = BusinessType.QUERY)
     public AjaxResult getEntActGraph(@PathVariable String uniscid) throws Exception {
         return entInfoService.getEntActGraph(uniscid);
     }
@@ -179,6 +189,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiResponse(code = 200, message = "success", response = TActionPerson.class)
     @ApiOperation("查询企业一致行动人")
+    @Log(title = "查询企业一致行动人", businessType = BusinessType.QUERY)
     public AjaxResult getEntActionLineDetail(@PathVariable String uniscid,@PathVariable String actrelid) throws UnsupportedEncodingException {
         return entInfoService.getEntActionLineDetail(uniscid,actrelid);
     }
@@ -196,6 +207,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiResponse(code = 200, message = "success", response = TEnterpriseBasicDto.class)
     @ApiOperation("查询企业关联企业")
+    @Log(title = "查询企业关联企业", businessType = BusinessType.QUERY)
     public AjaxResult getRelatedEnterprise(@RequestBody JSONObject searchParams,
                                           @RequestParam(required = false,defaultValue = "1") int pageNum,
                                           @RequestParam(required = false,defaultValue = "10") int pageSize) {
@@ -210,6 +222,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiResponse(code = 200, message = "success", response = TSupplierRelevance.class)
     @ApiOperation("查询企业关联企业")
+    @Log(title = "查询企业关联企业", businessType = BusinessType.QUERY)
     public AjaxResult getRelaEntList(@PathVariable String uniscid) {
         return entInfoService.getRelaEntList(uniscid);
     }
@@ -224,6 +237,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiResponse(code = 200, message = "success", response = TEnterpriseBasicDto.class)
     @ApiOperation("查询企业集团信息")
+    @Log(title = "查询企业集团信息", businessType = BusinessType.QUERY)
     public AjaxResult getGroupList(@RequestBody JSONObject searchParams,
                                            @RequestParam(required = false,defaultValue = "1") int pageNum,
                                            @RequestParam(required = false,defaultValue = "10") int pageSize) {
@@ -240,6 +254,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiResponse(code = 200, message = "success", response = TEnterpriseBasicDto.class)
     @ApiOperation("查询企业担保信息")
+    @Log(title = "查询企业担保信息", businessType = BusinessType.QUERY)
     public AjaxResult getGuaranteeList(@RequestBody JSONObject searchParams,
                                    @RequestParam(required = false,defaultValue = "1") int pageNum,
                                    @RequestParam(required = false,defaultValue = "10") int pageSize) {
@@ -256,6 +271,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiResponse(code = 200, message = "success", response = TEnterpriseBasicDto.class)
     @ApiOperation("查询企业风险信息")
+    @Log(title = "查询企业风险信息", businessType = BusinessType.QUERY)
     public AjaxResult getRiskList(@RequestBody JSONObject searchParams,
                                        @RequestParam(required = false,defaultValue = "1") int pageNum,
                                        @RequestParam(required = false,defaultValue = "10") int pageSize) {
@@ -265,6 +281,7 @@ public class EntInfoController extends BaseController {
     @GetMapping("/getBlackList")
     @ApiResponse(code = 200, message = "success", response = TBlacklist.class)
     @ApiOperation("查询企业黑名单信息")
+    @Log(title = "查询企业黑名单信息", businessType = BusinessType.QUERY)
     public AjaxResult getBlackList() {
         return entInfoService.getBlackList();
     }
@@ -272,6 +289,7 @@ public class EntInfoController extends BaseController {
     @GetMapping("/getTGreylist")
     @ApiResponse(code = 200, message = "success", response = TGreylist.class)
     @ApiOperation("查询企业灰名单信息")
+    @Log(title = "查询企业灰名单信息", businessType = BusinessType.QUERY)
     public AjaxResult getTGreylist(
             @RequestParam(required = false,defaultValue = "1") int pageNum,
             @RequestParam(required = false,defaultValue = "10") int pageSize) {
@@ -286,6 +304,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiResponse(code = 200, message = "success", response = TEnterpriseBasicDto.class)
     @ApiOperation("查询企业详情")
+    @Log(title = "查询企业详情", businessType = BusinessType.QUERY)
     public AjaxResult getEntDetail(@PathVariable String uniscid) {
         return entInfoService.getEntDetail(uniscid);
     }
@@ -297,6 +316,7 @@ public class EntInfoController extends BaseController {
      */
     @PostMapping("/createDataSet")
     @ApiOperation("创建数据集")
+    @Log(title = "创建数据集", businessType = BusinessType.INSERT)
     public AjaxResult createDataSet(@RequestBody JSONObject paramsBody) {
 
         long userId = getUserId();
@@ -304,6 +324,7 @@ public class EntInfoController extends BaseController {
     }
 
     @PostMapping("/exportDataset")
+    @Log(title = "导出数据集", businessType = BusinessType.EXPORT)
     public void exportDataset(HttpServletResponse response, @RequestParam Map paramsBody)
     {
         List<DataSetEnt> list = entInfoService.exportDataset(paramsBody);
@@ -318,6 +339,7 @@ public class EntInfoController extends BaseController {
      */
     @DeleteMapping("/deleteDataSet/{datasetId}")
     @ApiOperation("删除数据集")
+    @Log(title = "删除数据集", businessType = BusinessType.DELETE)
     public AjaxResult deleteDataSet(@PathVariable String datasetId) {
         return entInfoService.deleteDataSet(datasetId);
     }
@@ -328,6 +350,7 @@ public class EntInfoController extends BaseController {
      */
     @PostMapping("/getDataSetList")
     @ApiOperation("获取数据集列表")
+    @Log(title = "获取数据集列表", businessType = BusinessType.QUERY)
     public AjaxResult getDataSetList(@RequestBody JSONObject paramsBody,
                                      @RequestParam(required = false,defaultValue = "1") int pageNum,
                                      @RequestParam(required = false,defaultValue = "10") int pageSize) {
@@ -341,6 +364,7 @@ public class EntInfoController extends BaseController {
      */
     @GetMapping("/getDataSetDetail/{datasetId}")
     @ApiOperation("获取数据集详情")
+    @Log(title = "获取数据集详情", businessType = BusinessType.QUERY)
     public AjaxResult getDataSetDetail(@PathVariable String datasetId) {
         return entInfoService.getDataSetDetail(datasetId);
     }
@@ -351,6 +375,7 @@ public class EntInfoController extends BaseController {
      */
     @PostMapping("/updateDataSetDetail/{datasetId}")
     @ApiOperation("更新数据集详情")
+    @Log(title = "更新数据集详情", businessType = BusinessType.UPDATE)
     public AjaxResult updateDataSetDetail(@PathVariable String datasetId,@RequestBody JSONObject paramsBody) {
         return entInfoService.updateDataSetDetail(datasetId,paramsBody);
     }
@@ -361,6 +386,7 @@ public class EntInfoController extends BaseController {
      */
     @GetMapping("/getAdministrativePunishment")
     @ApiOperation("获取行政处罚信息")
+    @Log(title = "获取行政处罚信息", businessType = BusinessType.QUERY)
     public AjaxResult getDataSetList(
                                      @RequestParam(required = false,defaultValue = "1") int pageNum,
                                      @RequestParam(required = false,defaultValue = "10") int pageSize) {
@@ -373,6 +399,7 @@ public class EntInfoController extends BaseController {
      */
     @GetMapping("/getOverduetaxs")
     @ApiOperation("获取欠税信息")
+    @Log(title = "获取欠税信息", businessType = BusinessType.QUERY)
     public AjaxResult getOverduetaxs(
             @RequestParam(required = false,defaultValue = "1") int pageNum,
             @RequestParam(required = false,defaultValue = "10") int pageSize) {
@@ -385,6 +412,7 @@ public class EntInfoController extends BaseController {
      */
     @GetMapping("/getLawsuitsRelations")
     @ApiOperation("获取涉诉信息")
+    @Log(title = "获取涉诉信息", businessType = BusinessType.QUERY)
     public AjaxResult getLawsuitsRelations(
             @RequestParam(required = false,defaultValue = "1") int pageNum,
             @RequestParam(required = false,defaultValue = "10") int pageSize) {
@@ -397,6 +425,7 @@ public class EntInfoController extends BaseController {
      */
     @GetMapping("/getChangeRecords")
     @ApiOperation("获取变更信息")
+    @Log(title = "获取变更信息", businessType = BusinessType.QUERY)
     public AjaxResult getChangeRecords(
             @RequestParam(required = false,defaultValue = "1") int pageNum,
             @RequestParam(required = false,defaultValue = "10") int pageSize) {
@@ -413,6 +442,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiOperation("获取招投标信息")
     @ApiResponse(code = 200, message = "success", response = TBiddingsall.class)
+    @Log(title = "获取招投标信息", businessType = BusinessType.QUERY)
     public AjaxResult getTBiddingsallCache(
             @RequestBody JSONObject paramsBody,
             @RequestParam(required = false,defaultValue = "1") int pageNum,
@@ -427,6 +457,7 @@ public class EntInfoController extends BaseController {
             }
     )
     @ApiOperation("获取招投标信息")
+    @Log(title = "获取招投标信息", businessType = BusinessType.QUERY)
     @ApiResponse(code = 200, message = "success", response = TBiddingsall.class)
     public AjaxResult getTBiddingsallDetail(@PathVariable String uniscid) {
         return entInfoService.getTBiddingsallDetail(uniscid);
@@ -440,6 +471,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiOperation("获取招投标信息")
     @ApiResponse(code = 200, message = "success", response = TBiddingsall.class)
+    @Log(title = "获取招投标信息", businessType = BusinessType.QUERY)
     public AjaxResult getTBiddingsallByDataId(@PathVariable String dataId) {
         return entInfoService.getTBiddingsallByDataId(dataId);
     }
@@ -455,6 +487,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiOperation("获取其他黑名单信息")
     @ApiResponse(code = 200, message = "success", response = TBlacklist.class)
+    @Log(title = "获取其他黑名单信息", businessType = BusinessType.QUERY)
     public AjaxResult getOtherBlackEvent(
             @RequestParam(required = false,defaultValue = "1") int pageNum,
             @RequestParam(required = false,defaultValue = "10") int pageSize) {
@@ -469,6 +502,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiOperation("获取企业黑名单信息")
     @ApiResponse(code = 200, message = "success", response = TBlacklist.class)
+    @Log(title = "获取企业黑名单信息", businessType = BusinessType.QUERY)
     public AjaxResult getBlackEvent(@PathVariable String uniscid) {
         return entInfoService.getBlackEvent(uniscid);
     }
@@ -481,6 +515,7 @@ public class EntInfoController extends BaseController {
     )
     @ApiOperation("关联探索")
     @ApiResponse(code = 200, message = "success", response = JSONObject.class)
+    @Log(title = "关联探索", businessType = BusinessType.QUERY)
     public AjaxResult relaExplore(@RequestBody JSONObject paramsBody) {
         return entInfoService.relaExplore(paramsBody);
     }

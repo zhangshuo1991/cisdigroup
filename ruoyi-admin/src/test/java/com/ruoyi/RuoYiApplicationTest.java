@@ -3,9 +3,11 @@ package com.ruoyi;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.web.domain.TBiddingIndex;
 import com.ruoyi.web.domain.TEnterpriseBasicDto;
+import com.ruoyi.web.domain.TEvaluatingIndex;
 import com.ruoyi.web.mapper.ITBiddingIndexMapper;
 import com.ruoyi.web.mapper.ITBiddingsAllNewMapper;
 import com.ruoyi.web.mapper.ITEnterpriseBasicMapper;
+import com.ruoyi.web.mapper.ITEvaluatingIndexMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -31,6 +33,9 @@ class RuoYiApplicationTest {
     @Autowired
     private ITBiddingIndexMapper itBiddingIndexMapper;
 
+    @Autowired
+    private ITEvaluatingIndexMapper itEvaluatingIndexMapper;
+
     @org.junit.jupiter.api.BeforeEach
     void setUp() {
     }
@@ -38,6 +43,23 @@ class RuoYiApplicationTest {
     @org.junit.jupiter.api.AfterEach
     void tearDown() {
     }
+
+    @Test
+    void updateScore() {
+        itEnterpriseBasicMapper.selectList(new QueryWrapper<TEnterpriseBasicDto>().select("distinct uniscid,entname")).forEach(tEnterpriseBasicDto -> {
+            TEvaluatingIndex tEvaluatingIndex = itEvaluatingIndexMapper
+                    .selectOne(new QueryWrapper<TEvaluatingIndex>().eq("uniscid", tEnterpriseBasicDto.getUniscid()));
+            if (tEvaluatingIndex != null) {
+                TEnterpriseBasicDto tEnterpriseBasicDto1 = new TEnterpriseBasicDto();
+                tEnterpriseBasicDto1.setUniscid(tEnterpriseBasicDto.getUniscid());
+                tEnterpriseBasicDto1.setEntname(tEnterpriseBasicDto.getEntname());
+                tEnterpriseBasicDto1.setOverallEnt(Float.valueOf(tEvaluatingIndex.getOverall()));
+                itEnterpriseBasicMapper.updateById(tEnterpriseBasicDto1);
+            }
+        });
+
+    }
+
 
     @Test
     public void testOne() {

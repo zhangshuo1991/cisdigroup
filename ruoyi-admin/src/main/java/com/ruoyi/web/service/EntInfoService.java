@@ -215,6 +215,15 @@ public class EntInfoService {
                 allSearchUniscid.add(tEnterpriseBasicDto.getUniscid());
             });
         }
+        if (checkBoxSearchType.contains("entBusinessScope")) {
+            List<TEnterpriseBasicDto> tEnterpriseBasicDtoList = itEnterpriseBasicMapper.selectList(
+                    new QueryWrapper<TEnterpriseBasicDto>()
+                            .like("opscope",keyword)
+            );
+            tEnterpriseBasicDtoList.forEach(tEnterpriseBasicDto -> {
+                allSearchUniscid.add(tEnterpriseBasicDto.getUniscid());
+            });
+        }
         Set<String> scoreSelectList = searchScore(searchParams);
 
         Set<String> newResult = allSearchUniscid;
@@ -297,12 +306,14 @@ public class EntInfoService {
         // 根据查询到的信息，查询企业基本信息
         QueryWrapper<TEnterpriseBasicDto> queryWrapper = new QueryWrapper<>();
         queryWrapper.in("uniscid",newResult);
+        queryWrapper.orderByDesc("overall_ent");
         List<TEnterpriseBasicDto> tempResultList = itEnterpriseBasicMapper.selectList(queryWrapper);
 
         List<JSONObject> basicJsonList = com.google.common.collect.Lists.newArrayList();
         tempResultList.forEach(tEnterpriseBasicDto -> {
-            tEnterpriseBasicDto.setRegcap(tEnterpriseBasicDto.getRegcap().split("\\.")[0]);
-
+            if (tEnterpriseBasicDto.getRegcap() != null){
+                tEnterpriseBasicDto.setRegcap(tEnterpriseBasicDto.getRegcap().split("\\.")[0]);
+            }
             JSONObject basicJson = convertToJSONObject(tEnterpriseBasicDto);
             String uniscid = tEnterpriseBasicDto.getUniscid();
             basicJson.put("tenterpriseLabelList",tEnterpriseTagJson.get(uniscid) == null ? new JSONArray() : tEnterpriseTagJson.get(uniscid));
@@ -463,10 +474,9 @@ public class EntInfoService {
         List<TEnterpriseBasicDto> basicList = Lists.newArrayList();
 
         for (TEnterpriseBasicDto basic : pageResult.getRecords()) {
-            basic.setRegcap(basic.getRegcap().split("\\.")[0]);
-//            basic.setTBiddingsallCacheList(itBiddingsallCacheMapper.selectList(
-//                    new QueryWrapper<TBiddingsallCache>().eq("uniscid",basic.getUniscid())
-//            ));
+            if (basic.getRegcap() != null) {
+                basic.setRegcap(basic.getRegcap().split("\\.")[0]);
+            }
             basicList.add(basic);
         }
         JSONObject jsonObject = new JSONObject();
@@ -558,7 +568,10 @@ public class EntInfoService {
         Page<TEnterpriseBasicDto> pageResult = itEnterpriseBasicMapper.selectPage(page, queryWrapper);
         List<TEnterpriseBasicDto> basicList = Lists.newArrayList();
         for (TEnterpriseBasicDto basic : pageResult.getRecords()) {
-            basic.setRegcap(basic.getRegcap().split("\\.")[0]);
+//            basic.setRegcap(basic.getRegcap().split("\\.")[0]);
+            if (basic.getRegcap() != null) {
+                basic.setRegcap(basic.getRegcap().split("\\.")[0]);
+            }
             basic.setTForGuaranteeInfoList(itForGuaranteeInfoMapper.selectList(
                     new QueryWrapper<TForGuaranteeInfo>().eq("uniscid",basic.getUniscid())
             ));
@@ -599,22 +612,12 @@ public class EntInfoService {
     }
 
     public AjaxResult getEntActGraph(String uniscid) throws Exception {
-        String entname = itEnterpriseBasicMapper.selectOne(
-                new QueryWrapper<TEnterpriseBasicDto>()
-                        .select("entname")
-                        .eq("uniscid",uniscid)
-        ).getEntname();
-        String url = " http://192.168.1.196:32017/enactinf/entSearch?keyword="+ URLEncoder.encode(entname, "utf-8") +"&limit=10";
-        JSONObject graphDetailJson = JSONObject.parseObject(HttpUtils.sendGet(url));
-        JSONArray items = graphDetailJson.getJSONArray("item");
-        if (items.size()<=0) {
-            return AjaxResult.error("未找到相关的数据！");
-        }
-        JSONObject item = items.getJSONObject(0);
-        String entid = item.getString("entid");
-        String url2 = "http://192.168.1.196:32017/enactinf/getEntActGraph?entid="+ entid;
-        JSONObject graphDetailJson2 = JSONObject.parseObject(HttpUtils.sendGet(url2));
-        return AjaxResult.success(graphDetailJson2);
+        TActionPersonGraphDetail tActionPersonGraphDetail= itActionPersonGraphDetailMapper.selectList(
+                new QueryWrapper<TActionPersonGraphDetail>()
+                        .select("graph_detail")
+                        .eq("uniscid",uniscid)).get(0);
+        JSONObject graphDetailJson = JSONObject.parseObject(tActionPersonGraphDetail.getGraphDetail());
+        return AjaxResult.success(graphDetailJson);
     }
 
     public AjaxResult getEntActionLineDetail(String uniscid,String actrelid) throws UnsupportedEncodingException {
@@ -629,23 +632,18 @@ public class EntInfoService {
 //        }
 //        TActionPersonGraphDetail tActionPersonGraphDetail = actionPersonGraphDetailsList.get(0);
 //        JSONObject graphDetailJson = JSONObject.parseObject(tActionPersonGraphDetail.getLineDetail());
-        String entname = itEnterpriseBasicMapper.selectOne(
-                new QueryWrapper<TEnterpriseBasicDto>()
-                        .select("entname")
+        List<TActionPersonGraphDetail> actionPersonGraphDetailsList= itActionPersonGraphDetailMapper.selectList(
+                new QueryWrapper<TActionPersonGraphDetail>()
+                        .select("line_detail")
                         .eq("uniscid",uniscid)
-        ).getEntname();
-        String url = " http://192.168.1.196:32017/enactinf/entSearch?keyword="+ URLEncoder.encode(entname, "utf-8") +"&limit=10";
-        JSONObject graphDetailJson = JSONObject.parseObject(HttpUtils.sendGet(url));
-        JSONArray items = graphDetailJson.getJSONArray("item");
-        if (items.size()<=0) {
+                        .eq("actrelid",actrelid)
+        );
+        if(actionPersonGraphDetailsList.size()<=0) {
             return AjaxResult.error("未找到相关的数据！");
         }
-        JSONObject item = items.getJSONObject(0);
-        String entid = item.getString("entid");
-        String url2 = "http://192.168.1.196:32017/enactinf/getRelDetailsGraph?entid="+entid+
-                "&actrelid="+actrelid;
-        JSONObject graphDetailJson2 = JSONObject.parseObject(HttpUtils.sendGet(url2));
-        return AjaxResult.success(graphDetailJson2);
+        TActionPersonGraphDetail tActionPersonGraphDetail = actionPersonGraphDetailsList.get(0);
+        JSONObject graphDetailJson = JSONObject.parseObject(tActionPersonGraphDetail.getLineDetail());
+        return AjaxResult.success(graphDetailJson);
     }
 
     public AjaxResult getTGreylist(int pageNum, int pageSize) {
@@ -739,7 +737,9 @@ public class EntInfoService {
         List<TEnterpriseBasicDto> basicList = Lists.newArrayList();
 //        log.info("getRecords:{}", pageResult.getRecords());
         for (TEnterpriseBasicDto basic : pageResult.getRecords()) {
-            basic.setRegcap(basic.getRegcap().split("\\.")[0]);
+            if (basic.getRegcap() != null) {
+                basic.setRegcap(basic.getRegcap().split("\\.")[0]);
+            }
             basic.setTActualControllerList(itActualControllerMapper.selectList(
                     new QueryWrapper<TActualController>().eq("uniscid",basic.getUniscid())
             ));
@@ -869,7 +869,9 @@ public class EntInfoService {
         QueryWrapper<TEnterpriseBasicDto> queryWrapper = new QueryWrapper<>();
         if (paramsBody.containsKey("keyword") && StringUtils.isNotBlank(paramsBody.getString("keyword"))) {
             String keyword = paramsBody.getString("keyword");
-            queryWrapper.like("entname",keyword);
+            queryWrapper.like("entname",keyword)
+                    .or()
+                    .like("uniscid",keyword);
         }
         List<TBlacklist> tBlacklistsUniscid = itBlacklistMapper.selectList(
                 new QueryWrapper<TBlacklist>()
@@ -896,7 +898,10 @@ public class EntInfoService {
         Page<TEnterpriseBasicDto> pageResult = itEnterpriseBasicMapper.selectPage(page, queryWrapper);
         List<TEnterpriseBasicDto> basicList = Lists.newArrayList();
         for (TEnterpriseBasicDto basic : pageResult.getRecords()) {
-            basic.setRegcap(basic.getRegcap().split("\\.")[0]);
+//            basic.setRegcap(basic.getRegcap().split("\\.")[0]);
+            if (basic.getRegcap() != null) {
+                basic.setRegcap(basic.getRegcap().split("\\.")[0]);
+            }
             basic.setTGreylistList(itGreylistMapper.selectList(
                     new QueryWrapper<TGreylist>().eq("entid",basic.getUniscid())
             ));

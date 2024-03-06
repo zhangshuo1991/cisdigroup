@@ -7,7 +7,7 @@
             <el-input v-model="datasetName" placeholder="请输入关键字搜索" style="width: 200px" size="small"></el-input>
           </el-col>
           <el-col :span="2">
-            <el-button type="primary" size="small">检索</el-button>
+            <el-button type="primary" size="small" @click="searchList">检索</el-button>
           </el-col>
           <el-col :span="17" style="text-align: right">
             <el-button type="primary" size="small" @click="exportData">导出目标集</el-button>
@@ -93,6 +93,10 @@ export default ({
   methods:{
     handleCurrentChange(val) {
       this.currentPage = val;
+      this.getList();
+    },
+    searchList() {
+      this.currentPage = 1;
       this.getList();
     },
     getList() {

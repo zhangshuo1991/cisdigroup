@@ -92,6 +92,15 @@ export default ({
       this.getList();
     },
     getList() {
+      const loading = this.$loading({
+        lock: true,
+        text: "正在加载数据...",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+      setTimeout(() => {
+        loading.close();
+      }, 10000);
       this.dataGrid.loading = true;
       request({
         url: "/entInfo/getTBiddingsallCache",
@@ -102,6 +111,7 @@ export default ({
         this.dataGrid.list = res.data.item;
         this.dataGrid.total = res.data.total;
         this.dataGrid.loading = false;
+        loading.close();
       });
     },
     querySearchAsync(queryString, cb) {
