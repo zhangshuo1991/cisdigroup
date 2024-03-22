@@ -22,7 +22,11 @@
         :cell-style="{padding:'0px'}"
         style="width: 100%;"
       >
-        <el-table-column type="index" label="序号"></el-table-column>
+        <el-table-column type="index" label="序号">
+          <template slot-scope="scope">
+            {{ (scope.$index + 1) + (dataGrid.listQuery.page - 1) * dataGrid.listQuery.limit }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="entname"
           label="企业名称"

@@ -28,7 +28,9 @@
         style="width: 100%;"
       >
         <el-table-column label="序号" width="60" align="center">
-          <template slot-scope="scope">{{ scope.$index+1 }}</template>
+          <template slot-scope="scope">
+            {{ (scope.$index + 1) + (dataGrid.listQuery.page - 1) * dataGrid.listQuery.limit }}
+          </template>
         </el-table-column>
         <el-table-column prop="supplier_id" label="供应商ID"></el-table-column>
         <el-table-column prop="supplier_name" label="供应商名称"></el-table-column>

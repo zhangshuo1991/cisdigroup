@@ -29,7 +29,9 @@
         style="width: 100%;"
       >
         <el-table-column label="序号" width="60" align="center">
-          <template slot-scope="scope">{{ scope.$index+1 }}</template>
+          <template slot-scope="scope">
+            {{ (scope.$index + 1) + (dataGrid.listQuery.page - 1) * dataGrid.listQuery.limit }}
+          </template>
         </el-table-column>
         <el-table-column label="企业名称" prop="entname"></el-table-column>
         <el-table-column label="统一社会信用代码" prop="uniscid"></el-table-column>
